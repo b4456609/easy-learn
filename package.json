@@ -1,0 +1,23 @@
+{
+  "name": "EasyLearn",
+  "version": "1.0.0",
+  "description": "Build a app with cordova.",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-nodeunit": "^0.4.1",
+    "grunt-exec": "^0.4.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/b4456609/easy-learn.git"
+  },
+  "author": "Bernie, Jack",
+  "license": "GPL"
+}

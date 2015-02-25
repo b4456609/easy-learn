@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+
+    <!-- Include meta tag to ensure proper rendering and touch zooming -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Include jQuery Mobile stylesheets -->
+    <link rel="stylesheet" href="lib/jquery.mobile-1.4.5.min.css">
+
+    <!-- Include the jQuery library -->
+    <script src="lib/jquery-1.11.2.min.js"></script>
+
+    <!-- Include the jQuery Mobile library -->
+    <script src="lib/jquery.mobile-1.4.5.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <div data-role="page" id="new_bag">
+        <div data-role="header">
+            <div data-role="header">
+                <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+                <h1>設定</h1>
+            </div>
+        </div>
+
+
+        <div data-role="main" class="ui-content">
+            <ul data-role="listview" data-inset="false">
+                    <li class="setting_flip ui-field-contain">
+                        <lable for="test-slider">
+                            3G狀態同步
+                        </lable>
+                        <select id="test-slider" data-role="slider" name="testslider">
+                            <option value="off">off</option>
+                            <option value="on">on</option>
+                        </select>
+                    </li>
+                <li class="setting_flip ui-field-contain">
+                        <lable for="test-slider">
+                            WIFI狀態同步
+                        </lable>
+                        <select id="test-slider" data-role="slider" name="testslider">
+                            <option value="off">off</option>
+                            <option value="on">on</option>
+                        </select>
+                    </li>
+                
+                </ul>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+# Node
+npm-debug.log
+/node_modules
+
+# android
+easylearn/platforms/android/assets/www
+easylearn/platforms/android/bin
+easylearn/platforms/android/gen
+easylearn/platforms/android/local.properties
+easylearn/platforms/android/ant-build
+easylearn/platforms/android/ant-gen
+easylearn/platforms/android/CordovaLib/ant-build
+easylearn/platforms/android/CordovaLib/ant-gen
+easylearn/platforms/android/CordovaLib/bin
+easylearn/platforms/android/CordovaLib/gen
+easylearn/platforms/android/CordovaLib/local.properties

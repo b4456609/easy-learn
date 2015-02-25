@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+
+    <!-- Include meta tag to ensure proper rendering and touch zooming -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Include jQuery Mobile stylesheets -->
+    <link rel="stylesheet" href="lib/jquery.mobile-1.4.5.min.css">
+
+    <!-- Include the jQuery library -->
+    <script src="lib/jquery-1.11.2.min.js"></script>
+
+    <!-- Include the jQuery Mobile library -->
+    <script src="lib/jquery.mobile-1.4.5.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <div data-role="page" id="new_bag">
+        <div data-role="header">
+            <div data-role="header">
+                <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-delete">Cancel</a>
+                <h1>新增懶人包</h1>
+                <a href="new_bag_edit.html" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Next</a>
+            </div>
+        </div>
+
+
+        <div data-role="main" class="ui-content">
+            <div class="ui-field-contain">
+
+                <label for="textinput-1">標題</label>
+
+                <input type="text" name="textinput-1" id="textinput-1" placeholder="懶人包標題" value="">
+
+                <label for="textarea-1">描述</label>
+
+                <textarea cols="40" rows="8" name="textarea-1" id="textarea-1">懶人包描述</textarea>
+
+                <label for="flip-2">公開選項</label>
+                <select name="flip-2" id="flip-2" data-role="slider">
+                
+                    <option value="off">不公開</option>
+                
+                    <option value="on">公開</option>
+                </select>
+                
+                <label for="flip-2">標籤</label>
+                
+                <label for="flip-2">封面</label>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

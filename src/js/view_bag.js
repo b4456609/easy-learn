@@ -1,9 +1,9 @@
-$(document).on('pageinit', "#view_bag", function () {
+$(document).on('pageinit', "#view_pack", function () {
     findNote();
 
 });
 
-$(document).on('pageshow', "#view_bag", function () {
+$(document).on('pageshow', "#view_pack", function () {
     //    initial footer widget
     $("#note-display").toolbar({
         disabled: true,

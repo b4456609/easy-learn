@@ -1,5 +1,5 @@
 
-$(document).on('pageshow', "#new_bag", function () {
+$(document).on('pageshow', "#new_pack", function () {
     $("#myTags").tagit();
 
 });

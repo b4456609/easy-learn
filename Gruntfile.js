@@ -1,40 +1,54 @@
 module.exports = function(grunt) {
 
-    // Project configuration.
-    grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+  // Project configuration.
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
 
-        // Check the code
-        jshint: {
-            files: ['Gruntfile.js', 'src/js/appli.js'],
-            options: {
-                // options here to override JSHint defaults
-                globals: {
-                    console: true,
-                    module: true,
-                }
-            }
-        },
-
-        // Compile all javascript file into a single one
-        concat: {
-            js: {
-                src: ['src/js/appli.js'],
-                dest: 'HelloWorld/www/<%= pkg.name %>.min.js'
-            }
-        },
-        exec: {
-            init_cordova_project: {
-                cmd: 'cordova create easylearn ntou.cs.easylearn EasyLearn && cd easylearn && cordova platform add android && cd ..'
-            }
+    // Check the code
+    jshint: {
+      files: ['Gruntfile.js', 'src/js/*.js', 'easylearn/www/js/index.js'],
+      options: {
+        // options here to override JSHint defaults
+        globals: {
+          console: true,
+          module: true,
         }
-    });
+      }
+    },
 
-    // load plugins
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-exec');
+    // Compile all javascript file into a single one
+    concat: {
+      js: {
+        src: 'src/js/*.js',
+        dest: 'easylearn/www/js/index.js'
+      }
+    },
+    exec: {
+      init_cordova_project: {
+        cmd: 'cordova create easylearn ntou.cs.easylearn EasyLearn && cd easylearn && cordova platform add android && cd ..'
+      },
+      run:{
+        cmd: 'cd easylearn && cordova run android && cd ..'
+      }
+    },
+    copy: {
+      main: {
+        expand: true,
+        cwd: 'src/',
+        src: ['*', 'css/*', 'img/*', 'lib/**'],
+        dest: 'easylearn/www/',
+      }
+    }
+  });
 
-    grunt.registerTask('default', ['jshint', 'concat']);
-    grunt.registerTask('cordova', 'exec:init_cordova_project');
+  // load plugins
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+
+  grunt.registerTask('default', ['copy', 'concat', 'jshint']);
+  grunt.registerTask('run', ['copy', 'concat', 'jshint', 'exec:run']);
+  grunt.registerTask('hint', 'jshint');
+  grunt.registerTask('cp', 'copy:main');
 };

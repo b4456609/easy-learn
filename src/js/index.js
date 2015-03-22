@@ -13,4 +13,5 @@ $( document ).on( "pageinit", "#home", function() {
             }
         }
     });
+    test_prepare_data();
 });

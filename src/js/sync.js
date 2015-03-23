@@ -58,6 +58,7 @@ function test_prepare_data() {
 
     var json = JSON.stringify(data);
     console.log(json);
+    
   $.ajax({
     method: "POST",
     url: 'http://140.121.197.135:11116/easylearn/sync',

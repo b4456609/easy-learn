@@ -1,7 +1,5 @@
-
-$(document).on('pageshow', "#new_pack", function () {
-    $("#myTags").tagit();
-
+$(document).on('pageinit', "#new_pack", function() {
+  $('#tag').tagsInput();
 });
 
 $(document).on('pageinit', "#view_pack", function() {

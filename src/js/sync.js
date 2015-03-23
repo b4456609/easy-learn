@@ -66,7 +66,3 @@ function test_prepare_data() {
     console.log(result);
   });
 }
-
-function local_storage(){
-  
-}

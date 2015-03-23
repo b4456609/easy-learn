@@ -1,5 +1,20 @@
+$(document).on("pageinit", "#new_pack_edit", function() {
+  var height = $(window).height * 0.8;
+  $('textarea#edit').editable({
+    inlineMode: false,
+    toolbarFixed: false
+  });
+});
+
 $(document).on('pageinit', "#new_pack", function() {
-  $('#tag').tagsInput();
+  var width = $(window).width;
+  $('#tag').tagsInput({
+    'height': '100px',
+    'width': width + 'px',
+    'delimiter': [',', ';'],
+    'removeWithBackspace': true,
+    'defaultText': 'add a tag',
+  });
 });
 
 $(document).on('pageinit', "#view_pack", function() {
@@ -26,7 +41,7 @@ $(document).on('pageshow', "#view_pack", function() {
 
 function show_comment() {
   console.log('show_comment');
-  $( ":mobile-pagecontainer" ).pagecontainer( "change", "comment.html");
+  $(":mobile-pagecontainer").pagecontainer("change", "comment.html");
 }
 
 function showNoteHandler() {

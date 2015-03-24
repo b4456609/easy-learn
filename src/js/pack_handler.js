@@ -1,33 +1,49 @@
 $(document).on("pageinit", "#new_pack_edit", function() {
-  var height = $(window).height * 0.8;
-  // editor
-  // $('textarea#edit').editable({
-  //   'buttons': ['bold', 'italic', 'slideshare', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'createLink', 'insertImage', 'insertVideo', 'undo', 'redo', 'html', 'insertHorizontalRule', 'table', 'uploadFile'],
-  //   inlineMode: false,
-  //   toolbarFixed: false,
-  //   customButtons: {
-  //     // new slideshare button
-  //     slideshare: {
-  //       title: 'insert Slideshare',
-  //       icon: {
-  //         type: 'font',
-  //
-  //         // Font Awesome icon class fa fa-*.
-  //         value: 'fa fa-slideshare'
-  //       },
-  //       callback: function() {
-  //         $("#popup_slideshare").popup("open");
-  //         var user_url = $("#slideshare_url").val();
-  //         console.log(user_url);
-  //         $("#slideshare_submit").click({
-  //           user_url: user_url
-  //         }, slideshare_submit_handler);
-  //       },
-  //       refresh: function() {}
-  //     }
-  //   }
-  // });
+
+  $('#iframe1').load(function() {
+    console.log(headerHeight);
+    $(this).height($(window).height()-headerHeight-8);
+    $(this).width($(window).width());
+
+  });
+
+  
+
 });
+
+function load_editor(){
+  $('#iframe1').contents().find('#edit').editable({
+      'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
+       'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
+        'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
+         'insertHorizontalRule', 'table', 'slideshare', 'insertVideo', 'insertImage',
+        'createLink'
+      ],
+      inlineMode: false,
+      toolbarFixed: false,
+      customButtons: {
+        // new slideshare button
+        slideshare: {
+          title: 'insert Slideshare',
+          icon: {
+            type: 'font',
+
+            // Font Awesome icon class fa fa-*.
+            value: 'fa fa-slideshare'
+          },
+          callback: function() {
+            $("#popup_slideshare").popup("open");
+            var user_url = $("#slideshare_url").val();
+            console.log(user_url);
+            $("#slideshare_submit").click({
+              user_url: user_url
+            }, slideshare_submit_handler);
+          },
+          refresh: function() {}
+        }
+      }
+    });
+}
 
 function slideshare_submit_handler(event) {
   var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
@@ -41,7 +57,7 @@ function slideshare_submit_handler(event) {
         img += "<img src=" + http + ">";
       }
       console.log(img);
-      $('textarea#edit').editable("insertHTML", img, true);
+      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
     });
 }
 

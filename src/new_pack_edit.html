@@ -1,5 +1,26 @@
-<div data-role="page" id="new_pack_edit">
+<!DOCTYPE html>
+<html>
 
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <!-- Include meta tag to ensure proper rendering and touch zooming -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Include the jQuery library -->
+  <script src="lib/jquery-2.1.3.min.js"></script>
+  <!-- Include Font Awesome.-->
+  <link href="lib/froala-editor/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Include Editor style.-->
+  <link href="lib/froala-editor/css/froala_editor.min.css" rel="stylesheet" type="text/css" />
+  <link href="lib/froala-editor/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Basic formatting for image, video, table, code and quote.-->
+  <link href="lib/froala-editor/css/froala_content.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
   <!-- Include JS files. -->
   <script src="lib/froala-editor/js/froala_editor.min.js"></script>
   <script src="lib/froala-editor/js/plugins/video.min.js"></script>
@@ -36,5 +57,51 @@
       not only when you select text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select text.Click here to edit the content alwaysVisible
       option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select text.</textarea>
   </div>
+  <div data-role="popup" id="popup_slideshare" data-theme="a" class="ui-corner-all">
 
-</div>
+    <form>
+
+      <div style="padding:10px 20px;">
+
+        <label for="un" class="ui-hidden-accessible">輸入slideshare網址:</label>
+
+        <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
+        <button class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</button>
+
+        <button id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    $('textarea#edit').editable({
+      'buttons': ['bold', 'italic', 'slideshare', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'color', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent',
+        'createLink', 'insertImage', 'insertVideo', 'undo', 'redo', 'html', 'insertHorizontalRule', 'table', 'uploadFile'
+      ],
+      inlineMode: false,
+      toolbarFixed: false,
+      customButtons: {
+        // new slideshare button
+        slideshare: {
+          title: 'insert Slideshare',
+          icon: {
+            type: 'font',
+
+            // Font Awesome icon class fa fa-*.
+            value: 'fa fa-slideshare'
+          },
+          callback: function() {
+            $("#popup_slideshare").popup("open");
+            var user_url = $("#slideshare_url").val();
+            console.log(user_url);
+            $("#slideshare_submit").click({
+              user_url: user_url
+            }, slideshare_submit_handler);
+          },
+          refresh: function() {}
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

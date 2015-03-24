@@ -7,7 +7,9 @@ $(document).on("pageinit", "#new_pack_edit", function() {
 
   });
 
-  
+  $('#save_pack').click(function(){
+    console.log($('#iframe1').contents().find('#edit').editable("getHTML", true, false));
+  });
 
 });
 

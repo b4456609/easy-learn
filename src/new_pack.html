@@ -35,24 +35,28 @@
     <div data-role="main" class="ui-content">
       <div class="ui-field-contain">
 
-        <label for="new_pack_title">標題</label>
+        <form>
 
-        <input type="text" name="new_pack_title" id="new_pack_title" placeholder="懶人包標題" value="">
+          <label for="new_pack_title">標題</label>
 
-        <label for="new_pack_description">描述</label>
+          <input type="text" name="new_pack_title" id="new_pack_title" placeholder="懶人包標題" value="">
 
-        <textarea type="text" name="new_pack_description" id="new_pack_description" placeholder="懶人包描述"></textarea>
+          <label for="new_pack_description">描述</label>
 
-        <fieldset data-role="controlgroup" data-mini="true">
-          <legend>公開選項</legend>
-          <label for="checkbox-6">公開此懶人包</label>
-          <input type="checkbox" name="checkbox-6" id="checkbox-6">
-        </fieldset>
+          <textarea type="text" name="new_pack_description" id="new_pack_description" placeholder="懶人包描述"></textarea>
 
-        <label for="flip-2">標籤</label>
-        <textarea type="text" id="tag" data-mini="true"></textarea>
+          <fieldset data-role="controlgroup" data-mini="true">
+            <legend>公開選項</legend>
+            <label for="checkbox-6">公開此懶人包</label>
+            <input type="checkbox" name="checkbox-6" id="checkbox-6">
+          </fieldset>
 
-        <label for="flip-2">封面</label>
+          <label for="tags">標籤</label>
+          <textarea type="text" name="tags" id="tags"></textarea>
+
+          <label for="cover_image">封面</label>
+          <input type="file" data-clear-btn="true" name="cover_image" id="cover_image" value="">
+        </form>
       </div>
     </div>
 

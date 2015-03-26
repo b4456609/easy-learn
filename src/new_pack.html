@@ -28,7 +28,7 @@
     <div data-role="header">
       <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-delete">Cancel</a>
       <h1>新增懶人包</h1>
-      <a href="new_pack_edit.html" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Next</a>
+      <a href="new_pack_edit.html" id="new_pack_next" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Next</a>
     </div>
 
 
@@ -47,14 +47,14 @@
 
           <fieldset data-role="controlgroup" data-mini="true">
             <legend>公開選項</legend>
-            <label for="checkbox-6">公開此懶人包</label>
-            <input type="checkbox" name="checkbox-6" id="checkbox-6">
+            <label for="is_public">公開此懶人包</label>
+            <input type="checkbox" name="is_public" id="is_public">
           </fieldset>
 
           <label for="tags">標籤</label>
-          <textarea type="text" name="tags" id="tags"></textarea>
+          <textarea type="text" name="tags" id="tags" placeholder="懶人包標籤"></textarea>
 
-          
+
           <label for="cover_image">封面</label>
           <input type="file" data-clear-btn="true" name="cover_image" id="cover_image" value="">
         </form>

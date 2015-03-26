@@ -1,14 +1,44 @@
 $(document).on("pageinit", "#new_pack_edit", function() {
 
+  //set editor height
   $('#iframe1').load(function() {
-    console.log(headerHeight);
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width($(window).width());
-
   });
 
+  //save pack in localStorage
   $('#save_pack').click(function() {
-    console.log($('#iframe1').contents().find('#edit').editable("getHTML", true, false));
+
+    //get current time
+    var time = new Date().getTime();
+
+    //get new pack from local storage
+    var new_pack = JSON.parse(localStorage.new_pack);
+
+    //create this page's information
+    var version = [{
+      "creator_user_id":  JSON.parse(localStorage.user).id,
+      "bookmark": [],
+      "note": [],
+      "file": [],
+      "create_time": time.toString(),
+      "is_public": JSON.parse(localStorage.new_pack).is_public,
+      "id": "version" + time,
+      "content": $('#iframe1').contents().find('#edit').editable("getHTML", true, false)
+    }];
+
+    //add version to pack
+    new_pack.version = version;
+
+    //store in localStorage
+    var temp = "pack" + time;
+    localStorage.setItem(temp, JSON.stringify(new_pack));
+
+    //remove temp item in localStorage
+    localStorage.removeItem("new_pack");
+
+    //add it in folder
+
   });
 
 });
@@ -36,7 +66,7 @@ function load_editor() {
         callback: function() {
           $("#popup_slideshare").popup("open");
           var user_url = $("#slideshare_url").val();
-          console.log(user_url);
+
           $("#slideshare_submit").click({
             user_url: user_url
           }, slideshare_submit_handler);
@@ -58,19 +88,39 @@ function slideshare_submit_handler(event) {
         var http = 'http:' + data.slide_image_baseurl + i + data.slide_image_baseurl_suffix;
         img += "<img src=" + http + ">";
       }
-      console.log(img);
+
       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
     });
 }
 
 $(document).on('pageinit', "#new_pack", function() {
+  // $('#tags').tagsInput({
+  //   'height': '100px',
+  //   'width': $(window).width() + 'px',
+  //   'delimiter': [',', ';', ' '],
+  //   'removeWithBackspace': true,
+  //   'defaultText': 'add a tag',
+  // });
 
-  $('#tags').tagsInput({
-    'height': '100px',
-    'width': $(window).width() + 'px',
-    'delimiter': [',', ';', ' '],
-    'removeWithBackspace': true,
-    'defaultText': 'add a tag',
+  // save new pack storage for next page use
+  $('#new_pack_next').click(function() {
+
+    //get current time
+    var time = new Date().getTime();
+
+    //construct new pack object
+    var new_pack = {
+      "creator_user_id": JSON.parse(localStorage.user).id,
+      "create_time": time.toString(),
+      "name": $('#new_pack_title').val(),
+      "is_public": document.getElementById("is_public").checked,
+      "description": $('#new_pack_description').val(),
+      "tags": $('#tags').val(),
+      "cover_filename": $('#cover_image').val()
+    };
+
+    //sotre new pack object in local storage
+    localStorage.new_pack = JSON.stringify(new_pack);
   });
 });
 
@@ -97,7 +147,6 @@ $(document).on('pageshow', "#view_pack", function() {
 });
 
 function show_comment() {
-  console.log('show_comment');
   $(":mobile-pagecontainer").pagecontainer("change", "comment.html");
 }
 
@@ -111,6 +160,4 @@ function hideButtonHandler() {
 }
 
 function findNote() {
-  var count = $('.note');
-  //    console.log(count.length);
 }

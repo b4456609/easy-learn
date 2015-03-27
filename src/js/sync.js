@@ -132,9 +132,3 @@ function testLocalStorage() {
   localStorage.folder = JSON.stringify(folder);
   localStorage.pack_id = JSON.stringify(pack_id);
 }
-
-function localStorageLookUp() { // test_prepare_data();
-  console.log(localStorage.user);
-  console.log(localStorage.folder);
-  console.log(localStorage.pack_id);
-}

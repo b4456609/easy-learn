@@ -31,14 +31,24 @@ $(document).on("pageinit", "#new_pack_edit", function() {
     new_pack.version = version;
 
     //store in localStorage
-    var temp = "pack" + time;
-    localStorage.setItem(temp, JSON.stringify(new_pack));
+    var packId = "pack" + time;
+    localStorage.setItem(packId, JSON.stringify(new_pack));
 
     //remove temp item in localStorage
     localStorage.removeItem("new_pack");
 
-    //add it in folder
-
+    //add it in all folder
+    var folderArray = JSON.parse(localStorage.folder);
+    
+    //find current folder in data
+    var i;
+    for (i in folderArray) {
+      if (folderArray[i].name == 'All') {
+        folderArray[i].pack[folderArray[i].pack.length] = packId;
+        break;
+      }
+    }
+    localStorage.setItem("folder", JSON.stringify(folderArray));
   });
 
 });

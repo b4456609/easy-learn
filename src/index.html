@@ -47,7 +47,7 @@
 
     <div data-role="panel" id="menu_panel" data-display="overlay" data-position="left">
       <!-- panel content goes here -->
-      <ul data-role="listview" data-icon="false">
+      <ul id="left_panel" data-role="listview" data-icon="false">
         <li>
           <a href="new_pack.html">
             <h2>新增懶人包</h2>
@@ -63,49 +63,19 @@
             <h2>刪除懶人包</h2>
           </a>
         </li>
-        <li data-role="list-divider">
+        <li id="folder_display" data-role="list-divider">
           <h2>資料夾</h2>
         </li>
         <li>
           <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>ALfL</h2>
+            <h2>ALL</h2>
+            <span class="ui-li-count" data-theme="b">25</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
+            <h2>ALL</h2>
             <span class="ui-li-count">25</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>XXXX</h2>
-            <span class="ui-li-count">5</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>XXXX</h2>
-            <span class="ui-li-count">5</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>XXXX</h2>
-            <span class="ui-li-count">5</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>XXXX</h2>
-            <span class="ui-li-count">5</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>XXXX</h2>
-            <span class="ui-li-count">5</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r">
-            <h2>XXXX</h2>
-            <span class="ui-li-count">5</span>
           </a>
         </li>
         <li>
@@ -182,7 +152,7 @@
 
     <div data-role="main" class="ui-content">
 
-      <ul data-role="listview" data-inset="true" data-icon="false">
+      <ul  id="pack_display_area" data-role="listview" data-inset="true" data-icon="false">
         <li>
           <a href="view_pack.html">
             <img src="img/chrome.png">

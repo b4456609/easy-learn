@@ -50,9 +50,7 @@ function test_prepare_data() {
       "user_id": "00157016",
       "name": "newFolderName",
       "id": "folderId",
-      "pack": [{
-        "pack_id": "packId"
-      }]
+      "pack": ["packId"]
     }]
   };
 
@@ -120,12 +118,13 @@ function testLocalStorage() {
   };
 
   var folder = [{
-    "user_id": "00157016",
-    "name": "newFolderName",
+    "name": "All",
     "id": "folderId",
-    "pack": [{
-      "pack_id": "packId"
-    }]
+    "pack": ["pack_id"]
+  }, {
+    "name": "我的最愛",
+    "id": "fjoeiwjowfe",
+    "pack": ["pack_id"]
   }];
 
   localStorage.user = JSON.stringify(user);

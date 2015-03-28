@@ -39,7 +39,7 @@ $(document).on("pageinit", "#new_pack_edit", function() {
 
     //add it in all folder
     var folderArray = JSON.parse(localStorage.folder);
-    
+
     //find current folder in data
     var i;
     for (i in folderArray) {
@@ -136,7 +136,11 @@ $(document).on('pageinit', "#new_pack", function() {
 
 $(document).on('pageinit', "#view_pack", function() {
   findNote();
-
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  console.log('view pack ID:' + viewPackId);
+  console.log('view pack name:' + pack.name);
+  $('#veiw_pack_content').html(pack.version[0].content);
+  $('#pack_title').html(pack.name);
 });
 
 $(document).on('pageshow', "#view_pack", function() {
@@ -155,6 +159,7 @@ $(document).on('pageshow', "#view_pack", function() {
 
   $("#show_comment").click(show_comment);
 });
+
 
 function show_comment() {
   $(":mobile-pagecontainer").pagecontainer("change", "comment.html");

@@ -1,7 +1,6 @@
 $(document).on("pagebeforecreate", "#home", function() {
-  localStorage.clear();
-  testLocalStorage();
 });
+
 $(document).on("pageinit", "#home", function() {});
 var headerHeight;
 
@@ -40,7 +39,6 @@ function folder_click_handler() {
   display_pack(packArray);
 
   $("#menu_panel").panel("close");
-  go_pack_handler();
 }
 
 function go_pack_handler() {

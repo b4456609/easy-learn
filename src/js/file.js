@@ -6,6 +6,9 @@ var userFile;
 function onDeviceReady() {
   console.log(cordova.file);
 
+  localStorage.clear();
+  testLocalStorage();
+
   // window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
   //   console.log("got main dir", dir);
   //   dir.getFile("user.json", {

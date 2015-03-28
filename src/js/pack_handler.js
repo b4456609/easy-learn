@@ -141,11 +141,6 @@ $(document).on('pageinit', "#view_pack", function() {
   $('#veiw_pack_content').html(pack.version[0].content);
   $('#pack_title').html(pack.name);
 
-  // $("#note-display").toolbar({
-  //   disablePageZoom: true,
-  //   tapToggle: false,
-  //   position: "fixed",
-  // });
 
 });
 

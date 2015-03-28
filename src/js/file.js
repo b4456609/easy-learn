@@ -1,4 +1,3 @@
-/* globals console,document,window,cordova */
 document.addEventListener("deviceready", onDeviceReady, false);
 
 var userFile;

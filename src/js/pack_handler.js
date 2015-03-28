@@ -17,7 +17,7 @@ $(document).on("pageinit", "#new_pack_edit", function() {
 
     //create this page's information
     var version = [{
-      "creator_user_id":  JSON.parse(localStorage.user).id,
+      "creator_user_id": JSON.parse(localStorage.user).id,
       "bookmark": [],
       "note": [],
       "file": [],
@@ -135,29 +135,36 @@ $(document).on('pageinit', "#new_pack", function() {
 });
 
 $(document).on('pageinit', "#view_pack", function() {
-  findNote();
   var pack = JSON.parse(localStorage.getItem(viewPackId));
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
   $('#veiw_pack_content').html(pack.version[0].content);
   $('#pack_title').html(pack.name);
+
+  // $("#note-display").toolbar({
+  //   disablePageZoom: true,
+  //   tapToggle: false,
+  //   position: "fixed",
+  // });
+
+});
+
+$(document).on('pagebeforeshow', "#view_pack", function() {
+
+
+  //$("#note-display").toolbar("hide");
 });
 
 $(document).on('pageshow', "#view_pack", function() {
-  //    initial footer widget
-  $("#note-display").toolbar({
-    disabled: true,
-    position: "fixed",
-    visibleOnPageShow: false
-  });
+
+
+  $("#note-display").toolbar("option", "position", "fixed");
+  $("#note-display").toolbar("option", "tapToggle", false);
 
   //    click and show note hanlder
   $(".note").click(showNoteHandler);
 
-  //    hide note button action
-  $(".note-left-button").click(hideButtonHandler);
 
-  $("#show_comment").click(show_comment);
 });
 
 
@@ -166,13 +173,29 @@ function show_comment() {
 }
 
 function showNoteHandler() {
+  console.log("click on note event");
+  //display the note
   $("#note-display").toolbar("show");
+
+  // insert html into note area
+  var template = '<h4>Chromium</h4><div class="note-content"><p>Chromium是一個由Google主導開發的網頁瀏覽器，以BSD授權條款等多重自由版權發行並開放原始碼。Chromium的開發可能早自2006年即開始[1]，2008年12月11日釋出1.0版本，設計思想基於簡單、高速、穩定、安全等理念，在架構上使用了蘋果發展出來的WebKit排版引擎（自28版起改為由WebKit所分支的Blink排版引擎）、Safari的部份原始碼與Firefox的成果，並採用Google獨家開發出的V8引擎以提升解譯JavaScript的效率，而且設計了「沙盒」、「黑名單」、「無痕瀏覽」等功能來實現穩定與安全的網頁瀏覽環境。</p></div><div class="note-function-button"><a class="ui-btn note-left-button">返回</a><a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
+  $("#note-display").html(template);
+
+  //refresh footer for diiplay
+  $("#note-display").toolbar("refresh");
+
+  //hide note button action
+  $(".note-left-button").click(hideButtonHandler);
+
+  //show comment button action
+  $("#show_comment").click(show_comment);
 }
 
 function hideButtonHandler() {
+  //hide the note
   $("#note-display").toolbar("hide");
-  //    $("#note-display").hide().trigger("updatelayout");
-}
 
-function findNote() {
+  //clear html
+  $("#note-display").html("");
+  $("#note-display").toolbar("refresh");
 }

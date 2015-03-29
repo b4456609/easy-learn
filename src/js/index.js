@@ -22,6 +22,7 @@ $(document).on("pageshow", "#home", function() {
 
 //remember the pack to display
 var viewPackId;
+var viewPackVersion = 0;
 
 function folder_click_handler() {
   var folderArray = JSON.parse(localStorage.folder);

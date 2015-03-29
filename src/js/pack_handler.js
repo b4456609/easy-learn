@@ -138,7 +138,7 @@ $(document).on('pageinit', "#view_pack", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
-  $('#veiw_pack_content').html(pack.version[0].content);
+  $('#veiw_pack_content').html(pack.version[viewPackVersion].content);
   $('#pack_title').html(pack.name);
 
 

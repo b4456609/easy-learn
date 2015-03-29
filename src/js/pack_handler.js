@@ -194,3 +194,11 @@ function hideButtonHandler() {
   $("#note-display").html("");
   $("#note-display").toolbar("refresh");
 }
+
+function paintNote() {
+  var range = window.getSelection().getRangeAt(0);
+  //var selectionContents = range.extractContents();
+  var span = document.createElement("span");
+  span.className = "note";
+  range.surroundContents(span);
+}

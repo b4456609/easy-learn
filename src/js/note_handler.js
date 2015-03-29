@@ -1,6 +1,3 @@
-$(document).on('pageinit', "#new_note_choose", function() {
-
-});
 $(document).on('pageinit', "#new_note", function() {
   //display selection word
   $('#new_note_word').html(note_selection.word);
@@ -24,9 +21,13 @@ $(document).on('pageinit', "#new_note", function() {
 
 });
 
-$(document).on('pagebeforeshow', "#new_note_choose", function() {
+
+$(document).on('pageinit', "#new_note_choose", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
-  $('#edit').html(pack.version[viewPackVersion].content);
+  $('#choose_pack_content').html(pack.version[viewPackVersion].content);
+});
+
+$(document).on('pagebeforeshow', "#new_note_choose", function() {
 });
 var note_selection = {
   id: '',
@@ -55,11 +56,13 @@ $(document).on('pageshow', "#new_note_choose", function() {
     console.log('focusOffset ' + selectionWord.focusOffset);
     console.log('isCollapsed ' + selectionWord.isCollapsed);
     console.log('rangeCount ' + selectionWord.rangeCount);
+    console.log('getRangeAt');
+    console.log(selectionWord.getRangeAt(0));
 
-    var el = document.getElementById("edit");
+    var el = document.getElementById("choose_pack_content");
     var range = window.getSelection().getRangeAt(0);
-    console.log(getCharacterOffsetWithin(range, el));
-    console.log(getCaretCharacterOffsetWithin(el));
+    console.log('END_TO_START' + getCharacterOffsetWithin(range, el));
+    //console.log(getCaretCharacterOffsetWithin(el));
     console.log('');
 
     //get current time
@@ -75,6 +78,31 @@ $(document).on('pageshow', "#new_note_choose", function() {
 
   });
 });
+
+function getCharacterOffsetWithin(range, node) {
+  var treeWalker = document.createTreeWalker(
+    node,
+    NodeFilter.SHOW_ALL,
+    function(node) {
+      var nodeRange = document.createRange();
+      nodeRange.selectNodeContents(node);
+
+      return nodeRange.compareBoundaryPoints(Range.START_TO_END , range) < 1 ?
+        NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    },
+    false
+  );
+
+  var charCount = 0;
+  while (treeWalker.nextNode()) {
+    charCount += treeWalker.currentNode.length;
+  }
+  if (range.startContainer.nodeType == 3) {
+    charCount += range.startOffset;
+  }
+  return charCount;
+}
+
 
 function getCaretCharacterOffsetWithin(element) {
   var caretOffset = 0;
@@ -99,30 +127,3 @@ function getCaretCharacterOffsetWithin(element) {
   }
   return caretOffset;
 }
-
-
-function getCharacterOffsetWithin(range, node) {
-  var treeWalker = document.createTreeWalker(
-    node,
-    NodeFilter.SHOW_TEXT,
-    function(node) {
-      var nodeRange = document.createRange();
-      nodeRange.selectNodeContents(node);
-      return nodeRange.compareBoundaryPoints(Range.END_TO_END, range) < 1 ?
-        NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-    },
-    false
-  );
-
-  var charCount = 0;
-  while (treeWalker.nextNode()) {
-    charCount += treeWalker.currentNode.length;
-  }
-  if (range.startContainer.nodeType == 3) {
-    charCount += range.startOffset;
-  }
-  return charCount;
-}
-
-
-function show_comment() {}

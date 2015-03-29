@@ -1,5 +1,4 @@
-$(document).on("pagebeforecreate", "#home", function() {
-});
+$(document).on("pagebeforecreate", "#home", function() {});
 
 $(document).on("pageinit", "#home", function() {});
 var headerHeight;
@@ -14,40 +13,12 @@ $(document).on("pageshow", "#home", function() {
   //update count in panel page
   display_folder();
 
-  //click event on folder
-  //display the folder pack in home page
-  $('.folder').click(folder_click_handler);
-  $("li[packid]").click(go_pack_handler);
 });
 
 //remember the pack to display
 var viewPackId;
 var viewPackVersion = 0;
 
-function folder_click_handler() {
-  var folderArray = JSON.parse(localStorage.folder);
-
-  var packArray;
-  //find current folder in data
-  var i;
-  for (i in folderArray) {
-    if (folderArray[i].id == $(this).attr('folderid')) {
-      packArray = folderArray[i].pack;
-      break;
-    }
-  }
-
-  display_pack(packArray);
-
-  $("#menu_panel").panel("close");
-}
-
-function go_pack_handler() {
-  viewPackId = $(this).attr('packid');
-
-    console.log('click on pack:' + viewPackId);
-  $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
-}
 
 //display folder in left panel
 function display_folder() {
@@ -63,6 +34,10 @@ function display_folder() {
   }
   $(result).insertAfter('#folder_display');
   $("#left_panel").listview("refresh");
+
+  //click event on folder
+  //display the folder pack in home page
+  $('.folder').click(folder_click_handler);
 }
 
 //display default all page
@@ -96,4 +71,33 @@ function display_pack(packArray) {
   //display pack
   $('#pack_display_area').html(result);
   $("#pack_display_area").listview("refresh");
+
+  //register click handler
+  $("li[packid]").click(go_pack_handler);
+}
+
+
+function folder_click_handler() {
+  var folderArray = JSON.parse(localStorage.folder);
+
+  var packArray;
+  //find current folder in data
+  var i;
+  for (i in folderArray) {
+    if (folderArray[i].id == $(this).attr('folderid')) {
+      packArray = folderArray[i].pack;
+      break;
+    }
+  }
+
+  display_pack(packArray);
+
+  $("#menu_panel").panel("close");
+}
+
+function go_pack_handler() {
+  viewPackId = $(this).attr('packid');
+
+  console.log('click on pack:' + viewPackId);
+  $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }

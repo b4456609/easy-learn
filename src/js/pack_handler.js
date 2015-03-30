@@ -1,6 +1,12 @@
 //for comment display use
 var noteText;
 
+//for picture use
+var newPackId;
+
+//for new file use
+var cover_filename = null;
+
 $(document).on("pageinit", "#new_pack_edit", function() {
 
   //set editor height
@@ -14,101 +20,11 @@ $(document).on("pageinit", "#new_pack_edit", function() {
 
 });
 
-function savePackHandler() {
+$(document).on('pageinit', "#new_pack", function() {
 
   //get current time
   var time = new Date().getTime();
-
-  //get new pack from local storage
-  var new_pack = JSON.parse(localStorage.new_pack);
-
-  //create this page's information
-  var version = [{
-    "creator_user_id": JSON.parse(localStorage.user).id,
-    "bookmark": [],
-    "note": [],
-    "file": [],
-    "create_time": time.toString(),
-    "is_public": JSON.parse(localStorage.new_pack).is_public,
-    "id": "version" + time,
-    "content": $('#iframe1').contents().find('#edit').editable("getHTML", true, false)
-  }];
-
-  //add version to pack
-  new_pack.version = version;
-
-  //store in localStorage
-  var packId = "pack" + time;
-  localStorage.setItem(packId, JSON.stringify(new_pack));
-
-  //remove temp item in localStorage
-  localStorage.removeItem("new_pack");
-
-  //add it in all folder
-  var folderArray = JSON.parse(localStorage.folder);
-
-  //find current folder in data
-  var i;
-  for (i in folderArray) {
-    if (folderArray[i].name == 'All') {
-      folderArray[i].pack[folderArray[i].pack.length] = packId;
-      break;
-    }
-  }
-  localStorage.setItem("folder", JSON.stringify(folderArray));
-}
-
-function load_editor() {
-  $('#iframe1').contents().find('#edit').editable({
-    'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
-      'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
-      'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
-      'insertHorizontalRule', 'table', 'slideshare', 'insertVideo', 'insertImage',
-      'createLink'
-    ],
-    inlineMode: false,
-    toolbarFixed: false,
-    customButtons: {
-      // new slideshare button
-      slideshare: {
-        title: 'insert Slideshare',
-        icon: {
-          type: 'font',
-
-          // Font Awesome icon class fa fa-*.
-          value: 'fa fa-slideshare'
-        },
-        callback: function() {
-          $("#popup_slideshare").popup("open");
-          var user_url = $("#slideshare_url").val();
-
-          $("#slideshare_submit").click({
-            user_url: user_url
-          }, slideshare_submit_handler);
-        },
-        refresh: function() {}
-      }
-    }
-  });
-}
-
-function slideshare_submit_handler(event) {
-  var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
-  $.get(url,
-    function(data) {
-      alert(JSON.stringify(data));
-      var i;
-      var img = "";
-      for (i = 1; i <= data.total_slides; i++) {
-        var http = 'http:' + data.slide_image_baseurl + i + data.slide_image_baseurl_suffix;
-        img += "<img src=" + http + ">";
-      }
-
-      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
-    });
-}
-
-$(document).on('pageinit', "#new_pack", function() {
+  newPackId = 'pack' + time;
   // $('#tags').tagsInput({
   //   'height': '100px',
   //   'width': $(window).width() + 'px',
@@ -120,9 +36,6 @@ $(document).on('pageinit', "#new_pack", function() {
   // save new pack storage for next page use
   $('#new_pack_next').click(function() {
 
-    //get current time
-    var time = new Date().getTime();
-
     //construct new pack object
     var new_pack = {
       "creator_user_id": JSON.parse(localStorage.user).id,
@@ -131,12 +44,15 @@ $(document).on('pageinit', "#new_pack", function() {
       "is_public": document.getElementById("is_public").checked,
       "description": $('#new_pack_description').val(),
       "tags": $('#tags').val(),
-      "cover_filename": $('#cover_image').val()
+      "cover_filename": cover_filename
     };
 
     //sotre new pack object in local storage
     localStorage.new_pack = JSON.stringify(new_pack);
   });
+
+
+  $('#choose_photo').click(getPhotoWithModifySize);
 });
 
 $(document).on('pageinit', "#view_pack", function() {
@@ -214,4 +130,138 @@ function hideButtonHandler() {
   //clear html
   $("#note-display").html("");
   $("#note-display").toolbar("refresh");
+}
+
+function getPhotoWithModifySize() {
+  // Retrieve image file location from specified source
+  navigator.camera.getPicture(onSuccess, onFail, {
+    quality: 50,
+    targetWidth: 160,
+    targetHeight: 160,
+    destinationType: Camera.DestinationType.FILE_URI,
+    sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+  });
+}
+
+function onSuccess(imageData) {
+  console.log('onSuccess');
+  console.log(imageData);
+
+  window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
+    addFileToPack(newPackId, fileEntry);
+  }, fail);
+}
+
+function onFail(message) {
+  alert('Failed because: ' + message);
+  console.log('Failed because: ' + message);
+}
+
+function displayCoverImg(packfileEntry) {
+  console.log(packfileEntry);
+  packfileEntry.file(function(file) {
+
+    console.log('fileEntry.file');
+    console.log('return' + file);
+    var img = document.createElement("img");
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      img.src = reader.result;
+    };
+    console.log('fileEntry.file.readAsDataURL');
+    reader.readAsDataURL(file);
+    $("#cover_photo_area").html(img);
+  }, fail);
+}
+
+function savePackHandler() {
+
+  //get current time
+  var time = new Date().getTime();
+
+  //get new pack from local storage
+  var new_pack = JSON.parse(localStorage.new_pack);
+
+  //create this page's information
+  var version = [{
+    "creator_user_id": JSON.parse(localStorage.user).id,
+    "bookmark": [],
+    "note": [],
+    "file": [],
+    "create_time": time.toString(),
+    "is_public": JSON.parse(localStorage.new_pack).is_public,
+    "id": "version" + time,
+    "content": $('#iframe1').contents().find('#edit').editable("getHTML", true, false)
+  }];
+
+  //add version to pack
+  new_pack.version = version;
+
+  localStorage.setItem(newPackId, JSON.stringify(new_pack));
+
+  //remove temp item in localStorage
+  localStorage.removeItem("new_pack");
+
+  //add it in all folder
+  var folderArray = JSON.parse(localStorage.folder);
+
+  //find current folder in data
+  var i;
+  for (i in folderArray) {
+    if (folderArray[i].name == 'All') {
+      folderArray[i].pack[folderArray[i].pack.length] = newPackId;
+      break;
+    }
+  }
+  localStorage.setItem("folder", JSON.stringify(folderArray));
+}
+
+function load_editor() {
+  $('#iframe1').contents().find('#edit').editable({
+    'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
+      'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
+      'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
+      'insertHorizontalRule', 'table', 'slideshare', 'insertVideo', 'insertImage',
+      'createLink'
+    ],
+    inlineMode: false,
+    toolbarFixed: false,
+    customButtons: {
+      // new slideshare button
+      slideshare: {
+        title: 'insert Slideshare',
+        icon: {
+          type: 'font',
+
+          // Font Awesome icon class fa fa-*.
+          value: 'fa fa-slideshare'
+        },
+        callback: function() {
+          $("#popup_slideshare").popup("open");
+          var user_url = $("#slideshare_url").val();
+
+          $("#slideshare_submit").click({
+            user_url: user_url
+          }, slideshare_submit_handler);
+        },
+        refresh: function() {}
+      }
+    }
+  });
+}
+
+function slideshare_submit_handler(event) {
+  var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
+  $.get(url,
+    function(data) {
+      alert(JSON.stringify(data));
+      var i;
+      var img = "";
+      for (i = 1; i <= data.total_slides; i++) {
+        var http = 'http:' + data.slide_image_baseurl + i + data.slide_image_baseurl_suffix;
+        img += "<img src=" + http + ">";
+      }
+
+      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+    });
 }

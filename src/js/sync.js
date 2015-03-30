@@ -116,6 +116,7 @@ function testLocalStorage() {
   };
 
   var pack_id = {
+    "cover_filename": null,
     "creator_user_id": "00157016",
     "create_time": "2015-03-19 21:43:10.0",
     "name": "firstPackName",
@@ -154,6 +155,7 @@ function testLocalStorage() {
   };
 
   var pack_id2 = {
+    "cover_filename": null,
     "creator_user_id": "00157016",
     "create_time": "2015-03-19 21:43:10.0",
     "name": "Chrome",

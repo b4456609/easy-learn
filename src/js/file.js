@@ -7,7 +7,6 @@ function onDeviceReady() {
 
   localStorage.clear();
   testLocalStorage();
-
   // window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
   //   console.log("got main dir", dir);
   //   dir.getFile("user.json", {
@@ -54,6 +53,43 @@ function onDeviceReady() {
 //   }, fail);
 // }
 //
-// function fail(error) {
-//   console.log('FileSystem Error:' + error.code);
-//}
+function fail(error) {
+  console.log('FileSystem Error:' + error.code);
+}
+
+function addFileToPack(packId, fileEntry) {
+  var time = new Date().getTime();
+  window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
+    console.log('addFileToPack dirEntry1');
+    dirEntry.getDirectory(packId, {
+      create: true
+    }, function(destDirEntry) {
+      console.log('addFileToPack dirEntry2');
+      fileEntry.moveTo(destDirEntry, time + '.jpg');
+      cover_filename = time + '.jpg';
+      destDirEntry.getFile(time + '.jpg', {
+        create: false
+      }, function(fileEntry) {
+        console.log('addFileToPack dirEntry3');
+        displayCoverImg(fileEntry);
+      }, fail);
+    }, fail);
+  }, fail);
+}
+
+function getFile(packId, fileName, callback) {
+  window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
+    console.log('getFile dirEntry');
+    dirEntry.getDirectory(packId, {
+      create: false
+    }, function(destDirEntry) {
+      destDirEntry.getFile(fileName, {
+        create: false
+      }, function(fileEntry) {
+        fileEntry.file(function(file) {
+          return callback(file);
+        }, fail);
+      }, fail);
+    }, fail);
+  }, fail);
+}

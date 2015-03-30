@@ -5,6 +5,7 @@ var headerHeight;
 
 $(document).on("pageshow", "#home", function() {
 
+
   headerHeight = $(".ui-header").outerHeight();
 
   //refresh every visit home page
@@ -63,9 +64,29 @@ function display_pack(packArray) {
   var j;
   for (j in packArray) {
     var pack = JSON.parse(localStorage.getItem(packArray[j]));
-
+    // if (packArray[j].cover_filename !== null) {
+    //   console.log('call get file' + packArray[j] + packArray[j].cover_filename);
+    //   getFile(packArray[j], packArray[j].cover_filename, function(file) {
+    //     console.log('display_pack.file');
+    //     console.log('return' + file);
+    //     var img = document.createElement("img");
+    //     var reader = new FileReader();
+    //     reader.onloadend = function() {
+    //       img.src = reader.result;
+    //     };
+    //
+    //     reader.readAsDataURL(file);
+    //
+    //     var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+    //     result += pack_templete;
+    //   });
+    // } else {
+    //   var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+    //   result += pack_templete;
+    // }
     var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
     result += pack_templete;
+
   }
 
   //display pack

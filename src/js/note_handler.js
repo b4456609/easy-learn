@@ -1,22 +1,135 @@
+// use for new note temp variable
+var note_selection = {
+  id: '',
+  word: '',
+  new_version_content: '',
+  //  position: 0,
+  //  position_length: 0,
+};
+
+var viewNoteArrayIndex;
+
+$(document).on('pageinit', "#comment", function() {
+  //get pack for comment content
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
+
+  //display selection word
+  $('#note_word').html(noteText);
+
+  //display selection word
+  $('#display_note_area').html(currentNote.content);
+
+  //find current note
+  var commentArray = currentNote.comment;
+
+  //create comment html code
+  var i;
+  var commentTemplate = '';
+  for (i in commentArray) {
+    var time = new Date(commentArray[i].create_time);
+    console.log(commentArray[i]);
+    console.log(commentArray[i].create_time);
+    console.log(time);
+    commentTemplate += '<li><h2>' + commentArray[i].user_name + '</h2><font style="white-space:normal; font-size: small">' + commentArray[i].content + '</font><p class="ui-li-aside" style="margin-top: 9px">' + time.toLocaleString(navigator.language, {
+      hour: '2-digit',
+      minute: 'numeric',
+      day: "numeric",
+      month: "numeric"
+    }) + '</p></li>';
+  }
+
+  // display comment
+  $('#comment_display_area').append(commentTemplate);
+  $("#comment_display_area").listview("refresh");
+});
+
+$(document).on('pageshow', "#comment", function() {
+
+  $('#comment_submit').click(function() {
+    comment_submit_handler();
+  });
+});
+
+function comment_submit_handler() {
+
+  //get pack for comment content
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  //get text from user input
+  var commentContent = $('#comment_text').val();
+
+  //clear textarea
+  $('#comment_text').val('');
+
+  //get current time
+  var time = new Date().getTime();
+  var display_time = new Date(time);
+
+  //display comment instant
+  var commentTemplate = '<li><h2>' + JSON.parse(localStorage.user).name + '</h2><font style="white-space:normal; font-size: small">' + commentContent + '</font><p class="ui-li-aside" style="margin-top: 9px">' + display_time.toLocaleString(navigator.language, {
+    hour: '2-digit',
+    minute: 'numeric',
+    day: "numeric",
+    month: "numeric"
+  }) + '</p></li>';
+  // display comment
+  $('#comment_display_area').append(commentTemplate);
+  $("#comment_display_area").listview("refresh");
+
+  //prepare new comment
+  var newComment = {
+    id: 'comment' + time,
+    content: commentContent,
+    create_time: time,
+    user_id: JSON.parse(localStorage.user).id,
+    user_name: JSON.parse(localStorage.user).name
+  };
+  console.log(newComment);
+
+  //get current note
+  var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
+
+  //add new comment
+  currentNote.comment[currentNote.comment.length] = newComment;
+
+
+  //update pack in localStorage
+  localStorage.setItem(viewPackId, JSON.stringify(pack));
+}
+
 $(document).on('pageinit', "#new_note", function() {
   //display selection word
   $('#new_note_word').html(note_selection.word);
+});
 
+$(document).on('pageshow', "#new_note", function() {
   //save note handler
   $('#save_note').click(function() {
 
-    //get user input
-    note_selection.content = $('#note_content').val();
-    note_selection.color = $('#note_color').val();
-    console.log(note_selection);
 
     //save in localStorage
     var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+    //update version
+    pack.version[viewPackVersion].content = note_selection.new_version_content;
+
+    //prepare new note
+    var newNote = {
+      id: note_selection.id,
+      color: $('#note_color').val(),
+      content: $('#note_content').val(),
+      user_id: JSON.parse(localStorage.user).id,
+      user_name: JSON.parse(localStorage.user).name,
+      comment: []
+    };
+
     //append note in pack's version
-    pack.version[viewPackVersion].note[pack.version[viewPackVersion].note.length] = note_selection;
+    pack.version[viewPackVersion].note[pack.version[viewPackVersion].note.length] = newNote;
 
     //write in localStorage
     localStorage.setItem(viewPackId, JSON.stringify(pack));
+
   });
 
 });
@@ -27,18 +140,8 @@ $(document).on('pageinit', "#new_note_choose", function() {
   $('#choose_pack_content').html(pack.version[viewPackVersion].content);
 });
 
-$(document).on('pagebeforeshow', "#new_note_choose", function() {
-});
-var note_selection = {
-  id: '',
-  word: '',
-  color: '',
-  content: '',
-  user_id: '',
-  user_name: '',
-  position: 0,
-  position_length: 0,
-};
+$(document).on('pagebeforeshow', "#new_note_choose", function() {});
+
 
 $(document).on('pageshow', "#new_note_choose", function() {
 
@@ -65,19 +168,36 @@ $(document).on('pageshow', "#new_note_choose", function() {
     //console.log(getCaretCharacterOffsetWithin(el));
     console.log('');
 
-    //get current time
-    var time = new Date().getTime();
 
     // write in object for next page use
-    note_selection.position = getCharacterOffsetWithin(range, el);
-    note_selection.position_length = selectionWord.toString().length;
+    //    note_selection.position = getCharacterOffsetWithin(range, el);
+    //    note_selection.position_length = selectionWord.toString().length;
     note_selection.word = selectionWord.toString();
     note_selection.user_id = JSON.parse(localStorage.user).id;
     note_selection.user_name = JSON.parse(localStorage.user).name;
-    note_selection.id = "note" + time;
 
+    //create note id
+    //get current time
+    var time = new Date().getTime();
+    var noteId = "note" + time;
+    note_selection.id = noteId;
+
+    // insert html code surround the note
+    paintNote(noteId);
+
+    //get new version's code save into temp variable
+    note_selection.new_version_content = $('#choose_pack_content').html();
   });
 });
+
+function paintNote(noteId) {
+  var range = window.getSelection().getRangeAt(0);
+  //var selectionContents = range.extractContents();
+  var span = document.createElement("span");
+  span.className = "note";
+  span.setAttribute('noteid', noteId);
+  range.surroundContents(span);
+}
 
 function getCharacterOffsetWithin(range, node) {
   var treeWalker = document.createTreeWalker(
@@ -87,7 +207,7 @@ function getCharacterOffsetWithin(range, node) {
       var nodeRange = document.createRange();
       nodeRange.selectNodeContents(node);
 
-      return nodeRange.compareBoundaryPoints(Range.START_TO_END , range) < 1 ?
+      return nodeRange.compareBoundaryPoints(Range.START_TO_END, range) < 1 ?
         NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
     },
     false

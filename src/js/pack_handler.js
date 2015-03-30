@@ -1,3 +1,6 @@
+//for comment display use
+var noteText;
+
 $(document).on("pageinit", "#new_pack_edit", function() {
 
   //set editor height
@@ -7,51 +10,53 @@ $(document).on("pageinit", "#new_pack_edit", function() {
   });
 
   //save pack in localStorage
-  $('#save_pack').click(function() {
-
-    //get current time
-    var time = new Date().getTime();
-
-    //get new pack from local storage
-    var new_pack = JSON.parse(localStorage.new_pack);
-
-    //create this page's information
-    var version = [{
-      "creator_user_id": JSON.parse(localStorage.user).id,
-      "bookmark": [],
-      "note": [],
-      "file": [],
-      "create_time": time.toString(),
-      "is_public": JSON.parse(localStorage.new_pack).is_public,
-      "id": "version" + time,
-      "content": $('#iframe1').contents().find('#edit').editable("getHTML", true, false)
-    }];
-
-    //add version to pack
-    new_pack.version = version;
-
-    //store in localStorage
-    var packId = "pack" + time;
-    localStorage.setItem(packId, JSON.stringify(new_pack));
-
-    //remove temp item in localStorage
-    localStorage.removeItem("new_pack");
-
-    //add it in all folder
-    var folderArray = JSON.parse(localStorage.folder);
-
-    //find current folder in data
-    var i;
-    for (i in folderArray) {
-      if (folderArray[i].name == 'All') {
-        folderArray[i].pack[folderArray[i].pack.length] = packId;
-        break;
-      }
-    }
-    localStorage.setItem("folder", JSON.stringify(folderArray));
-  });
+  $('#save_pack').click(savePackHandler);
 
 });
+
+function savePackHandler() {
+
+  //get current time
+  var time = new Date().getTime();
+
+  //get new pack from local storage
+  var new_pack = JSON.parse(localStorage.new_pack);
+
+  //create this page's information
+  var version = [{
+    "creator_user_id": JSON.parse(localStorage.user).id,
+    "bookmark": [],
+    "note": [],
+    "file": [],
+    "create_time": time.toString(),
+    "is_public": JSON.parse(localStorage.new_pack).is_public,
+    "id": "version" + time,
+    "content": $('#iframe1').contents().find('#edit').editable("getHTML", true, false)
+  }];
+
+  //add version to pack
+  new_pack.version = version;
+
+  //store in localStorage
+  var packId = "pack" + time;
+  localStorage.setItem(packId, JSON.stringify(new_pack));
+
+  //remove temp item in localStorage
+  localStorage.removeItem("new_pack");
+
+  //add it in all folder
+  var folderArray = JSON.parse(localStorage.folder);
+
+  //find current folder in data
+  var i;
+  for (i in folderArray) {
+    if (folderArray[i].name == 'All') {
+      folderArray[i].pack[folderArray[i].pack.length] = packId;
+      break;
+    }
+  }
+  localStorage.setItem("folder", JSON.stringify(folderArray));
+}
 
 function load_editor() {
   $('#iframe1').contents().find('#edit').editable({
@@ -144,11 +149,6 @@ $(document).on('pageinit', "#view_pack", function() {
 
 });
 
-$(document).on('pagebeforeshow', "#view_pack", function() {
-
-
-  //$("#note-display").toolbar("hide");
-});
 
 $(document).on('pageshow', "#view_pack", function() {
 
@@ -172,9 +172,27 @@ function showNoteHandler() {
   //display the note
   $("#note-display").toolbar("show");
 
+  //get note id
+  var noteId = $(this).attr('noteid');
+  noteText = $(this).text();
+
+  //get pack for note content
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var noteArray = pack.version[viewPackVersion].note;
+
+  //find current note
+  var i;
+  for (i in noteArray) {
+    if (noteArray[i].id == noteId) {
+      break;
+    }
+  }
+
   // insert html into note area
-  var template = '<h4>Chromium</h4><div class="note-content"><p>Chromium是一個由Google主導開發的網頁瀏覽器，以BSD授權條款等多重自由版權發行並開放原始碼。Chromium的開發可能早自2006年即開始[1]，2008年12月11日釋出1.0版本，設計思想基於簡單、高速、穩定、安全等理念，在架構上使用了蘋果發展出來的WebKit排版引擎（自28版起改為由WebKit所分支的Blink排版引擎）、Safari的部份原始碼與Firefox的成果，並採用Google獨家開發出的V8引擎以提升解譯JavaScript的效率，而且設計了「沙盒」、「黑名單」、「無痕瀏覽」等功能來實現穩定與安全的網頁瀏覽環境。</p></div><div class="note-function-button"><a class="ui-btn note-left-button">返回</a><a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
-  $("#note-display").html(template);
+  //var template = '<h4>'+noteText+'</h4><div class="note-content"><p>Chromium是一個由Google主導開發的網頁瀏覽器，以BSD授權條款等多重自由版權發行並開放原始碼。Chromium的開發可能早自2006年即開始[1]，2008年12月11日釋出1.0版本，設計思想基於簡單、高速、穩定、安全等理念，在架構上使用了蘋果發展出來的WebKit排版引擎（自28版起改為由WebKit所分支的Blink排版引擎）、Safari的部份原始碼與Firefox的成果，並採用Google獨家開發出的V8引擎以提升解譯JavaScript的效率，而且設計了「沙盒」、「黑名單」、「無痕瀏覽」等功能來實現穩定與安全的網頁瀏覽環境。</p></div><div class="note-function-button"><a class="ui-btn note-left-button">返回</a><a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
+  var noteTemplate = '<h4>' + noteText + '</h4><div class="note-content"><p>' + noteArray[i].content + '</p></div><div class="note-function-button"><a class="ui-btn note-left-button">返回</a><a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
+
+  $("#note-display").html(noteTemplate);
 
   //refresh footer for diiplay
   $("#note-display").toolbar("refresh");
@@ -184,6 +202,9 @@ function showNoteHandler() {
 
   //show comment button action
   $("#show_comment").click(show_comment);
+
+  //save array index for comment page quick find current note
+  viewNoteArrayIndex = i;
 }
 
 function hideButtonHandler() {
@@ -193,12 +214,4 @@ function hideButtonHandler() {
   //clear html
   $("#note-display").html("");
   $("#note-display").toolbar("refresh");
-}
-
-function paintNote() {
-  var range = window.getSelection().getRangeAt(0);
-  //var selectionContents = range.extractContents();
-  var span = document.createElement("span");
-  span.className = "note";
-  range.surroundContents(span);
 }

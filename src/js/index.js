@@ -1,7 +1,11 @@
+var headerHeight;
+//remember the pack to display
+var viewPackId;
+var viewPackVersion = 0;
+
 $(document).on("pagebeforecreate", "#home", function() {});
 
 $(document).on("pageinit", "#home", function() {});
-var headerHeight;
 
 $(document).on("pageshow", "#home", function() {
 
@@ -16,9 +20,6 @@ $(document).on("pageshow", "#home", function() {
 
 });
 
-//remember the pack to display
-var viewPackId;
-var viewPackVersion = 0;
 
 
 //display folder in left panel

@@ -51,52 +51,7 @@ $(document).on('pageshow', "#comment", function() {
   });
 });
 
-function comment_submit_handler() {
 
-  //get pack for comment content
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
-
-  //get text from user input
-  var commentContent = $('#comment_text').val();
-
-  //clear textarea
-  $('#comment_text').val('');
-
-  //get current time
-  var time = new Date().getTime();
-  var display_time = new Date(time);
-
-  //display comment instant
-  var commentTemplate = '<li><h2>' + JSON.parse(localStorage.user).name + '</h2><font style="white-space:normal; font-size: small">' + commentContent + '</font><p class="ui-li-aside" style="margin-top: 9px">' + display_time.toLocaleString(navigator.language, {
-    hour: '2-digit',
-    minute: 'numeric',
-    day: "numeric",
-    month: "numeric"
-  }) + '</p></li>';
-  // display comment
-  $('#comment_display_area').append(commentTemplate);
-  $("#comment_display_area").listview("refresh");
-
-  //prepare new comment
-  var newComment = {
-    id: 'comment' + time,
-    content: commentContent,
-    create_time: time,
-    user_id: JSON.parse(localStorage.user).id,
-    user_name: JSON.parse(localStorage.user).name
-  };
-  console.log(newComment);
-
-  //get current note
-  var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
-
-  //add new comment
-  currentNote.comment[currentNote.comment.length] = newComment;
-
-
-  //update pack in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
-}
 
 $(document).on('pageinit', "#new_note", function() {
   //display selection word
@@ -189,6 +144,53 @@ $(document).on('pageshow', "#new_note_choose", function() {
     note_selection.new_version_content = $('#choose_pack_content').html();
   });
 });
+
+function comment_submit_handler() {
+
+  //get pack for comment content
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  //get text from user input
+  var commentContent = $('#comment_text').val();
+
+  //clear textarea
+  $('#comment_text').val('');
+
+  //get current time
+  var time = new Date().getTime();
+  var display_time = new Date(time);
+
+  //display comment instant
+  var commentTemplate = '<li><h2>' + JSON.parse(localStorage.user).name + '</h2><font style="white-space:normal; font-size: small">' + commentContent + '</font><p class="ui-li-aside" style="margin-top: 9px">' + display_time.toLocaleString(navigator.language, {
+    hour: '2-digit',
+    minute: 'numeric',
+    day: "numeric",
+    month: "numeric"
+  }) + '</p></li>';
+  // display comment
+  $('#comment_display_area').append(commentTemplate);
+  $("#comment_display_area").listview("refresh");
+
+  //prepare new comment
+  var newComment = {
+    id: 'comment' + time,
+    content: commentContent,
+    create_time: time,
+    user_id: JSON.parse(localStorage.user).id,
+    user_name: JSON.parse(localStorage.user).name
+  };
+  console.log(newComment);
+
+  //get current note
+  var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
+
+  //add new comment
+  currentNote.comment[currentNote.comment.length] = newComment;
+
+
+  //update pack in localStorage
+  localStorage.setItem(viewPackId, JSON.stringify(pack));
+}
 
 function paintNote(noteId) {
   var range = window.getSelection().getRangeAt(0);

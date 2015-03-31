@@ -1,7 +1,5 @@
 document.addEventListener("deviceready", onDeviceReady, false);
 
-var userFile;
-
 function onDeviceReady() {
   console.log(cordova.file);
 

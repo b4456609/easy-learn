@@ -4,10 +4,13 @@
     <h1 id="pack_title"></h1>
     <div class="ui-btn-right">
       <a href="#popupMenu" data-rel="popup" data-role="button" data-icon="bullets" data-direction="reverse" data-corners="true" data-shadow="false" data-iconshadow="false" data-wrapperels="span" title="tag">
+
         選單</a>
       <div data-role="popup" id="popupMenu" data-shadow="false" data-corners="false" data-history="false">
         <ul data-role="listview" data-inset="true" style="min-width:150px;" data-icon="false">
           <li><a href="new_note_choose.html">新增便利貼</a>
+          </li>
+          <li><a href="#">新增書籤</a>
           </li>
           <li><a href="bookmark.html">目錄與書籤</a>
           </li>
@@ -21,19 +24,27 @@
       </div>
     </div>
   </div>
-  <div data-role="main" class="ui-content" id="veiw_pack_content">
+  <!-- new book popup -->
+  <div data-role="popup" id="popupLogin" data-theme="a" class="ui-corner-all">
 
+    <form>
 
+      <div style="padding:10px 20px;">
 
+        <h3>在目前瀏覽的位置新增書籤</h3>
+
+        <label for="un" class="ui-hidden-accessible">輸入書籤的名稱:</label>
+
+        <input type="text" name="user" id="un" value="" placeholder="username" data-theme="a">
+
+        <button data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</button>
+        <button type="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">送出</button>
+      </div>
+    </form>
   </div>
-   <div data-role="footer" id="note-display">
-     <!--  <h4>Chromium</h4>
-    <div class="note-content">
-      <p>hromium是一個由Google主導開發的網頁瀏覽器，以BSD授權條款等多重自由版權發行並開放原始碼。Chromium的開發可能早自2006年即開始[1]，2008年12月11日釋出1.0版本，設計思想基於簡單、高速、穩定、安全等理念，在架構上使用了蘋果發展出來的WebKit排版引擎（自28版起改為由WebKit所分支的Blink排版引擎）、Safari的部份原始碼與Firefox的成果，並採用Google獨家開發出的V8引擎以提升解譯JavaScript的效率，而且設計了「沙盒」、「黑名單」、「無痕瀏覽」等功能來實現穩定與安全的網頁瀏覽環境。</p>
-    </div>
-    <div class="note-function-button">
-      <a class="ui-btn note-left-button">返回</a>
-      <a id="show_comment" class="ui-btn note-right-button">查看留言</a>
-    </div> -->
+  <div data-role="main" class="ui-content" id="veiw_pack_content">
+  </div>
+
+  <div data-role="footer" id="note-display">
   </div>
 </div>

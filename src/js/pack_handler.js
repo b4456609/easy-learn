@@ -135,9 +135,9 @@ function hideButtonHandler() {
 function getPhotoWithModifySize() {
   // Retrieve image file location from specified source
   navigator.camera.getPicture(onSuccess, onFail, {
-    quality: 50,
-    targetWidth: 80,
-    targetHeight: 80,
+    quality: 80,
+    targetWidth: 800,
+    targetHeight: 800,
     destinationType: Camera.DestinationType.FILE_URI,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
   });
@@ -168,6 +168,8 @@ function displayCoverImg(packfileEntry) {
     reader.onloadend = function() {
       img.src = reader.result;
     };
+    img.style.width =  '100%';
+
     console.log('fileEntry.file.readAsDataURL');
     reader.readAsDataURL(file);
     $("#cover_photo_area").html(img);
@@ -175,6 +177,13 @@ function displayCoverImg(packfileEntry) {
 }
 
 function savePackHandler() {
+  //get editor word
+  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
+
+  console.log(content);
+
+  //change page
+  $( ":mobile-pagecontainer" ).pagecontainer( "change", "index.html");
 
   //get current time
   var time = new Date().getTime();
@@ -191,8 +200,10 @@ function savePackHandler() {
     "create_time": time.toString(),
     "is_public": JSON.parse(localStorage.new_pack).is_public,
     "id": "version" + time,
-    "content": $('#iframe1').contents().find('#edit').editable("getHTML", true, false)
+    "content": content,
   }];
+
+  console.log(version);
 
   //add version to pack
   new_pack.version = version;
@@ -202,10 +213,10 @@ function savePackHandler() {
   //remove temp item in localStorage
   localStorage.removeItem("new_pack");
 
-  //add it in all folder
+  //add it in folder all
   var folderArray = JSON.parse(localStorage.folder);
 
-  //find current folder in data
+  //find all folder in data
   var i;
   for (i in folderArray) {
     if (folderArray[i].name == 'All') {
@@ -259,7 +270,7 @@ function slideshare_submit_handler(event) {
       var img = "";
       for (i = 1; i <= data.total_slides; i++) {
         var http = 'http:' + data.slide_image_baseurl + i + data.slide_image_baseurl_suffix;
-        img += "<img src=" + http + ">";
+        img += "<img src=" + http + " style='width:100%;'>";
       }
 
       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);

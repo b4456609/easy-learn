@@ -43,6 +43,7 @@ function getImgNode(packId, fileName, callback) {
               img.src = reader.result;
             };
             img.style["z-index"] =  1;
+            img.style.width =  '100%';
             reader.readAsDataURL(file);
             console.log(img);
             return callback(packId, img);

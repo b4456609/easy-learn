@@ -136,8 +136,8 @@ function getPhotoWithModifySize() {
   // Retrieve image file location from specified source
   navigator.camera.getPicture(onSuccess, onFail, {
     quality: 50,
-    targetWidth: 160,
-    targetHeight: 160,
+    targetWidth: 80,
+    targetHeight: 80,
     destinationType: Camera.DestinationType.FILE_URI,
     sourceType: Camera.PictureSourceType.PHOTOLIBRARY
   });

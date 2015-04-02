@@ -22,32 +22,35 @@ function addFileToPack(packId, fileEntry) {
   }, fail);
 }
 
-function getImgNode(packId, fileName) {
-  window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
-    console.log('getFile dirEntry');
-    dirEntry.getDirectory(packId, {
-      create: false
-    }, function(destDirEntry) {
-      destDirEntry.getFile(fileName, {
-        create: false
-      }, function(fileEntry) {
-        fileEntry.file(function(file) {
-          var img = document.createElement("img");
+function getImgNode(packId, fileName, callback) {
+  //return img node
+  var img;
 
-          var reader = new FileReader();
-          reader.onloadend = function() {
-            img.src = reader.result;
-          };
-          reader.readAsDataURL(file);
-          console.log(img);
-          return img;
+
+    window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
+      console.log('getFile dirEntry');
+      dirEntry.getDirectory(packId, {
+        create: false
+      }, function(destDirEntry) {
+        destDirEntry.getFile(fileName, {
+          create: false
+        }, function(fileEntry) {
+          fileEntry.file(function(file) {
+            img = document.createElement("img");
+
+            var reader = new FileReader();
+            reader.onloadend = function() {
+              img.src = reader.result;
+            };
+            img.style["z-index"] =  1;
+            reader.readAsDataURL(file);
+            console.log(img);
+            return callback(packId, img);
+          }, fail);
         }, fail);
       }, fail);
     }, fail);
-  }, fail);
 }
-
-
 // window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
 //   console.log("got main dir", dir);
 //   dir.getFile("user.json", {

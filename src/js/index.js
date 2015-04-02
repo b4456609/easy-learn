@@ -112,20 +112,27 @@ function display_pack(packArray) {
   var result = "";
   var pack_templete = "";
   var j;
+
+  console.log(packArray);
+
   for (j in packArray) {
+    //get pack from localStorage
     var pack = JSON.parse(localStorage.getItem(packArray[j]));
-    if (packArray[j].cover_filename !== null) {
-      console.log('getImgNode' + packArray[j] + packArray[j].cover_filename);
 
-      var img = getImgNode(packArray[j], packArray[j].cover_filename);
+    //get pack's id
+    var packId = packArray[j];
 
-      pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+    console.log(pack.cover_filename);
+
+    if (pack.cover_filename !== null) {
+      console.log('getImgNode' + packId + pack.cover_filename);
+      //display cover image while its finished
+      getImgNode(packId, pack.cover_filename, displayCoverImgAtHome);
+      pack_templete = '<li packid= "' + packId + '"><a href="#"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
     } else {
-      pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+      pack_templete = '<li packid= "' + packId + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
     }
-      result += pack_templete;
-    // var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
-    // result += pack_templete;
+    result += pack_templete;
   }
 
   //display pack
@@ -134,6 +141,11 @@ function display_pack(packArray) {
 
   //register click handler
   $("li[packid]").click(go_pack_handler);
+}
+
+function displayCoverImgAtHome(packId, img){
+  $('li[packid='+ packId +']').prepend(img);
+  $("#pack_display_area").listview("refresh");
 }
 
 // function getFileDisplayAtHome(file){

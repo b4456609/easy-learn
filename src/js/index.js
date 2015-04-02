@@ -58,10 +58,10 @@ $(document).on("pageshow", "#home", function() {
   //if device not ready deferred exec
   //this will happened when user first open app
   if (gapReady.state() != "pending") {
-  //refresh every visit home page
+    //refresh every visit home page
     display_all_pack();
 
-  //update count in panel page
+    //update count in panel page
     display_folder();
   }
 });
@@ -110,18 +110,22 @@ function display_pack(packArray) {
   console.log('display_pack');
   //generate pack html code
   var result = "";
+  var pack_templete = "";
   var j;
   for (j in packArray) {
-    // var pack = JSON.parse(localStorage.getItem(packArray[j]));
-    // if (packArray[j].cover_filename !== null) {
-    //   console.log('call get file' + packArray[j] + packArray[j].cover_filename);
-    //   getFile(packArray[j], packArray[j].cover_filename, getFileDisplayAtHome);
-    // } else {
-    //   var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
-    //   result += pack_templete;
-    // }
-    var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
-    result += pack_templete;
+    var pack = JSON.parse(localStorage.getItem(packArray[j]));
+    if (packArray[j].cover_filename !== null) {
+      console.log('getImgNode' + packArray[j] + packArray[j].cover_filename);
+
+      var img = getImgNode(packArray[j], packArray[j].cover_filename);
+
+      pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+    } else {
+      pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+    }
+      result += pack_templete;
+    // var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+    // result += pack_templete;
   }
 
   //display pack

@@ -22,7 +22,7 @@ function addFileToPack(packId, fileEntry) {
   }, fail);
 }
 
-function getFile(packId, fileName, callback) {
+function getImgNode(packId, fileName) {
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
     console.log('getFile dirEntry');
     dirEntry.getDirectory(packId, {
@@ -32,7 +32,15 @@ function getFile(packId, fileName, callback) {
         create: false
       }, function(fileEntry) {
         fileEntry.file(function(file) {
-          return callback(file);
+          var img = document.createElement("img");
+
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+          console.log(img);
+          return img;
         }, fail);
       }, fail);
     }, fail);

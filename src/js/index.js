@@ -1,29 +1,76 @@
+//THIS CODE SHOULD BE PART OF A FILE WHICH IS LOADED BEFORE jQueryMobile
+
+/**
+ * Create couple of jQuery Deferred Objects to catch the
+ * firing of the two events associated with the loading of
+ * the two frameworks.
+ */
+var gapReady = $.Deferred();
+var jqmReady = $.Deferred();
+
+//Catch "deviceready" event which is fired when PhoneGap is ready
+document.addEventListener("deviceReady", deviceReady, false);
+
+//Resolve gapReady in reponse to deviceReady event
+function deviceReady() {
+  gapReady.resolve();
+}
+
+/**
+ * Catch "mobileinit" event which is fired when a jQueryMobile is loaded.
+ * Ensure that we respond to this event only once.
+ */
+$(document).one("mobileinit", function() {
+  jqmReady.resolve();
+});
+
+/**
+ * Run your App Logic only when both frameworks have loaded
+ */
+$.when(gapReady, jqmReady).then(myAppLogic);
+
+// App Logic
+function myAppLogic() {
+  console.log(cordova.file);
+
+  localStorage.clear();
+  testLocalStorage();
+  display_all_pack();
+  display_folder();
+}
+
 var headerHeight;
+
 //remember the pack to display
 var viewPackId;
 var viewPackVersion = 0;
 
-$(document).on("pagebeforecreate", "#home", function() {});
-
 $(document).on("pageinit", "#home", function() {});
+
+$(document).on("pagebeforecreate", "#home", function() {});
 
 $(document).on("pageshow", "#home", function() {
 
-
   headerHeight = $(".ui-header").outerHeight();
 
+  console.log('Home:pageshow');
+
+  //if device not ready deferred exec
+  //this will happened when user first open app
+  if (gapReady.state() != "pending") {
   //refresh every visit home page
-  display_all_pack();
+    display_all_pack();
 
   //update count in panel page
-  display_folder();
-
+    display_folder();
+  }
 });
 
 
 
 //display folder in left panel
 function display_folder() {
+  console.log('display_folder');
   $("li:has([folderid])").remove();
 
   //display folder
@@ -60,34 +107,21 @@ function display_all_pack() {
 
 //display pack in content
 function display_pack(packArray) {
+  console.log('display_pack');
   //generate pack html code
   var result = "";
   var j;
   for (j in packArray) {
-    var pack = JSON.parse(localStorage.getItem(packArray[j]));
+    // var pack = JSON.parse(localStorage.getItem(packArray[j]));
     // if (packArray[j].cover_filename !== null) {
     //   console.log('call get file' + packArray[j] + packArray[j].cover_filename);
-    //   getFile(packArray[j], packArray[j].cover_filename, function(file) {
-    //     console.log('display_pack.file');
-    //     console.log('return' + file);
-    //     var img = document.createElement("img");
-    //     var reader = new FileReader();
-    //     reader.onloadend = function() {
-    //       img.src = reader.result;
-    //     };
-    //
-    //     reader.readAsDataURL(file);
-    //
-    //     var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
-    //     result += pack_templete;
-    //   });
+    //   getFile(packArray[j], packArray[j].cover_filename, getFileDisplayAtHome);
     // } else {
     //   var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
     //   result += pack_templete;
     // }
     var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
     result += pack_templete;
-
   }
 
   //display pack
@@ -97,6 +131,21 @@ function display_pack(packArray) {
   //register click handler
   $("li[packid]").click(go_pack_handler);
 }
+
+// function getFileDisplayAtHome(file){
+//   console.log('display_pack.file');
+//   console.log('return' + file);
+//   var img = document.createElement("img");
+//   var reader = new FileReader();
+//   reader.onloadend = function() {
+//     img.src = reader.result;
+//   };
+//
+//   reader.readAsDataURL(file);
+//
+//   var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
+//   result += pack_templete;
+//}
 
 
 function folder_click_handler() {

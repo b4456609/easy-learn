@@ -7,6 +7,9 @@ var newPackId;
 //for new file use
 var cover_filename = null;
 
+//for new pack use
+var new_pack;
+
 $(document).on("pageinit", "#new_pack_edit", function() {
 
   //set editor height
@@ -37,18 +40,16 @@ $(document).on('pageinit', "#new_pack", function() {
   $('#new_pack_next').click(function() {
 
     //construct new pack object
-    var new_pack = {
+    new_pack = {
       "creator_user_id": JSON.parse(localStorage.user).id,
       "create_time": time.toString(),
       "name": $('#new_pack_title').val(),
       "is_public": document.getElementById("is_public").checked,
       "description": $('#new_pack_description').val(),
       "tags": $('#tags').val(),
-      "cover_filename": cover_filename
+      "cover_filename": cover_filename,
+      "version":[],
     };
-
-    //sotre new pack object in local storage
-    localStorage.new_pack = JSON.stringify(new_pack);
   });
 
 
@@ -184,34 +185,27 @@ function savePackHandler() {
 
   //change page
   $( ":mobile-pagecontainer" ).pagecontainer( "change", "index.html");
+  console.log('after change index');
 
   //get current time
   var time = new Date().getTime();
 
-  //get new pack from local storage
-  var new_pack = JSON.parse(localStorage.new_pack);
-
-  //create this page's information
-  var version = [{
+  //create this page's information add it in pack
+  new_pack.version[new_pack.version.length] = {
     "creator_user_id": JSON.parse(localStorage.user).id,
     "bookmark": [],
     "note": [],
     "file": [],
     "create_time": time.toString(),
-    "is_public": JSON.parse(localStorage.new_pack).is_public,
+    "is_public": new_pack.is_public,
     "id": "version" + time,
     "content": content,
-  }];
+  };
 
-  console.log(version);
+  console.log(new_pack);
 
-  //add version to pack
-  new_pack.version = version;
-
+  //set new pack in localStorage
   localStorage.setItem(newPackId, JSON.stringify(new_pack));
-
-  //remove temp item in localStorage
-  localStorage.removeItem("new_pack");
 
   //add it in folder all
   var folderArray = JSON.parse(localStorage.folder);

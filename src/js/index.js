@@ -32,7 +32,8 @@ $.when(gapReady, jqmReady).then(myAppLogic);
 // App Logic
 function myAppLogic() {
   console.log(cordova.file);
-
+  console.log(FileTransfer);
+  
   localStorage.clear();
   testLocalStorage();
   display_all_pack();
@@ -143,8 +144,8 @@ function display_pack(packArray) {
   $("li[packid]").click(go_pack_handler);
 }
 
-function displayCoverImgAtHome(packId, img){
-  $('li[packid='+ packId +']').prepend(img);
+function displayCoverImgAtHome(packId, img) {
+  $('li[packid=' + packId + ']').prepend(img);
   $("#pack_display_area").listview("refresh");
 }
 

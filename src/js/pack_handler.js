@@ -48,7 +48,7 @@ $(document).on('pageinit', "#new_pack", function() {
       "description": $('#new_pack_description').val(),
       "tags": $('#tags').val(),
       "cover_filename": cover_filename,
-      "version":[],
+      "version": [],
     };
   });
 
@@ -169,7 +169,7 @@ function displayCoverImg(packfileEntry) {
     reader.onloadend = function() {
       img.src = reader.result;
     };
-    img.style.width =  '100%';
+    img.style.width = '100%';
 
     console.log('fileEntry.file.readAsDataURL');
     reader.readAsDataURL(file);
@@ -184,7 +184,7 @@ function savePackHandler() {
   console.log(content);
 
   //change page
-  $( ":mobile-pagecontainer" ).pagecontainer( "change", "index.html");
+  $(":mobile-pagecontainer").pagecontainer("change", "index.html");
   console.log('after change index');
 
   //get current time
@@ -259,14 +259,32 @@ function slideshare_submit_handler(event) {
   var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
   $.get(url,
     function(data) {
-      alert(JSON.stringify(data));
-      var i;
+      var start = $('#slideshare_start_page ').val();
+      var end = $('#slideshare_end_page').val();
+
+      console.log(start);
+      console.log(typeof start);
+      console.log(end);
+
+
+      //error check
+      if (start <=0 |start === null | start > data.total_slides){
+        start = 1;
+      }
+      if (end < start){
+        end = start;
+      }
+      else if(end > data.total_slides){
+        end = data.total_slides;
+      }
+
       var img = "";
-      for (i = 1; i <= data.total_slides; i++) {
-        var http = 'http:' + data.slide_image_baseurl + i + data.slide_image_baseurl_suffix;
+      for (; start <= end; start++) {
+        var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         img += "<img src=" + http + " style='width:100%;'>";
       }
 
       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
     });
+
 }

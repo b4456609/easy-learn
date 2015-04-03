@@ -22,9 +22,15 @@
 
       <div style="padding:10px 20px;">
 
-        <label for="un" class="ui-hidden-accessible">輸入slideshare網址:</label>
-
+        <label for="slideshare_url" class="ui-hidden-accessible">輸入slideshare網址:</label>
         <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
+
+        <label for="slideshare_start_page" class="ui-hidden-accessible">起始頁數:</label>
+        <input type="number" name="slideshare_start_page" pattern="[0-9]*" id="slideshare_start_page" value="0">
+
+        <label for="slideshare_end_page" class="ui-hidden-accessible">結束頁數:</label>
+        <input type="number" name="slideshare_end_page" pattern="[0-9]*" id="slideshare_end_page" value="0">
+
         <button class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</button>
 
         <button id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>

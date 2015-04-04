@@ -20,16 +20,19 @@ $(document).on("pageinit", "#new_pack_edit", function() {
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width($(window).width());
   });
-
+  load_editor();
 
 });
 
 $(document).on("pageshow", "#new_pack_edit", function() {
 
-  editorElement = $('#iframe1').contents().find('#edit');
+  editorElement = $('#edit');
 
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
+  $('#slideshare_cancel').click(function(){
+    $('#popup_slideshare').popup( "close" );
+  });
 });
 
 $(document).on('pageinit', "#new_pack", function() {
@@ -187,14 +190,10 @@ function displayCoverImg(packfileEntry) {
 }
 
 function savePackHandler() {
-  //get editor word
-  var content = editorElement.editable("getHTML", true, false);
 
+  //get editor word and replace the img
+  var content = editorElement.editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
-
-  //change page
-  $(":mobile-pagecontainer").pagecontainer("change", "index.html");
-  console.log('after change index');
 
   //get current time
   var time = new Date().getTime();
@@ -228,10 +227,13 @@ function savePackHandler() {
     }
   }
   localStorage.setItem("folder", JSON.stringify(folderArray));
+
+  //change page
+  $(":mobile-pagecontainer").pagecontainer("change", "index.html");
 }
 
 function load_editor() {
-  $('#iframe1').contents().find('#edit').editable({
+  $('#edit').editable({
     'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
       'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
       'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
@@ -265,6 +267,7 @@ function load_editor() {
 }
 
 function slideshare_submit_handler(event) {
+  $('#popup_slideshare').popup( "close" );
   var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
   $.get(url,
     function(data) {
@@ -300,22 +303,21 @@ function slideshare_submit_handler(event) {
 
 function displaySlideShareImgInEditor(fileEntry) {
   fileEntry.file(function(file) {
-    // var img = document.createElement("img");
-    var img = '';
+    //  var img = document.createElement("img");
 
     var reader = new FileReader();
     reader.onloadend = function() {
-      // img.src = reader.result;
-      img += "<img src=" + reader.result + " style='width:100%;'>";
+      console.log(reader.result);
+       //img.src = reader.result;
+      var img = "<img name='"+ file.name +"' src='" + reader.result + "'>";
 
+      console.log(file);
+      console.log(img.outerHTML);
+
+      editorElement.editable("insertHTML", img, true);
     };
-    //img.style["z-index"] = 1;
-    //img.style.width = '100%';
+
     reader.readAsDataURL(file);
-    console.log(file);
-    console.log(img);
 
-
-    editorElement.editable("insertHTML", img, true);
   }, fail);
 }

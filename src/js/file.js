@@ -26,32 +26,54 @@ function getImgNode(packId, fileName, callback) {
   //return img node
   var img;
 
-
-    window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
-      console.log('getFile dirEntry');
-      dirEntry.getDirectory(packId, {
+  window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
+    console.log('getFile dirEntry');
+    dirEntry.getDirectory(packId, {
+      create: false
+    }, function(destDirEntry) {
+      destDirEntry.getFile(fileName, {
         create: false
-      }, function(destDirEntry) {
-        destDirEntry.getFile(fileName, {
-          create: false
-        }, function(fileEntry) {
-          fileEntry.file(function(file) {
-            img = document.createElement("img");
+      }, function(fileEntry) {
+        fileEntry.file(function(file) {
+          img = document.createElement("img");
 
-            var reader = new FileReader();
-            reader.onloadend = function() {
-              img.src = reader.result;
-            };
-            img.style["z-index"] =  1;
-            img.style.width =  '100%';
-            reader.readAsDataURL(file);
-            console.log(img);
-            return callback(packId, img);
-          }, fail);
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            img.src = reader.result;
+          };
+          img.style["z-index"] = 1;
+          img.style.width = '100%';
+          reader.readAsDataURL(file);
+          console.log(img);
+          return callback(packId, img);
         }, fail);
       }, fail);
     }, fail);
+  }, fail);
 }
+
+function downloadFileByUrl(url, packId, callback) {
+  var fileTransfer = new FileTransfer();
+  var uri = encodeURI(url);
+  var time = new Date().getTime();
+
+  fileTransfer.download(
+    uri,
+    cordova.file.externalDataDirectory + '/' + packId + '/slideshare' + time + '.jpg',
+    function(entry) {
+      console.log("download complete: " + entry.toURL());
+      callback(entry);
+    },
+    function(error) {
+      console.log("download error source " + error.source);
+      console.log("download error target " + error.target);
+      console.log("upload error code" + error.code);
+    },
+    false
+  );
+}
+
+
 // window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
 //   console.log("got main dir", dir);
 //   dir.getFile("user.json", {

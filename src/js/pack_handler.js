@@ -10,6 +10,9 @@ var cover_filename = null;
 //for new pack use
 var new_pack;
 
+//editor's element node
+var editorElement;
+
 $(document).on("pageinit", "#new_pack_edit", function() {
 
   //set editor height
@@ -18,9 +21,15 @@ $(document).on("pageinit", "#new_pack_edit", function() {
     $(this).width($(window).width());
   });
 
+
+});
+
+$(document).on("pageshow", "#new_pack_edit", function() {
+
+  editorElement = $('#iframe1').contents().find('#edit');
+
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
-
 });
 
 $(document).on('pageinit', "#new_pack", function() {
@@ -136,7 +145,7 @@ function hideButtonHandler() {
 function getPhotoWithModifySize() {
   // Retrieve image file location from specified source
   navigator.camera.getPicture(onSuccess, onFail, {
-    quality: 80,
+    quality: 70,
     targetWidth: 800,
     targetHeight: 800,
     destinationType: Camera.DestinationType.FILE_URI,
@@ -179,7 +188,7 @@ function displayCoverImg(packfileEntry) {
 
 function savePackHandler() {
   //get editor word
-  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
+  var content = editorElement.editable("getHTML", true, false);
 
   console.log(content);
 
@@ -262,29 +271,51 @@ function slideshare_submit_handler(event) {
       var start = $('#slideshare_start_page ').val();
       var end = $('#slideshare_end_page').val();
 
-      console.log(start);
-      console.log(typeof start);
-      console.log(end);
+      // console.log(start);
+      // console.log(typeof start);
+      // console.log(end);
 
 
       //error check
-      if (start <=0 |start === null | start > data.total_slides){
+      if (start <= 0 | start === null | start > data.total_slides) {
         start = 1;
       }
-      if (end < start){
+      if (end < start) {
         end = start;
-      }
-      else if(end > data.total_slides){
+      } else if (end > data.total_slides) {
         end = data.total_slides;
       }
 
       var img = "";
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
-        img += "<img src=" + http + " style='width:100%;'>";
+        //img += "<img src=" + http + " style='width:100%;'>";
+        downloadFileByUrl(http, newPackId, displaySlideShareImgInEditor);
       }
 
-      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+      //editorElement.editable("insertHTML", img, true);
     });
 
+}
+
+function displaySlideShareImgInEditor(fileEntry) {
+  fileEntry.file(function(file) {
+    // var img = document.createElement("img");
+    var img = '';
+
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      // img.src = reader.result;
+      img += "<img src=" + reader.result + " style='width:100%;'>";
+
+    };
+    //img.style["z-index"] = 1;
+    //img.style.width = '100%';
+    reader.readAsDataURL(file);
+    console.log(file);
+    console.log(img);
+
+
+    editorElement.editable("insertHTML", img, true);
+  }, fail);
 }

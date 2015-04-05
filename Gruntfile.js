@@ -61,7 +61,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', ['clean', 'copy', 'concat', 'jshint', 'exec:run']);
+  grunt.registerTask('default', ['clean', 'copy', 'concat', 'exec:run']);
   grunt.registerTask('run', ['exec:run']);
   grunt.registerTask('hint', 'jshint');
   grunt.registerTask('cp', 'copy:main');

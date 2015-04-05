@@ -23,8 +23,6 @@ function addFileToPack(packId, fileEntry) {
 }
 
 function getImgNode(packId, fileName, callback) {
-  //return img node
-  var img;
 
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
     console.log('getFile dirEntry');
@@ -52,7 +50,7 @@ function getImgNode(packId, fileName, callback) {
   }, fail);
 }
 
-function downloadFileByUrl(url, packId, callback) {
+function downloadSlideShareByUrl(url, packId, callback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
@@ -71,6 +69,27 @@ function downloadFileByUrl(url, packId, callback) {
     },
     false
   );
+}
+
+function displayPackImg(viewPackId, imgNode, imgName) {
+  var path = cordova.file.externalDataDirectory + viewPackId + '/' + imgName;
+  console.log(path);
+  //console.log(imgNode);
+
+  window.resolveLocalFileSystemURL(path, function(fileEntry) {
+    console.log('getFileEntry');
+    fileEntry.file(function(file) {
+
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        imgNode.attr('src', reader.result);
+      };
+
+      imgNode.attr('width' , '100%');
+      reader.readAsDataURL(file);
+
+    }, fail);
+  }, fail);
 }
 
 

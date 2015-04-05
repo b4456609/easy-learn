@@ -30,8 +30,8 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
-  $('#slideshare_cancel').click(function(){
-    $('#popup_slideshare').popup( "close" );
+  $('#slideshare_cancel').click(function() {
+    $('#popup_slideshare').popup("close");
   });
 });
 
@@ -88,9 +88,29 @@ $(document).on('pageshow', "#view_pack", function() {
   //    click and show note hanlder
   $(".note").click(showNoteHandler);
 
-
+  showPackImg();
 });
 
+function showPackImg() {
+  var imgArray = $("div.ui-content img[imgname]");
+  // console.log(imgArray);
+  // console.log(imgArray.length);
+  // console.log(imgArray.attr('imgname'));
+  var i;
+
+  //var myVals = [];
+  $("div.ui-content img[imgname]").map(function() {
+    //myVals.push($(this).attr('value'));
+
+    displayPackImg(viewPackId, $(this), $(this).attr('imgname'));
+  });
+
+  // for(i=0; i< imgArray.length; i++){
+  //   var imgNode = imgArray[i];
+  //   var imgName = imgArray[i].attr('imgname');
+  //   displayPackImg(viewPackId, imgNode, imgName);
+  // }
+}
 
 function show_comment() {
   $(":mobile-pagecontainer").pagecontainer("change", "comment.html");
@@ -267,7 +287,7 @@ function load_editor() {
 }
 
 function slideshare_submit_handler(event) {
-  $('#popup_slideshare').popup( "close" );
+  $('#popup_slideshare').popup("close");
   var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
   $.get(url,
     function(data) {
@@ -293,7 +313,7 @@ function slideshare_submit_handler(event) {
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         //img += "<img src=" + http + " style='width:100%;'>";
-        downloadFileByUrl(http, newPackId, displaySlideShareImgInEditor);
+        downloadSlideShareByUrl(http, newPackId, displaySlideShareImgInEditor);
       }
 
       //editorElement.editable("insertHTML", img, true);
@@ -308,10 +328,10 @@ function displaySlideShareImgInEditor(fileEntry) {
     var reader = new FileReader();
     reader.onloadend = function() {
       console.log(reader.result);
-       //img.src = reader.result;
-      var img = "<img name='"+ file.name +"' src='" + reader.result + "'>";
+      //img.src = reader.result;
+      var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
 
-      console.log(file);
+      //console.log(file);
       console.log(img.outerHTML);
 
       editorElement.editable("insertHTML", img, true);

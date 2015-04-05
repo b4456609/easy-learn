@@ -14,41 +14,24 @@ $(document).on('pageinit', "#comment", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
   var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
 
-  //display selection word
+  //display note word
   $('#note_word').html(noteText);
 
   //display selection word
   $('#display_note_area').html(currentNote.content);
 
-  //find current note
+  //find current note's comment array
   var commentArray = currentNote.comment;
 
-  //create comment html code
-  var i;
-  var commentTemplate = '';
-  for (i in commentArray) {
-    var time = new Date(commentArray[i].create_time);
-    console.log(commentArray[i]);
-    console.log(commentArray[i].create_time);
-    console.log(time);
-    commentTemplate += '<li><h2>' + commentArray[i].user_name + '</h2><font style="white-space:normal; font-size: small">' + commentArray[i].content + '</font><p class="ui-li-aside" style="margin-top: 9px">' + time.toLocaleString(navigator.language, {
-      hour: '2-digit',
-      minute: 'numeric',
-      day: "numeric",
-      month: "numeric"
-    }) + '</p></li>';
-  }
+  //display comment on screen
+  displayComment(commentArray);
+  getNewerComment(currentNote.id, commentArray);
 
-  // display comment
-  $('#comment_display_area').append(commentTemplate);
-  $("#comment_display_area").listview("refresh");
 });
 
 $(document).on('pageshow', "#comment", function() {
 
-  $('#comment_submit').click(function() {
-    comment_submit_handler();
-  });
+  $('#comment_submit').click(comment_submit_handler);
 });
 
 
@@ -179,7 +162,7 @@ function comment_submit_handler() {
     user_id: JSON.parse(localStorage.user).id,
     user_name: JSON.parse(localStorage.user).name
   };
-  console.log(newComment);
+
 
   //get current note
   var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
@@ -187,9 +170,11 @@ function comment_submit_handler() {
   //add new comment
   currentNote.comment[currentNote.comment.length] = newComment;
 
-
   //update pack in localStorage
   localStorage.setItem(viewPackId, JSON.stringify(pack));
+
+  //save to server
+  postComment(noteId, newComment);
 }
 
 function paintNote(noteId) {
@@ -201,51 +186,38 @@ function paintNote(noteId) {
   range.surroundContents(span);
 }
 
-function getCharacterOffsetWithin(range, node) {
-  var treeWalker = document.createTreeWalker(
-    node,
-    NodeFilter.SHOW_ALL,
-    function(node) {
-      var nodeRange = document.createRange();
-      nodeRange.selectNodeContents(node);
+function getNewerComment(currentNoteId, commentArray) {
 
-      return nodeRange.compareBoundaryPoints(Range.START_TO_END, range) < 1 ?
-        NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-    },
-    false
-  );
-
-  var charCount = 0;
-  while (treeWalker.nextNode()) {
-    charCount += treeWalker.currentNode.length;
+  //get the newst comment date for ajax
+  var lastestCreateTime = 0;
+  var i;
+  for (i in commentArray) {
+    if (commentArray[i] > lastestCreateTime) {
+      lastestCreateTime = commentArray[i];
+    }
   }
-  if (range.startContainer.nodeType == 3) {
-    charCount += range.startOffset;
+  //check server if has newer comment on this note
+  if (lastestCreateTime !== 0) {
+    getComment(currentNoteId, lastestCreateTime);
   }
-  return charCount;
 }
 
+function displayComment(commentArray) {
+  //create comment html code
+  var i;
+  var commentTemplate = '';
+  for (i in commentArray) {
+    var time = new Date(commentArray[i].create_time);
 
-function getCaretCharacterOffsetWithin(element) {
-  var caretOffset = 0;
-  var doc = element.ownerDocument || element.document;
-  var win = doc.defaultView || doc.parentWindow;
-  var sel;
-  if (typeof win.getSelection != "undefined") {
-    sel = win.getSelection();
-    if (sel.rangeCount > 0) {
-      var range = win.getSelection().getRangeAt(0);
-      var preCaretRange = range.cloneRange();
-      preCaretRange.selectNodeContents(element);
-      preCaretRange.setEnd(range.endContainer, range.endOffset);
-      caretOffset = preCaretRange.toString().length;
-    }
-  } else if ((sel = doc.selection) && sel.type != "Control") {
-    var textRange = sel.createRange();
-    var preCaretTextRange = doc.body.createTextRange();
-    preCaretTextRange.moveToElementText(element);
-    preCaretTextRange.setEndPoint("EndToEnd", textRange);
-    caretOffset = preCaretTextRange.text.length;
+    commentTemplate += '<li><h2>' + commentArray[i].user_name + '</h2><font style="white-space:normal; font-size: small">' + commentArray[i].content + '</font><p class="ui-li-aside" style="margin-top: 9px">' + time.toLocaleString(navigator.language, {
+      hour: '2-digit',
+      minute: 'numeric',
+      day: "numeric",
+      month: "numeric"
+    }) + '</p></li>';
   }
-  return caretOffset;
+
+  // display comment
+  $('#comment_display_area').append(commentTemplate);
+  $("#comment_display_area").listview("refresh");
 }

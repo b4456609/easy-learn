@@ -10,16 +10,18 @@ var new_pack = null;
 //new pack content
 var new_pack_content = null;
 
+var youtube_embed = [];
+
 $(document).on("pageinit", "#new_pack_edit", function() {
   load_editor();
 });
 
-$(document).on("pagebeforeshow", "#new_pack_edit", function() {});
 $(document).on("pageshow", "#new_pack_edit", function() {
   //show saved html
   if (new_pack_content !== null) {
     $('#edit').editable("insertHTML", new_pack_content, true);
   }
+
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
   $('#edit_back').click(function() {
@@ -266,8 +268,6 @@ function load_editor() {
           value: 'fa fa-slideshare'
         },
         callback: function() {
-          //save put img position
-          $("#edit").editable("saveSelection");
           //open popup slideshare setting
           $("#popup_slideshare").popup("open");
 
@@ -289,11 +289,51 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-youtube'
         },
-        callback: function() {},
+        callback: function() {
+          //open popup slideshare setting
+          $("#popup_youtube").popup("open");
+          //submit handler
+          $("#youtube_submit").click(youtube_submit_handler);
+
+          //cancel handler
+          $('#youtube_cancel').click(function() {
+            $('#popup_youtube').popup("close");
+          });
+        },
         refresh: function() {}
       }
     }
   });
+}
+
+function youtube_submit_handler() {
+  // get slideshare url
+  var user_url = $("#youtube_url").val();
+  var start = $('#youtube_start_page ').val();
+  var end = $('#youtube_end_page').val();
+
+  //close popup
+  $('#popup_youtube').popup("close");
+
+  var videoId = youtube_parser(user_url);
+
+  //set embed code
+  var embedCode = '<div class="video-container" youtube="'+ youtube_embed.length +'">' +
+    '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + videoId +
+    '?start=5&end=8&controls=1&disablekb=1&modestbranding=1" frameborder="0" allowfullscreen></iframe>' + '</div>';
+    youtube_embed.append(embedCode);
+    $('#edit').editable("insertHTML", embedCode, true);
+}
+
+//parse youtube url to id
+function youtube_parser(url) {
+  var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+  var match = url.match(regExp);
+  if (match && match[7].length == 11) {
+    return match[7];
+  } else {
+    alert("Url incorrecta");
+  }
 }
 
 function slideshare_submit_handler() {
@@ -304,7 +344,6 @@ function slideshare_submit_handler() {
 
   //close popup
   $('#popup_slideshare').popup("close");
-  $('#edit').editable("restoreSelection");
 
   // set slideshare url
   var url = "http://www.slideshare.net/api/oembed/2?url=" + user_url + "&format=json";
@@ -323,9 +362,9 @@ function slideshare_submit_handler() {
       }
 
       //download img to localStorage
-      var img = "";
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
+        console.log(http);
         downloadSlideShareByUrl(http, newPackId, displaySlideShareImgInEditor);
       }
     });

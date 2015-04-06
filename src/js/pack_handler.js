@@ -2,42 +2,61 @@
 var noteText;
 
 //for picture use
-var newPackId;
+var newPackId = null;
 
 //for new pack and save to localStorage
-var new_pack = {
-  "creator_user_id": null,
-  "create_time": null,
-  "name": null,
-  "is_public": null,
-  "description": null,
-  "tags": null,
-  "cover_filename": null,
-  "version": []
-};
+var new_pack = null;
 
+//new pack content
+var new_pack_content = null;
 
 $(document).on("pageinit", "#new_pack_edit", function() {
   load_editor();
 });
 
+$(document).on("pagebeforeshow", "#new_pack_edit", function() {});
 $(document).on("pageshow", "#new_pack_edit", function() {
+  //show saved html
+  if (new_pack_content !== null) {
+    $('#edit').editable("insertHTML", new_pack_content, true);
+  }
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
-  $('#slideshare_cancel').click(function() {
-    $('#popup_slideshare').popup("close");
+  $('#edit_back').click(function() {
+    new_pack_content = $('#edit').editable("getHTML", true, false);
   });
 });
 
 $(document).on('pageinit', "#new_pack", function() {
+  //check is user back from edit page
+  if (newPackId === null) {
+    //get current time
+    var time = new Date().getTime();
 
-  //get current time
-  var time = new Date().getTime();
-  newPackId = 'pack' + time;
+    //initail the pack setting
+    newPackId = 'pack' + time;
+    new_pack = {
+      "creator_user_id": JSON.parse(localStorage.user).id,
+      "create_time": time.toString(),
+      "name": null,
+      "is_public": null,
+      "description": null,
+      "tags": null,
+      "cover_filename": null,
+      "version": []
+    };
+  } else { //set saved value
+    $('#new_pack_title').val(new_pack.name);
+    $('#is_public').prop('checked', new_pack.is_public).checkboxradio("refresh");
+    $('#new_pack_description').val(new_pack.description);
+    $('#tags').val(new_pack.tags);
+    if (new_pack.cover_filename !== null) {
+      getImgNode(newPackId, new_pack.cover_filename, function(packId, img) {
+        $("#cover_photo_area").html(img.outerHTML);
+      });
+    }
+  }
 
-  //initail the pack setting
-  new_pack.creator_user_id = JSON.parse(localStorage.user).id;
-  new_pack.create_time = time.toString();
 });
 
 $(document).on('pageshow', "#new_pack", function() {
@@ -166,7 +185,6 @@ function onFail(message) {
 }
 
 function displayCoverImg(packfileEntry) {
-  console.log(packfileEntry);
   packfileEntry.file(function(file) {
 
     var img = document.createElement("img");
@@ -220,6 +238,11 @@ function savePackHandler() {
 
   //change page
   $(":mobile-pagecontainer").pagecontainer("change", "index.html");
+
+  // reset parameter
+  new_pack = null;
+  newPackId = null;
+  new_pack_content = null;
 }
 
 function load_editor() {
@@ -248,12 +271,17 @@ function load_editor() {
           //open popup slideshare setting
           $("#popup_slideshare").popup("open");
 
-          //submit hanlder
+          //submit handler
           $("#slideshare_submit").click(slideshare_submit_handler);
+
+          //cancel handler
+          $('#slideshare_cancel').click(function() {
+            $('#popup_slideshare').popup("close");
+          });
         },
         refresh: function() {}
       },
-      youtube:{
+      youtube: {
         title: 'insert youtube',
         icon: {
           type: 'font',
@@ -261,8 +289,7 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-youtube'
         },
-        callback: function() {
-        },
+        callback: function() {},
         refresh: function() {}
       }
     }

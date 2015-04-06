@@ -1,7 +1,3 @@
-function fail(error) {
-  console.log('FileSystem Error:' + error.code);
-}
-
 function addFileToPack(packId, fileEntry) {
   var time = new Date().getTime();
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
@@ -11,7 +7,7 @@ function addFileToPack(packId, fileEntry) {
     }, function(destDirEntry) {
       console.log('addFileToPack dirEntry2');
       fileEntry.moveTo(destDirEntry, time + '.jpg');
-      cover_filename = time + '.jpg';
+      new_pack.cover_filename = time + '.jpg';
       destDirEntry.getFile(time + '.jpg', {
         create: false
       }, function(fileEntry) {
@@ -24,28 +20,21 @@ function addFileToPack(packId, fileEntry) {
 
 function getImgNode(packId, fileName, callback) {
 
-  window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
-    console.log('getFile dirEntry');
-    dirEntry.getDirectory(packId, {
-      create: false
-    }, function(destDirEntry) {
-      destDirEntry.getFile(fileName, {
-        create: false
-      }, function(fileEntry) {
-        fileEntry.file(function(file) {
-          img = document.createElement("img");
+  var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
 
-          var reader = new FileReader();
-          reader.onloadend = function() {
-            img.src = reader.result;
-          };
-          img.style["z-index"] = 1;
-          img.style.width = '100%';
-          reader.readAsDataURL(file);
-          console.log(img);
-          return callback(packId, img);
-        }, fail);
-      }, fail);
+  window.resolveLocalFileSystemURL(path, function(fileEntry) {
+    fileEntry.file(function(file) {
+      var img = document.createElement("img");
+
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        img.src = reader.result;
+        img.style["z-index"] = 1;
+        img.style.width = '100%';
+        console.log(img);
+        return callback(packId, img);
+      };
+      reader.readAsDataURL(file);
     }, fail);
   }, fail);
 }
@@ -57,7 +46,7 @@ function downloadSlideShareByUrl(url, packId, callback) {
 
   fileTransfer.download(
     uri,
-    cordova.file.externalDataDirectory + '/' + packId + '/slideshare' + time + '.jpg',
+    cordova.file.externalDataDirectory + packId + '/slideshare' + time + '.jpg',
     function(entry) {
       console.log("download complete: " + entry.toURL());
       callback(entry);
@@ -85,11 +74,15 @@ function displayPackImg(viewPackId, imgNode, imgName) {
         imgNode.attr('src', reader.result);
       };
 
-      imgNode.attr('width' , '100%');
+      imgNode.attr('width', '100%');
       reader.readAsDataURL(file);
 
     }, fail);
   }, fail);
+}
+
+function fail(error) {
+  console.log('FileSystem Error:' + error.code);
 }
 
 

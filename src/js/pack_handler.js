@@ -4,30 +4,24 @@ var noteText;
 //for picture use
 var newPackId;
 
-//for new file use
-var cover_filename = null;
+//for new pack and save to localStorage
+var new_pack = {
+  "creator_user_id": null,
+  "create_time": null,
+  "name": null,
+  "is_public": null,
+  "description": null,
+  "tags": null,
+  "cover_filename": null,
+  "version": []
+};
 
-//for new pack use
-var new_pack;
-
-//editor's element node
-var editorElement;
 
 $(document).on("pageinit", "#new_pack_edit", function() {
-
-  //set editor height
-  $('#iframe1').load(function() {
-    $(this).height($(window).height() - headerHeight - 8);
-    $(this).width($(window).width());
-  });
   load_editor();
-
 });
 
 $(document).on("pageshow", "#new_pack_edit", function() {
-
-  editorElement = $('#edit');
-
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
   $('#slideshare_cancel').click(function() {
@@ -40,31 +34,24 @@ $(document).on('pageinit', "#new_pack", function() {
   //get current time
   var time = new Date().getTime();
   newPackId = 'pack' + time;
-  // $('#tags').tagsInput({
-  //   'height': '100px',
-  //   'width': $(window).width() + 'px',
-  //   'delimiter': [',', ';', ' '],
-  //   'removeWithBackspace': true,
-  //   'defaultText': 'add a tag',
-  // });
 
+  //initail the pack setting
+  new_pack.creator_user_id = JSON.parse(localStorage.user).id;
+  new_pack.create_time = time.toString();
+});
+
+$(document).on('pageshow', "#new_pack", function() {
   // save new pack storage for next page use
   $('#new_pack_next').click(function() {
+    //save user data
+    new_pack.name = $('#new_pack_title').val();
+    new_pack.is_public = document.getElementById("is_public").checked;
+    new_pack.description = $('#new_pack_description').val();
+    new_pack.tags = $('#tags').val();
 
-    //construct new pack object
-    new_pack = {
-      "creator_user_id": JSON.parse(localStorage.user).id,
-      "create_time": time.toString(),
-      "name": $('#new_pack_title').val(),
-      "is_public": document.getElementById("is_public").checked,
-      "description": $('#new_pack_description').val(),
-      "tags": $('#tags').val(),
-      "cover_filename": cover_filename,
-      "version": [],
-    };
   });
 
-
+  // choose cover image file hanlder
   $('#choose_photo').click(getPhotoWithModifySize);
 });
 
@@ -74,13 +61,10 @@ $(document).on('pageinit', "#view_pack", function() {
   console.log('view pack name:' + pack.name);
   $('#veiw_pack_content').html(pack.version[viewPackVersion].content);
   $('#pack_title').html(pack.name);
-
-
 });
 
 
 $(document).on('pageshow', "#view_pack", function() {
-
 
   $("#note-display").toolbar("option", "position", "fixed");
   $("#note-display").toolbar("option", "tapToggle", false);
@@ -93,23 +77,12 @@ $(document).on('pageshow', "#view_pack", function() {
 
 function showPackImg() {
   var imgArray = $("div.ui-content img[imgname]");
-  // console.log(imgArray);
-  // console.log(imgArray.length);
-  // console.log(imgArray.attr('imgname'));
   var i;
 
-  //var myVals = [];
   $("div.ui-content img[imgname]").map(function() {
-    //myVals.push($(this).attr('value'));
-
     displayPackImg(viewPackId, $(this), $(this).attr('imgname'));
   });
 
-  // for(i=0; i< imgArray.length; i++){
-  //   var imgNode = imgArray[i];
-  //   var imgName = imgArray[i].attr('imgname');
-  //   displayPackImg(viewPackId, imgNode, imgName);
-  // }
 }
 
 function show_comment() {
@@ -138,8 +111,10 @@ function showNoteHandler() {
   }
 
   // insert html into note area
-  //var template = '<h4>'+noteText+'</h4><div class="note-content"><p>Chromium是一個由Google主導開發的網頁瀏覽器，以BSD授權條款等多重自由版權發行並開放原始碼。Chromium的開發可能早自2006年即開始[1]，2008年12月11日釋出1.0版本，設計思想基於簡單、高速、穩定、安全等理念，在架構上使用了蘋果發展出來的WebKit排版引擎（自28版起改為由WebKit所分支的Blink排版引擎）、Safari的部份原始碼與Firefox的成果，並採用Google獨家開發出的V8引擎以提升解譯JavaScript的效率，而且設計了「沙盒」、「黑名單」、「無痕瀏覽」等功能來實現穩定與安全的網頁瀏覽環境。</p></div><div class="note-function-button"><a class="ui-btn note-left-button">返回</a><a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
-  var noteTemplate = '<h4>' + noteText + '</h4><div class="note-content"><p>' + noteArray[i].content + '</p></div><div class="note-function-button"><a class="ui-btn note-left-button">返回</a><a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
+  var noteTemplate = '<h4>' + noteText + '</h4>';
+  noteTemplate += '<div class="note-content"><p>' + noteArray[i].content + '</p></div>';
+  noteTemplate += '<div class="note-function-button"><a class="ui-btn note-left-button">返回</a>';
+  noteTemplate += '<a id="show_comment" class="ui-btn note-right-button">查看留言</a></div>';
 
   $("#note-display").html(noteTemplate);
 
@@ -194,8 +169,6 @@ function displayCoverImg(packfileEntry) {
   console.log(packfileEntry);
   packfileEntry.file(function(file) {
 
-    console.log('fileEntry.file');
-    console.log('return' + file);
     var img = document.createElement("img");
     var reader = new FileReader();
     reader.onloadend = function() {
@@ -203,7 +176,6 @@ function displayCoverImg(packfileEntry) {
     };
     img.style.width = '100%';
 
-    console.log('fileEntry.file.readAsDataURL');
     reader.readAsDataURL(file);
     $("#cover_photo_area").html(img);
   }, fail);
@@ -212,7 +184,7 @@ function displayCoverImg(packfileEntry) {
 function savePackHandler() {
 
   //get editor word and replace the img
-  var content = editorElement.editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  var content = $('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
 
   //get current time
@@ -229,8 +201,6 @@ function savePackHandler() {
     "id": "version" + time,
     "content": content,
   };
-
-  console.log(new_pack);
 
   //set new pack in localStorage
   localStorage.setItem(newPackId, JSON.stringify(new_pack));
@@ -257,7 +227,7 @@ function load_editor() {
     'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
       'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
       'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
-      'insertHorizontalRule', 'table', 'slideshare', 'insertVideo', 'insertImage',
+      'insertHorizontalRule', 'table', 'slideshare', 'youtube', 'insertVideo', 'insertImage',
       'createLink'
     ],
     inlineMode: false,
@@ -273,12 +243,25 @@ function load_editor() {
           value: 'fa fa-slideshare'
         },
         callback: function() {
+          //save put img position
+          $("#edit").editable("saveSelection");
+          //open popup slideshare setting
           $("#popup_slideshare").popup("open");
-          var user_url = $("#slideshare_url").val();
 
-          $("#slideshare_submit").click({
-            user_url: user_url
-          }, slideshare_submit_handler);
+          //submit hanlder
+          $("#slideshare_submit").click(slideshare_submit_handler);
+        },
+        refresh: function() {}
+      },
+      youtube:{
+        title: 'insert youtube',
+        icon: {
+          type: 'font',
+
+          // Font Awesome icon class fa fa-*.
+          value: 'fa fa-youtube'
+        },
+        callback: function() {
         },
         refresh: function() {}
       }
@@ -286,19 +269,22 @@ function load_editor() {
   });
 }
 
-function slideshare_submit_handler(event) {
+function slideshare_submit_handler() {
+  // get slideshare url
+  var user_url = $("#slideshare_url").val();
+  var start = $('#slideshare_start_page ').val();
+  var end = $('#slideshare_end_page').val();
+
+  //close popup
   $('#popup_slideshare').popup("close");
-  var url = "http://www.slideshare.net/api/oembed/2?url=" + event.data.user_url + "&format=json";
+  $('#edit').editable("restoreSelection");
+
+  // set slideshare url
+  var url = "http://www.slideshare.net/api/oembed/2?url=" + user_url + "&format=json";
+
+  //ajax
   $.get(url,
     function(data) {
-      var start = $('#slideshare_start_page ').val();
-      var end = $('#slideshare_end_page').val();
-
-      // console.log(start);
-      // console.log(typeof start);
-      // console.log(end);
-
-
       //error check
       if (start <= 0 | start === null | start > data.total_slides) {
         start = 1;
@@ -309,35 +295,24 @@ function slideshare_submit_handler(event) {
         end = data.total_slides;
       }
 
+      //download img to localStorage
       var img = "";
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
-        //img += "<img src=" + http + " style='width:100%;'>";
         downloadSlideShareByUrl(http, newPackId, displaySlideShareImgInEditor);
       }
-
-      //editorElement.editable("insertHTML", img, true);
     });
-
 }
 
 function displaySlideShareImgInEditor(fileEntry) {
   fileEntry.file(function(file) {
-    //  var img = document.createElement("img");
 
     var reader = new FileReader();
     reader.onloadend = function() {
-      console.log(reader.result);
-      //img.src = reader.result;
       var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
-
-      //console.log(file);
-      console.log(img.outerHTML);
-
-      editorElement.editable("insertHTML", img, true);
+      $('#edit').editable("insertHTML", img, true);
     };
 
     reader.readAsDataURL(file);
-
   }, fail);
 }

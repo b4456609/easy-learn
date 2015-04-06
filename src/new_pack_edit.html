@@ -18,26 +18,39 @@
   <script src="lib/froala-editor/js/plugins/font_family.min.js"></script>
 
   <div data-role="popup" id="popup_slideshare" data-theme="a" class="ui-corner-all">
-    <form>
+    <div style="padding:10px 20px;">
 
-      <div style="padding:10px 20px;">
+      <label for="slideshare_url">輸入slideshare網址:</label>
+      <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
 
-        <label for="slideshare_url" class="ui-hidden-accessible">輸入slideshare網址:</label>
-        <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
+      <label for="slideshare_start_page">起始頁數:</label>
+      <input type="number" name="slideshare_start_page" pattern="[0-9]*" id="slideshare_start_page" value="0">
 
-        <label for="slideshare_start_page" class="ui-hidden-accessible">起始頁數:</label>
-        <input type="number" name="slideshare_start_page" pattern="[0-9]*" id="slideshare_start_page" value="0">
+      <label for="slideshare_end_page">結束頁數:</label>
+      <input type="number" name="slideshare_end_page" pattern="[0-9]*" id="slideshare_end_page" value="0">
 
-        <label for="slideshare_end_page" class="ui-hidden-accessible">結束頁數:</label>
-        <input type="number" name="slideshare_end_page" pattern="[0-9]*" id="slideshare_end_page" value="0">
+      <a id="slideshare_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
 
-        <a id="slideshare_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
-
-        <a id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</a>
-      </div>
-    </form>
+      <a id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</a>
+    </div>
   </div>
+  <div data-role="popup" id="popup_youtube" data-theme="a" class="ui-corner-all">
+    <div style="padding:10px 20px;">
 
+      <label for="slideshare_url">輸入Youtube網址:</label>
+      <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
+
+      <label for="slideshare_start_page">起始頁數:</label>
+      <input type="number" name="slideshare_start_page" pattern="[0-9]*" id="slideshare_start_page" value="0">
+
+      <label for="slideshare_end_page">結束頁數:</label>
+      <input type="number" name="slideshare_end_page" pattern="[0-9]*" id="slideshare_end_page" value="0">
+
+      <a id="slideshare_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
+
+      <a id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</a>
+    </div>
+  </div>
   <textarea id="edit">Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor
     to appear as soon as you click in the editable area and not only when you select text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select
     text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG
@@ -57,5 +70,4 @@
     to appear as soon as you click in the editable area and not only when you select text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select
     text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG editor to appear as soon as you click in the editable area and not only when you select text.Click here to edit the content alwaysVisible option makes the inline WYSIWYG
     editor to appear as soon as you click in the editable area and not only when you select text.</textarea>
-  <!-- <iframe src="new_pack_editor.html" id="iframe1" onload="load_editor()"></iframe> -->
 </div>

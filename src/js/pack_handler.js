@@ -265,7 +265,7 @@ function load_editor() {
     'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
       'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
       'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
-      'insertHorizontalRule', 'table', 'slideshare', 'youtube', 'insertVideo', 'insertImage',
+      'insertHorizontalRule', 'table', 'slideshare', 'youtube', 
       'createLink'
     ],
     inlineMode: false,

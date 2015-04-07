@@ -204,7 +204,7 @@ function displayCoverImg(packfileEntry) {
 function savePackHandler() {
 
   //get editor word and replace the img
-  var content = $('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  content = $('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
 
   //get current time
@@ -222,6 +222,21 @@ function savePackHandler() {
     "content": content,
   };
 
+  //replace youtube
+  var pack_content = new_pack.version[new_pack.version.length - 1].content;
+  console.log(pack_content);
+  console.log(youtube_embed);
+  var i;
+  for (i = 0; i < youtube_embed.length; i++) {
+    var index = pack_content.indexOf('<div class="video-container"');
+    console.log(i);
+    console.log(index);
+    pack_content = pack_content.replace(pack_content.substr(index, 157), youtube_embed[i]);
+    //replace real one
+    new_pack.version[new_pack.version.length - 1].content = pack_content;
+    console.log(pack_content);
+  }
+
   //set new pack in localStorage
   localStorage.setItem(newPackId, JSON.stringify(new_pack));
 
@@ -229,10 +244,10 @@ function savePackHandler() {
   var folderArray = JSON.parse(localStorage.folder);
 
   //find all folder in data
-  var i;
-  for (i in folderArray) {
-    if (folderArray[i].name == 'All') {
-      folderArray[i].pack[folderArray[i].pack.length] = newPackId;
+  var j;
+  for (j in folderArray) {
+    if (folderArray[j].name == 'All') {
+      folderArray[j].pack[folderArray[j].pack.length] = newPackId;
       break;
     }
   }
@@ -257,6 +272,7 @@ function load_editor() {
     ],
     inlineMode: false,
     toolbarFixed: false,
+    useFrTag: false,
     customButtons: {
       // new slideshare button
       slideshare: {
@@ -292,6 +308,7 @@ function load_editor() {
         callback: function() {
           //open popup slideshare setting
           $("#popup_youtube").popup("open");
+
           //submit handler
           $("#youtube_submit").click(youtube_submit_handler);
 
@@ -315,14 +332,23 @@ function youtube_submit_handler() {
   //close popup
   $('#popup_youtube').popup("close");
 
+  //focus on editor
+  $("#editor").editable("focus");
+
   var videoId = youtube_parser(user_url);
 
   //set embed code
-  var embedCode = '<div class="video-container" youtube="'+ youtube_embed.length +'">' +
+  var embedCode = '<div class="video-container" youtube="' + youtube_embed.length + '">' +
     '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + videoId +
     '?start=5&end=8&controls=1&disablekb=1&modestbranding=1" frameborder="0" allowfullscreen></iframe>' + '</div>';
-    youtube_embed.append(embedCode);
+
+  //push to globle array
+  youtube_embed.push(embedCode);
+
+  window.setTimeout(function() {
+    //insert to html
     $('#edit').editable("insertHTML", embedCode, true);
+  }, 500);
 }
 
 //parse youtube url to id

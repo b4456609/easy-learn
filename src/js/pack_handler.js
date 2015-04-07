@@ -233,9 +233,10 @@ function savePackHandler() {
   var i;
   for (i = 0; i < youtube_embed.length; i++) {
     var index = pack_content.indexOf('<div class="video-container"');
+    var endIndex = pack_content.indexOf('</div>');
     console.log(i);
     console.log(index);
-    pack_content = pack_content.replace(pack_content.substr(index, 157), youtube_embed[i]);
+    pack_content = pack_content.replace(pack_content.substring(index, endIndex+6), youtube_embed[i]);
     //replace real one
     new_pack.version[new_pack.version.length - 1].content = pack_content;
     console.log(pack_content);

@@ -3,8 +3,7 @@ var note_selection = {
   id: '',
   word: '',
   new_version_content: '',
-  //  position: 0,
-  //  position_length: 0,
+  range: null
 };
 
 var viewNoteArrayIndex;
@@ -30,10 +29,9 @@ $(document).on('pageinit', "#comment", function() {
 });
 
 $(document).on('pageshow', "#comment", function() {
-
+  //comment submit button
   $('#comment_submit').click(comment_submit_handler);
 });
-
 
 
 $(document).on('pageinit', "#new_note", function() {
@@ -43,90 +41,86 @@ $(document).on('pageinit', "#new_note", function() {
 
 $(document).on('pageshow', "#new_note", function() {
   //save note handler
-  $('#save_note').click(function() {
-
-
-    //save in localStorage
-    var pack = JSON.parse(localStorage.getItem(viewPackId));
-
-    //update version
-    pack.version[viewPackVersion].content = note_selection.new_version_content;
-
-    //prepare new note
-    var newNote = {
-      id: note_selection.id,
-      color: $('#note_color').val(),
-      content: $('#note_content').val(),
-      user_id: JSON.parse(localStorage.user).id,
-      user_name: JSON.parse(localStorage.user).name,
-      comment: []
-    };
-
-    //append note in pack's version
-    pack.version[viewPackVersion].note[pack.version[viewPackVersion].note.length] = newNote;
-
-    //write in localStorage
-    localStorage.setItem(viewPackId, JSON.stringify(pack));
-
-  });
-
+  $('#save_note').click(save_note_handler);
 });
 
 
 $(document).on('pageinit', "#new_note_choose", function() {
+  $("#color_choose").checkboxradio({
+    defaults: true
+  });
+  //show choose content
   var pack = JSON.parse(localStorage.getItem(viewPackId));
   $('#choose_pack_content').html(pack.version[viewPackVersion].content);
 });
 
-$(document).on('pagebeforeshow', "#new_note_choose", function() {});
-
-
 $(document).on('pageshow', "#new_note_choose", function() {
-
-  //get selection word
-  $('#note_choose_next').click(function() {
-    var selectionWord = window.getSelection();
-
-    console.log('\nSelection text:');
-    console.log(selectionWord);
-    console.log('anchorNode ');
-    console.log(selectionWord.anchorNode);
-    console.log('anchorOffset ' + selectionWord.anchorOffset);
-    console.log('focusNode ');
-    console.log(selectionWord.focusNode);
-    console.log('focusOffset ' + selectionWord.focusOffset);
-    console.log('isCollapsed ' + selectionWord.isCollapsed);
-    console.log('rangeCount ' + selectionWord.rangeCount);
-    console.log('getRangeAt');
-    console.log(selectionWord.getRangeAt(0));
-
-    var el = document.getElementById("choose_pack_content");
-    var range = window.getSelection().getRangeAt(0);
-    console.log('END_TO_START' + getCharacterOffsetWithin(range, el));
-    //console.log(getCaretCharacterOffsetWithin(el));
-    console.log('');
-
-
-    // write in object for next page use
-    //    note_selection.position = getCharacterOffsetWithin(range, el);
-    //    note_selection.position_length = selectionWord.toString().length;
-    note_selection.word = selectionWord.toString();
-    note_selection.user_id = JSON.parse(localStorage.user).id;
-    note_selection.user_name = JSON.parse(localStorage.user).name;
-
-    //create note id
-    //get current time
-    var time = new Date().getTime();
-    var noteId = "note" + time;
-    note_selection.id = noteId;
-
-    // insert html code surround the note
-    paintNote(noteId);
-
-    //get new version's code save into temp variable
-    note_selection.new_version_content = $('#choose_pack_content').html();
-  });
+  //button for next step
+  $('#note_choose_next').click(note_next_handler);
 });
+
+function save_note_handler() {
+
+  // get color class
+  var colorClassName = $('input[name=color_choose]:checked', '#color_choose').val();
+
+  //set color to content
+  note_selection.new_version_content = note_selection.new_version_content.replace('class="note"', 'class="note ' + colorClassName + '"');
+
+  //save in localStorage
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  //update version
+  pack.version[viewPackVersion].content = note_selection.new_version_content;
+
+  //prepare new note
+  var newNote = {
+    id: note_selection.id,
+    content: $('#note_content').val(),
+    user_id: JSON.parse(localStorage.user).id,
+    user_name: JSON.parse(localStorage.user).name,
+    comment: []
+  };
+
+  //append note in pack's version
+  pack.version[viewPackVersion].note[pack.version[viewPackVersion].note.length] = newNote;
+
+  //write in localStorage
+  localStorage.setItem(viewPackId, JSON.stringify(pack));
+
+}
+
+function note_next_handler() {
+
+  //get current time
+  var time = new Date().getTime();
+
+  //create note id
+  var noteId = "note" + time;
+  note_selection.id = noteId;
+
+  var selection = window.getSelection();
+
+  // write in object for next page use
+  note_selection.word = selection.toString();
+  note_selection.range = selection.getRangeAt(0);
+
+  //paint note for next step conveient use
+  paintNote(selection, noteId);
+
+  //get new version's code save into temp variable
+  note_selection.new_version_content = $('#choose_pack_content').html();
+
+}
+
+function paintNote(selection, noteId) {
+  var range = selection.getRangeAt(0);
+
+  var span = document.createElement("span");
+  span.className = "note";
+  span.setAttribute('noteid', noteId);
+  range.surroundContents(span);
+}
 
 function comment_submit_handler() {
 
@@ -175,15 +169,6 @@ function comment_submit_handler() {
 
   //save to server
   postComment(noteId, newComment);
-}
-
-function paintNote(noteId) {
-  var range = window.getSelection().getRangeAt(0);
-  //var selectionContents = range.extractContents();
-  var span = document.createElement("span");
-  span.className = "note";
-  span.setAttribute('noteid', noteId);
-  range.surroundContents(span);
 }
 
 function getNewerComment(currentNoteId, commentArray) {

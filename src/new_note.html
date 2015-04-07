@@ -1,22 +1,45 @@
 <div data-role="page" id="new_note">
 
-  <div data-role="header">
+  <div data-role="header" data-position="fixed">
     <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">取消</a>
     <h1>新增便利貼</h1>
     <a href="view_pack.html" id="save_note" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check">完成</a>
   </div>
   <div data-role="main" class="ui-content">
     <h3>貼上便利貼內容:</h3>
-    <p id="new_note_word">chrome</p>
+    <p id="new_note_word"></p>
     <form>
 
       <label for="note_content">便利貼內容</label>
 
       <textarea name="note_content" id="note_content"></textarea>
 
-      <label for="note_color">便利貼顏色</label>
+      <fieldset id="color_choose" data-role="controlgroup">
 
-      <input type="color" data-clear-btn="false" name="note_color" id="note_color" value="">
+        <legend>便利貼顏色</legend>
+
+        <input type="radio" name="color_choose" id="orange" value="note-orange" checked="checked">
+        <label for="orange">
+          <span class="note-orange">Orange</span>
+        </label>
+
+        <input type="radio" name="color_choose" id="teal" value="note-teal">
+        <label for="teal">
+          <span class="note-teal">Teal</span>
+        </label>
+
+        <input type="radio" name="color_choose" id="indigo" value="note-indigo">
+        <label for="indigo">
+          <span class="note-indigo">Indigo</span>
+        </label>
+
+        <input type="radio" name="color_choose" id="purple" value="note-purple">
+        <label for="purple">
+          <span class="note-purple">Purple</span>
+        </label>
+      </fieldset>
+      <!-- <input type="color" data-clear-btn="false" name="note_color" id="note_color" value=""> -->
+
     </form>
   </div>
 </div>

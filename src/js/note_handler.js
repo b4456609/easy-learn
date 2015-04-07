@@ -60,6 +60,8 @@ $(document).on('pageshow', "#new_note_choose", function() {
 });
 
 function save_note_handler() {
+  //get current time
+  var time = new Date().getTime();
 
   // get color class
   var colorClassName = $('input[name=color_choose]:checked', '#color_choose').val();
@@ -79,6 +81,7 @@ function save_note_handler() {
     content: $('#note_content').val(),
     user_id: JSON.parse(localStorage.user).id,
     user_name: JSON.parse(localStorage.user).name,
+    create_time: time,
     comment: []
   };
 

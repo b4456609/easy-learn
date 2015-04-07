@@ -14,10 +14,10 @@ var youtube_embed = [];
 
 $(document).on("pageinit", "#new_pack_edit", function() {
   //set editor height
-   $('#iframe1').load(function() {
-     $(this).height($(window).height() - headerHeight - 8);
-     $(this).width($(window).width());
-   });
+  $('#iframe1').load(function() {
+    $(this).height($(window).height() - headerHeight - 8);
+    $(this).width($(window).width());
+  });
 });
 
 $(document).on("pageshow", "#new_pack_edit", function() {
@@ -211,6 +211,15 @@ function savePackHandler() {
   content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
 
+  var i;
+  for (i = 0; i < youtube_embed.length; i++) {
+    var index = content.indexOf('<div class="video-container"');
+    var endIndex = content.indexOf('</div>');
+    console.log(i);
+    console.log(index);
+    content = content.replace(content.substring(index, endIndex + 6), youtube_embed[i]);
+  }
+
   //get current time
   var time = new Date().getTime();
 
@@ -225,22 +234,6 @@ function savePackHandler() {
     "id": "version" + time,
     "content": content,
   };
-
-  //replace youtube
-  var pack_content = new_pack.version[new_pack.version.length - 1].content;
-  console.log(pack_content);
-  console.log(youtube_embed);
-  var i;
-  for (i = 0; i < youtube_embed.length; i++) {
-    var index = pack_content.indexOf('<div class="video-container"');
-    var endIndex = pack_content.indexOf('</div>');
-    console.log(i);
-    console.log(index);
-    pack_content = pack_content.replace(pack_content.substring(index, endIndex+6), youtube_embed[i]);
-    //replace real one
-    new_pack.version[new_pack.version.length - 1].content = pack_content;
-    console.log(pack_content);
-  }
 
   //set new pack in localStorage
   localStorage.setItem(newPackId, JSON.stringify(new_pack));
@@ -331,29 +324,36 @@ function load_editor() {
 function youtube_submit_handler() {
   // get slideshare url
   var user_url = $("#youtube_url").val();
-  var start = $('#youtube_start_page ').val();
-  var end = $('#youtube_end_page').val();
+  var start = $('#youtube_start_time').val();
+  var end = $('#youtube_end_time').val();
+
+  //save embed parameter
+  var startPar = '', endPar = '';
+
+  // error input hanlder
+  if(start !== 0 && start > 0){
+    startPar += '&start=' + start;
+  }
+  if(end !== 0 && end > 0 && end > start){
+    endPar += '&end=' + end;
+  }
 
   //close popup
   $('#popup_youtube').popup("close");
 
-  //focus on editor
-  $("#editor").editable("focus");
-
+  //get input id
   var videoId = youtube_parser(user_url);
 
   //set embed code
   var embedCode = '<div class="video-container" youtube="' + youtube_embed.length + '">' +
     '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + videoId +
-    '?start=5&end=8&controls=1&disablekb=1&modestbranding=1" frameborder="0" allowfullscreen></iframe>' + '</div>';
+    '?controls=1&disablekb=1&modestbranding=1&showinfo=0&rel=0'+ startPar + endPar + '" frameborder="0" allowfullscreen></iframe>' + '</div>';
 
   //push to globle array
   youtube_embed.push(embedCode);
 
-  window.setTimeout(function() {
-    //insert to html
-    $('#iframe1').contents().find('#edit').editable("insertHTML", embedCode, true);
-  }, 500);
+  //insert to html
+  $('#iframe1').contents().find('#edit').editable("insertHTML", embedCode, true);
 }
 
 //parse youtube url to id

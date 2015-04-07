@@ -13,19 +13,23 @@ var new_pack_content = null;
 var youtube_embed = [];
 
 $(document).on("pageinit", "#new_pack_edit", function() {
-  load_editor();
+  //set editor height
+   $('#iframe1').load(function() {
+     $(this).height($(window).height() - headerHeight - 8);
+     $(this).width($(window).width());
+   });
 });
 
 $(document).on("pageshow", "#new_pack_edit", function() {
   //show saved html
   if (new_pack_content !== null) {
-    $('#edit').editable("insertHTML", new_pack_content, true);
+    $('#iframe1').contents().find('#edit').editable("insertHTML", new_pack_content, true);
   }
 
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
   $('#edit_back').click(function() {
-    new_pack_content = $('#edit').editable("getHTML", true, false);
+    new_pack_content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
   });
 });
 
@@ -204,7 +208,7 @@ function displayCoverImg(packfileEntry) {
 function savePackHandler() {
 
   //get editor word and replace the img
-  content = $('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
 
   //get current time
@@ -263,7 +267,7 @@ function savePackHandler() {
 }
 
 function load_editor() {
-  $('#edit').editable({
+  $('#iframe1').contents().find('#edit').editable({
     'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
       'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
       'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
@@ -347,7 +351,7 @@ function youtube_submit_handler() {
 
   window.setTimeout(function() {
     //insert to html
-    $('#edit').editable("insertHTML", embedCode, true);
+    $('#iframe1').contents().find('#edit').editable("insertHTML", embedCode, true);
   }, 500);
 }
 
@@ -402,7 +406,7 @@ function displaySlideShareImgInEditor(fileEntry) {
     var reader = new FileReader();
     reader.onloadend = function() {
       var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
-      $('#edit').editable("insertHTML", img, true);
+      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
     };
 
     reader.readAsDataURL(file);

@@ -128,7 +128,7 @@ function display_pack(packArray) {
     if (pack.cover_filename !== null) {
       console.log('getImgNode' + packId + pack.cover_filename);
       //display cover image while its finished
-      getImgNode(packId, pack.cover_filename, displayCoverImgAtHome);
+      getImgNode(packId, null, pack.cover_filename, displayCoverImgAtHome);
       pack_templete = '<li packid= "' + packId + '"><a href="#"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     } else {
       pack_templete = '<li packid= "' + packId + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';

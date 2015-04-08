@@ -1,26 +1,30 @@
-function addFileToPack(packId, fileEntry) {
+function addFileToPack(packId, fileEntry, packVersion) {
   var time = new Date().getTime();
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
-    console.log('addFileToPack dirEntry1');
     dirEntry.getDirectory(packId, {
       create: true
-    }, function(destDirEntry) {
-      console.log('addFileToPack dirEntry2');
-      fileEntry.moveTo(destDirEntry, time + '.jpg');
-      new_pack.cover_filename = time + '.jpg';
-      destDirEntry.getFile(time + '.jpg', {
-        create: false
-      }, function(fileEntry) {
-        console.log('addFileToPack dirEntry3');
-        displayCoverImg(fileEntry);
-      }, fail);
-    }, fail);
+    }, function(dirEntry) {
+		dirEntry.getDirectory(packVersion, {
+			create: true
+		}, function(destDirEntry) {
+		  fileEntry.moveTo(destDirEntry, time + '.jpg');
+		  new_pack.cover_filename = time + '.jpg';
+		  destDirEntry.getFile(time + '.jpg', {
+			create: false
+		  }, function(fileEntry) {
+			displayCoverImg(fileEntry);
+		  }, fail);
+		}, fail);
+	}, fail);
   }, fail);
 }
 
-function getImgNode(packId, fileName, callback) {
+function getImgNode(packId, packVersion, fileName, callback) {
 
-  var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
+	var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
+	if (packVersion !== null){
+		var path = cordova.file.externalDataDirectory + packId + '/' + packVersion + '/' + fileName;
+	}
 
   window.resolveLocalFileSystemURL(path, function(fileEntry) {
     fileEntry.file(function(file) {
@@ -38,14 +42,14 @@ function getImgNode(packId, fileName, callback) {
   }, fail);
 }
 
-function downloadSlideShareByUrl(url, packId, callback) {
+function downloadSlideShareByUrl(url, packId, packVersion, callback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
 
   fileTransfer.download(
     uri,
-    cordova.file.externalDataDirectory + packId + '/slideshare' + time + '.jpg',
+    cordova.file.externalDataDirectory + packId + '/' + packVersion + '/slideshare' + time + '.jpg',
     function(entry) {
       console.log("download complete: " + entry.toURL());
       callback(entry);
@@ -59,8 +63,8 @@ function downloadSlideShareByUrl(url, packId, callback) {
   );
 }
 
-function displayPackImg(viewPackId, imgNode, imgName) {
-  var path = cordova.file.externalDataDirectory + viewPackId + '/' + imgName;
+function displayPackImg(viewPackId, viewPackVersion, imgNode, imgName) {
+  var path = cordova.file.externalDataDirectory + viewPackId +'/' + viewPackVersion + '/' + imgName;
   console.log(path);
   //console.log(imgNode);
 

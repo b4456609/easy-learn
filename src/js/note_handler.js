@@ -61,7 +61,7 @@ $(document).on('pageshow', "#new_note_choose", function() {
 
 function save_note_handler() {
   //get current time
-  var time = new Date().getTime();
+  var time = new Date();
 
   // get color class
   var colorClassName = $('input[name=color_choose]:checked', '#color_choose').val();
@@ -96,10 +96,10 @@ function save_note_handler() {
 function note_next_handler() {
 
   //get current time
-  var time = new Date().getTime();
+  var time = new Date();
 
   //create note id
-  var noteId = "note" + time;
+  var noteId = "note" + time.getTime();
   note_selection.id = noteId;
 
   var selection = window.getSelection();
@@ -137,25 +137,27 @@ function comment_submit_handler() {
   $('#comment_text').val('');
 
   //get current time
-  var time = new Date().getTime();
-  var display_time = new Date(time);
+  var time = new Date();
 
   //display comment instant
-  var commentTemplate = '<li><h2>' + JSON.parse(localStorage.user).name + '</h2><font style="white-space:normal; font-size: small">' + commentContent + '</font><p class="ui-li-aside" style="margin-top: 9px">' + display_time.toLocaleString(navigator.language, {
-    hour: '2-digit',
-    minute: 'numeric',
-    day: "numeric",
-    month: "numeric"
-  }) + '</p></li>';
+  var commentTemplate = '<li><h2>' + JSON.parse(localStorage.user).name +
+    '</h2><font style="white-space:normal; font-size: small">' +
+    commentContent + '</font><p class="ui-li-aside" style="margin-top: 9px">' +
+    time.toLocaleString(navigator.language, {
+      hour: '2-digit',
+      minute: 'numeric',
+      day: "numeric",
+      month: "numeric"
+    }) + '</p></li>';
   // display comment
   $('#comment_display_area').append(commentTemplate);
   $("#comment_display_area").listview("refresh");
 
   //prepare new comment
   var newComment = {
-    id: 'comment' + time,
+    id: 'comment' + time.getTime(),
     content: commentContent,
-    create_time: time,
+    create_time: time.toString(),
     user_id: JSON.parse(localStorage.user).id,
     user_name: JSON.parse(localStorage.user).name
   };
@@ -180,13 +182,14 @@ function getNewerComment(currentNoteId, commentArray) {
   var lastestCreateTime = 0;
   var i;
   for (i in commentArray) {
-    if (commentArray[i] > lastestCreateTime) {
+    var commentTime = new Date(commentArray[i].create_time).getTime();
+    if (commentTime > lastestCreateTime) {
       lastestCreateTime = commentArray[i];
     }
   }
   //check server if has newer comment on this note
   if (lastestCreateTime !== 0) {
-    getComment(currentNoteId, lastestCreateTime);
+    getComment(currentNoteId, new Date(lastestCreateTime).toString());
   }
 }
 

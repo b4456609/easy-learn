@@ -20,7 +20,7 @@ $(document).on("pageinit", "#new_pack_edit", function() {
 
 $(document).on("pageshow", "#new_pack_edit", function() {
   //show saved html
-  if (newPackTemp.content !== null) {
+  if (newPackTemp.content !== '') {
     $('#iframe1').contents().find('#edit').editable("insertHTML", newPackTemp.content, true);
   }
 
@@ -33,7 +33,7 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 
 $(document).on('pageinit', "#new_pack", function() {
   //check is user back from edit page
-  if (newPackTemp.id === null) {
+  if (newPackTemp.id === '') {
     //get current time
     var time = new Date().getTime();
 
@@ -41,12 +41,12 @@ $(document).on('pageinit', "#new_pack", function() {
     newPackTemp.id = 'pack' + time;
     new_pack = {
       "creator_user_id": JSON.parse(localStorage.user).id,
-      "create_time": time.toString(),
-      "name": null,
-      "is_public": null,
-      "description": null,
-      "tags": null,
-      "cover_filename": null,
+      "create_time": time,
+      "name": '',
+      "is_public": false,
+      "description": '',
+      "tags": '',
+      "cover_filename": '',
       "version": []
     };
   } else { //set saved value
@@ -54,7 +54,7 @@ $(document).on('pageinit', "#new_pack", function() {
     $('#is_public').prop('checked', new_pack.is_public).checkboxradio("refresh");
     $('#new_pack_description').val(new_pack.description);
     $('#tags').val(new_pack.tags);
-    if (new_pack.cover_filename !== null) {
+    if (new_pack.cover_filename !== '') {
       getImgNode(newPackTemp.id, null, new_pack.cover_filename, function(packId, img) {
         $("#cover_photo_area").html(img.outerHTML);
       });
@@ -179,7 +179,7 @@ function onSuccess(imageData) {
   console.log(imageData);
 
   window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
-    addFileToPack(newPackTemp.id, fileEntry, 0);
+    addFileToPack(newPackTemp.id, fileEntry, '');
   }, fail);
 }
 
@@ -227,7 +227,7 @@ function savePackHandler() {
     "bookmark": [],
     "note": [],
     "file": [],
-    "create_time": time.toString(),
+    "create_time": time,
     "is_public": new_pack.is_public,
     "id": "version" + time,
     "content": content,
@@ -253,9 +253,11 @@ function savePackHandler() {
   $(":mobile-pagecontainer").pagecontainer("change", "index.html");
 
   // reset parameter
-  new_pack = null;
-  newPackTemp.id = null;
-  newPackTemp.content = null;
+  newPackTemp = {
+  	id: '',
+  	content: '',//new pack content
+  	youtube: []
+  };
 }
 
 function load_editor() {
@@ -263,7 +265,7 @@ function load_editor() {
     'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
       'fontSize', 'formatBlock', 'blockStyle', 'align', 'insertOrderedList',
       'insertUnorderedList', 'outdent', 'indent', 'undo', 'redo', 'html',
-      'insertHorizontalRule', 'table', 'slideshare', 'youtube', 
+      'insertHorizontalRule', 'table', 'slideshare', 'youtube',
       'createLink'
     ],
     inlineMode: false,
@@ -389,6 +391,8 @@ function slideshare_submit_handler() {
       } else if (end > data.total_slides) {
         end = data.total_slides;
       }
+
+      console.log(start + '  ' + end);
 
       //download img to localStorage
       for (; start <= end; start++) {

@@ -1,0 +1,8 @@
+{
+    "com.phonegap.plugins.facebookconnect": {
+        "source": {
+            "type": "local",
+            "path": "C:\\Users\\Jack\\Documents\\GitHub\\phonegap-facebook-plugin"
+        }
+    }
+}

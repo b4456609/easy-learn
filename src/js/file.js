@@ -1,10 +1,10 @@
-function addFileToPack(packId, fileEntry, packVersion) {
+function addFileToPack(packId, fileEntry, versionId) {
   var time = new Date().getTime();
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
     dirEntry.getDirectory(packId, {
       create: true
     }, function(dirEntry) {
-      dirEntry.getDirectory(packVersion.toString(), {
+      dirEntry.getDirectory(versionId, {
         create: true
       }, function(destDirEntry) {
         fileEntry.moveTo(destDirEntry, time + '.jpg');
@@ -19,11 +19,11 @@ function addFileToPack(packId, fileEntry, packVersion) {
   }, fail);
 }
 
-function getImgNode(packId, packVersion, fileName, callback) {
+function getImgNode(packId, versionId, fileName, callback) {
 
   var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
-  if (packVersion !== null) {
-    path = cordova.file.externalDataDirectory + packId + '/' + packVersion + '/' + fileName;
+  if (versionId !== null) {
+    path = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + fileName;
   }
 
   window.resolveLocalFileSystemURL(path, function(fileEntry) {
@@ -42,14 +42,14 @@ function getImgNode(packId, packVersion, fileName, callback) {
   }, fail);
 }
 
-function downloadSlideShareByUrl(url, packId, packVersion, callback) {
+function downloadSlideShareByUrl(url, packId, versionId, callback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
 
   fileTransfer.download(
     uri,
-    cordova.file.externalDataDirectory + packId + '/' + packVersion + '/slideshare' + time + '.jpg',
+    cordova.file.externalDataDirectory + packId + '/' + versionId + '/slideshare' + time + '.jpg',
     function(entry) {
       console.log("download complete: " + entry.toURL());
       callback(entry);
@@ -63,8 +63,8 @@ function downloadSlideShareByUrl(url, packId, packVersion, callback) {
   );
 }
 
-function displayPackImg(viewPackId, viewPackVersion, imgNode, imgName) {
-  var path = cordova.file.externalDataDirectory + viewPackId + '/' + viewPackVersion + '/' + imgName;
+function displayPackImg(viewPackId, versionId, imgNode, imgName) {
+  var path = cordova.file.externalDataDirectory + viewPackId + '/' + versionId + '/' + imgName;
   console.log(path);
   //console.log(imgNode);
 

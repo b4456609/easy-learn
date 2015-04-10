@@ -33,7 +33,7 @@ $.when(gapReady, jqmReady).then(myAppLogic);
 function myAppLogic() {
   console.log(cordova.file);
   console.log(FileTransfer);
-  
+
   localStorage.clear();
   testLocalStorage();
   display_all_pack();
@@ -45,11 +45,11 @@ var headerHeight;
 
 //remember the pack to display
 var viewPackId;
-var viewPackVersion = 0;
+var viewPackVersion = {
+  index: 0,
+  id: ''
+};
 
-$(document).on("pageinit", "#home", function() {});
-
-$(document).on("pagebeforecreate", "#home", function() {});
 
 $(document).on("pageshow", "#home", function() {
 

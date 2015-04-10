@@ -4,7 +4,8 @@ var noteText;
 var newPackTemp = {
 	id: '',
 	content: '',//new pack content
-	youtube: []
+	youtube: [],
+	versionId: ''
 };
 
 //for new pack and save to localStorage
@@ -19,6 +20,7 @@ $(document).on("pageinit", "#new_pack_edit", function() {
 });
 
 $(document).on("pageshow", "#new_pack_edit", function() {
+
   //show saved html
   if (newPackTemp.content !== '') {
     $('#iframe1').contents().find('#edit').editable("insertHTML", newPackTemp.content, true);
@@ -39,6 +41,10 @@ $(document).on('pageinit', "#new_pack", function() {
 
     //initail the pack setting
     newPackTemp.id = 'pack' + time;
+
+		//set versin id
+		newPackTemp.versionId = "version" + time;
+
     new_pack = {
       "creator_user_id": JSON.parse(localStorage.user).id,
       "create_time": time,
@@ -80,9 +86,15 @@ $(document).on('pageshow', "#new_pack", function() {
 
 $(document).on('pageinit', "#view_pack", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+	//set look's version's index
+	viewPackVersion.index = 0;
+	//set look version's id
+	viewPackVersion.id = pack.version[viewPackVersion.index].id;
+
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
-  $('#veiw_pack_content').html(pack.version[viewPackVersion].content);
+  $('#veiw_pack_content').html(pack.version[viewPackVersion.index].content);
   $('#pack_title').html(pack.name);
 });
 
@@ -103,7 +115,7 @@ function showPackImg() {
   var i;
 
   $("div.ui-content img[imgname]").map(function() {
-    displayPackImg(viewPackId, viewPackVersion, $(this), $(this).attr('imgname'));
+    displayPackImg(viewPackId, viewPackVersion.id, $(this), $(this).attr('imgname'));
   });
 
 }
@@ -123,7 +135,7 @@ function showNoteHandler() {
 
   //get pack for note content
   var pack = JSON.parse(localStorage.getItem(viewPackId));
-  var noteArray = pack.version[viewPackVersion].note;
+  var noteArray = pack.version[viewPackVersion.index].note;
 
   //find current note
   var i;
@@ -229,7 +241,7 @@ function savePackHandler() {
     "file": [],
     "create_time": time,
     "is_public": new_pack.is_public,
-    "id": "version" + time,
+    "id": newPackTemp.versionId,
     "content": content,
   };
 
@@ -398,7 +410,7 @@ function slideshare_submit_handler() {
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         console.log(http);
-        downloadSlideShareByUrl(http, newPackTemp.id, 0, displaySlideShareImgInEditor);
+        downloadSlideShareByUrl(http, newPackTemp.id, newPackTemp.versionId, displaySlideShareImgInEditor);
       }
     });
 }

@@ -1,4 +1,4 @@
-function addFileToPack(packId, fileEntry, versionId) {
+function addFileToPack(packId, fileEntry, versionId, callback) {
   var time = new Date().getTime();
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
     dirEntry.getDirectory(packId, {
@@ -8,11 +8,14 @@ function addFileToPack(packId, fileEntry, versionId) {
         create: true
       }, function(destDirEntry) {
         fileEntry.moveTo(destDirEntry, time + '.jpg');
-        new_pack.cover_filename = time + '.jpg';
+        //add to pack's cover
+        if(versionId === ''){
+          new_pack.cover_filename = time + '.jpg';
+        }
         destDirEntry.getFile(time + '.jpg', {
           create: false
         }, function(fileEntry) {
-          displayCoverImg(fileEntry);
+          callback(fileEntry);
         }, fail);
       }, fail);
     }, fail);
@@ -42,14 +45,14 @@ function getImgNode(packId, versionId, fileName, callback) {
   }, fail);
 }
 
-function downloadSlideShareByUrl(url, packId, versionId, callback) {
+function downloadImgByUrl(url, packId, versionId, prefix, callback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
 
   fileTransfer.download(
     uri,
-    cordova.file.externalDataDirectory + packId + '/' + versionId + '/slideshare' + time + '.jpg',
+    cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + prefix + time + '.jpg',
     function(entry) {
       console.log("download complete: " + entry.toURL());
       callback(entry);
@@ -87,49 +90,3 @@ function displayPackImg(viewPackId, versionId, imgNode, imgName) {
 function fail(error) {
   console.log('FileSystem Error:' + error.code);
 }
-
-
-// window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
-//   console.log("got main dir", dir);
-//   dir.getFile("user.json", {
-//     create: true
-//   }, function(file) {
-//     console.log("got the file", file);
-//     userFile = file;
-//     writeLog(localStorage.user);
-//   });
-// });
-
-// function writeLog(str) {
-//   console.log("in writeLog" + userFile);
-//   if (!userFile) return;
-//   console.log("going to log " + str);
-//   userFile.createWriter(function(fileWriter) {
-//
-//     var blob = new Blob([str], {
-//       type: 'text/plain'
-//     });
-//     fileWriter.write(blob);
-//     console.log("ok, in theory i worked");
-//   }, fail);
-// }
-//
-// function onResolveSuccess(dirEntry) {
-//   dataDirEntry = dirEntry;
-//   createUserFile();
-// }
-//
-// function createUserFile(data) {
-//   dataDirEntry.getFile(name, {
-//     create: true
-//   }, function(file) {
-//     console.log("got the file", file);
-//     file.createWriter(function(writerA) {
-//       writer.onwrite = function(evt) {
-//         console.log("write success");
-//       };
-//       writer.write(data);
-//     }, fail);
-//   }, fail);
-// }
-//

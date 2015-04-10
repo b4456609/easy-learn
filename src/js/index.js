@@ -150,22 +150,6 @@ function displayCoverImgAtHome(packId, img) {
   $("#pack_display_area").listview("refresh");
 }
 
-// function getFileDisplayAtHome(file){
-//   console.log('display_pack.file');
-//   console.log('return' + file);
-//   var img = document.createElement("img");
-//   var reader = new FileReader();
-//   reader.onloadend = function() {
-//     img.src = reader.result;
-//   };
-//
-//   reader.readAsDataURL(file);
-//
-//   var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
-//   result += pack_templete;
-//}
-
-
 function folder_click_handler() {
   var folderArray = JSON.parse(localStorage.folder);
 

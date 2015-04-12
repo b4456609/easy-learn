@@ -11,7 +11,7 @@ var viewNoteArrayIndex;
 $(document).on('pageinit', "#comment", function() {
   //get pack for comment content
   var pack = JSON.parse(localStorage.getItem(viewPackId));
-  var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
+  var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
 
   //display note word
   $('#note_word').html(noteText);
@@ -51,7 +51,7 @@ $(document).on('pageinit', "#new_note_choose", function() {
   });
   //show choose content
   var pack = JSON.parse(localStorage.getItem(viewPackId));
-  $('#choose_pack_content').html(pack.version[viewPackVersion].content);
+  $('#choose_pack_content').html(pack.version[viewPackVersion.index].content);
 });
 
 $(document).on('pageshow', "#new_note_choose", function() {
@@ -73,7 +73,7 @@ function save_note_handler() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
   //update version
-  pack.version[viewPackVersion].content = note_selection.new_version_content;
+  pack.version[viewPackVersion.index].content = note_selection.new_version_content;
 
   //prepare new note
   var newNote = {
@@ -86,7 +86,7 @@ function save_note_handler() {
   };
 
   //append note in pack's version
-  pack.version[viewPackVersion].note[pack.version[viewPackVersion].note.length] = newNote;
+  pack.version[viewPackVersion.index].note[pack.version[viewPackVersion.index].note.length] = newNote;
 
   //write in localStorage
   localStorage.setItem(viewPackId, JSON.stringify(pack));
@@ -164,7 +164,7 @@ function comment_submit_handler() {
 
 
   //get current note
-  var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
+  var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
 
   //add new comment
   currentNote.comment[currentNote.comment.length] = newComment;

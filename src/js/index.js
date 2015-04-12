@@ -74,7 +74,6 @@ $(document).on("pageshow", "#home", function() {
 
 //display folder in left panel
 function display_folder() {
-  console.log('display_folder');
   $("li:has([folderid])").remove();
 
   //display folder
@@ -111,13 +110,11 @@ function display_all_pack() {
 
 //display pack in content
 function display_pack(packArray) {
-  console.log('display_pack');
   //generate pack html code
   var result = "";
   var pack_templete = "";
   var j;
 
-  console.log(packArray);
 
   for (j in packArray) {
     //get pack from localStorage
@@ -126,10 +123,7 @@ function display_pack(packArray) {
     //get pack's id
     var packId = packArray[j];
 
-    console.log(pack.cover_filename);
-
     if (pack.cover_filename !== "") {
-      console.log('getImgNode' + packId + pack.cover_filename);
       //display cover image while its finished
       getImgNode(packId, null, pack.cover_filename, displayCoverImgAtHome);
       pack_templete = '<li packid= "' + packId + '"><a href="#"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
@@ -173,7 +167,6 @@ function folder_click_handler() {
 function go_pack_handler() {
   viewPackId = $(this).attr('packid');
 
-  console.log('click on pack:' + viewPackId);
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 

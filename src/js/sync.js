@@ -1,3 +1,9 @@
+function changeModifyStroageTime(){
+  var user = JSON.parse(localStorage.user);
+  user.setting.last_sync_time = new Date().getTime();
+  localStorage.setItem('user', JSON.stringify(user));
+}
+
 function postComment(noteId, newComment) {
   var jsonObj = JSON.stringify(newComment);
   $.ajax({

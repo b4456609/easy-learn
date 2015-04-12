@@ -5,7 +5,8 @@ var newPackTemp = {
   id: '',
   content: '', //new pack content
   youtube: [],
-  versionId: ''
+  versionId: '',
+  file:[]
 };
 
 //for new pack and save to localStorage
@@ -235,7 +236,7 @@ function savePackHandler() {
     "creator_user_id": JSON.parse(localStorage.user).id,
     "bookmark": [],
     "note": [],
-    "file": [],
+    "file": newPackTemp.file,
     "create_time": time,
     "is_public": new_pack.is_public,
     "id": newPackTemp.versionId,
@@ -367,7 +368,7 @@ function image_submit_handler() {
 }
 
 function youtube_submit_handler() {
-  // get slideshare url
+  // get youtube url
   var user_url = $("#youtube_url").val();
   var start = $('#youtube_start_time').val();
   var end = $('#youtube_end_time').val();

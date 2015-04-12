@@ -67,7 +67,7 @@ $(document).on("pageshow", "#home", function() {
     display_folder();
   }
 
-  $('#sync').click(sync);
+  //$('#sync').click(sync);
 });
 
 

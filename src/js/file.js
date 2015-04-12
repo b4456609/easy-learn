@@ -54,6 +54,8 @@ function downloadImgByUrl(url, packId, versionId, prefix, callback) {
     uri,
     cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + prefix + time + '.jpg',
     function(entry) {
+      //add to version's file
+      newPackTemp.file[newPackTemp.file.length] = prefix + time + '.jpg';
       console.log("download complete: " + entry.toURL());
       callback(entry);
     },

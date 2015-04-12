@@ -24,7 +24,7 @@ $(document).on('pageinit', "#comment", function() {
 
   //display comment on screen
   displayComment(commentArray);
-  getNewerComment(currentNote.id, commentArray);
+  //getNewerComment(currentNote.id, commentArray);
 
 });
 
@@ -81,7 +81,7 @@ function save_note_handler() {
     content: $('#note_content').val(),
     user_id: JSON.parse(localStorage.user).id,
     user_name: JSON.parse(localStorage.user).name,
-    create_time: time,
+    create_time: time.getTime(),
     comment: []
   };
 
@@ -157,7 +157,7 @@ function comment_submit_handler() {
   var newComment = {
     id: 'comment' + time.getTime(),
     content: commentContent,
-    create_time: time.toString(),
+    create_time: time.getTime(),
     user_id: JSON.parse(localStorage.user).id,
     user_name: JSON.parse(localStorage.user).name
   };
@@ -173,7 +173,7 @@ function comment_submit_handler() {
   localStorage.setItem(viewPackId, JSON.stringify(pack));
 
   //save to server
-  postComment(noteId, newComment);
+  //postComment(noteId, newComment);
   changeModifyStroageTime();
 }
 

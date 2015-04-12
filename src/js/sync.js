@@ -1,3 +1,4 @@
+//change last sync time to indicate newer data
 function changeModifyStroageTime(){
   var user = JSON.parse(localStorage.user);
   user.setting.last_sync_time = new Date().getTime();

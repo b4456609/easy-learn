@@ -267,6 +267,8 @@ function savePackHandler() {
     content: '', //new pack content
     youtube: []
   };
+
+  changeModifyStroageTime();
 }
 
 function load_editor() {

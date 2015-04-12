@@ -19,6 +19,15 @@ $(document).on("pageinit", "#new_pack_edit", function() {
   });
 });
 
+
+$(document).on("pageinit", "#co_pack", function() {
+  //set editor height
+  $('#iframe1').load(function() {
+    $(this).height($(window).height() - headerHeight - 8);
+    $(this).width($(window).width());
+  });
+});
+
 $(document).on("pageshow", "#new_pack_edit", function() {
 
   //show saved html
@@ -77,7 +86,6 @@ $(document).on('pageshow', "#new_pack", function() {
     new_pack.is_public = document.getElementById("is_public").checked;
     new_pack.description = $('#new_pack_description').val();
     new_pack.tags = $('#tags').val();
-
   });
 
   // choose cover image file hanlder
@@ -111,6 +119,30 @@ $(document).on('pageshow', "#view_pack", function() {
 
   showPackImg();
 });
+
+$(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean edit !!
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  //set look's version's index
+  viewPackVersion.index = 0;
+  //set look version's id
+  viewPackVersion.id = pack.version[viewPackVersion.index].id;
+
+  console.log('view pack ID:' + viewPackId);
+  console.log('view pack name:' + pack.name);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", pack.version[viewPackVersion.index].content, true);
+  $('#pack_title').html(pack.name);
+  $('#pack_comple').click(savePackHandler_edit);
+  $('#pack_branch').click(savePackHandler);
+  
+});
+
+
+
+
+
+
+
 
 function showPackImg() {
   var imgArray = $("div.ui-content img[imgname]");
@@ -268,6 +300,27 @@ function savePackHandler() {
     youtube: []
   };
 }
+
+function savePackHandler_edit() {
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  console.log(viewPackId);
+  //get editor word and replace the img
+  content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  
+
+  console.log(pack);
+  pack.version[0]={'content':content}
+  
+  
+  
+  //set new pack in localStorage
+  localStorage.setItem(viewPackId, JSON.stringify(pack));
+  var pack1 = JSON.parse(localStorage.getItem(viewPackId));
+  console.log(pack1);
+}
+
+
+
 
 function load_editor() {
   $('#iframe1').contents().find('#edit').editable({

@@ -44,18 +44,31 @@ function getComment(NoteId, lastestCreateTime) {
 
 function sync() {
   var sendData = {
-    user:JSON.parse(localStorage.user),
-    folder:JSON.parse(localStorage.folder),
+    user: JSON.parse(localStorage.user),
+    folder: JSON.parse(localStorage.folder),
   };
 
-  var json = JSON.stringify(data);
-  console.log(json);
+  //get folder array
+  var folderArray = JSON.parse(localStorage.folder);
+  var i;
+  for(i in folderArray){
+    if(folderArray[i].name === 'All'){
+      var j;
+      var allPack = folderArray[i].pack;
+      for(j in allPack){
+        sendData[allPack[j]] = (JSON.parse(localStorage.getItem(allPack[j])));
+      }
+      break;
+    }
+  }
+
+  console.log(sendDate);
 
   $.ajax({
     method: "POST",
     url: 'http://140.121.197.135:11116/easylearn/sync',
     data: {
-      sync_data: json
+      sync_data: JSON.stringify(json)
     },
   }).done(function(result) {
     console.log(result);
@@ -69,12 +82,12 @@ function testLocalStorage() {
     "setting": {
       "wifi_sync": true,
       "mobile_network_sync": true,
-      "last_sync_time": 1428408016186
+      "last_sync_time": 1429519614000
     }
   };
 
   var pack_id = {
-    "cover_filename": null,
+    "cover_filename": "",
     "creator_user_id": "00157016",
     "create_time": 1428408016186,
     "name": "firstPackName",
@@ -112,7 +125,7 @@ function testLocalStorage() {
   };
 
   var pack_id2 = {
-    "cover_filename": null,
+    "cover_filename": "",
     "creator_user_id": "00157016",
     "create_time": 1428408016186,
     "name": "Chrome",
@@ -191,11 +204,11 @@ function testLocalStorage() {
   localStorage.pack1428407706975 = JSON.stringify(pack1428407706975);
 
   var send = {
-    user:JSON.parse(localStorage.user),
-    folder:JSON.parse(localStorage.folder),
-    pack_id:JSON.parse(localStorage.pack_id),
-    pack_id2:JSON.parse(localStorage.pack_id2),
-    pack1428407706975:JSON.parse(localStorage.pack1428407706975),
+    user: JSON.parse(localStorage.user),
+    folder: JSON.parse(localStorage.folder),
+    pack_id: JSON.parse(localStorage.pack_id),
+    pack_id2: JSON.parse(localStorage.pack_id2),
+    pack1428407706975: JSON.parse(localStorage.pack1428407706975),
   };
 
   console.log(JSON.stringify(send));

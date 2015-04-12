@@ -33,7 +33,7 @@ $.when(gapReady, jqmReady).then(myAppLogic);
 function myAppLogic() {
   console.log(cordova.file);
   console.log(FileTransfer);
-  
+
   localStorage.clear();
   testLocalStorage();
   display_all_pack();
@@ -65,6 +65,8 @@ $(document).on("pageshow", "#home", function() {
     //update count in panel page
     display_folder();
   }
+
+  $('#sync').click(sync);
 });
 
 
@@ -125,7 +127,7 @@ function display_pack(packArray) {
 
     console.log(pack.cover_filename);
 
-    if (pack.cover_filename !== null) {
+    if (pack.cover_filename !== "") {
       console.log('getImgNode' + packId + pack.cover_filename);
       //display cover image while its finished
       getImgNode(packId, null, pack.cover_filename, displayCoverImgAtHome);

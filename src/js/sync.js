@@ -98,25 +98,27 @@ function postComment(noteId, newComment) {
 function getComment(NoteId, lastestCreateTime) {
   //set url for get comment
   var url = 'http://140.121.197.135:11116/easylearn/comment?note_id=' +
-    NoteId + '&lastest_create_time?=' + lastestCreateTime;
-
+    NoteId + '&lastest_create_time=' + lastestCreateTime;
+  console.log(url);
   $.ajax({
     type: "GET",
     url: url,
     success: function(data) {
-      console('success get comment' + JSON.stringify(data));
-      if (data !== {}) {
+      console.log('success get comment' + JSON.stringify(data));
+      if (data.length !== 0) {
         displayComment(data);
 
         //get pack for comment content
         var pack = JSON.parse(localStorage.getItem(viewPackId));
 
         //get current note
-        var currentNote = pack.version[viewPackVersion].note[viewNoteArrayIndex];
+        var comments = pack.version[viewPackVersion.index].note[viewNoteArrayIndex].comment;
 
         //add new comment
-        currentNote.comment.concat(newComment);
-
+        //currentNote.comment.concat(data);
+        for (var i in data) {
+          comments[comments.length] = data[i];
+        }
         //update pack in localStorage
         localStorage.setItem(viewPackId, JSON.stringify(pack));
       }

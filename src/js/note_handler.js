@@ -24,7 +24,7 @@ $(document).on('pageinit', "#comment", function() {
 
   //display comment on screen
   displayComment(commentArray);
-  //getNewerComment(currentNote.id, commentArray);
+  getNewerComment(currentNote.id, commentArray);
 
 });
 
@@ -173,7 +173,7 @@ function comment_submit_handler() {
   localStorage.setItem(viewPackId, JSON.stringify(pack));
 
   //save to server
-  //postComment(noteId, newComment);
+  postComment(currentNote.id, newComment);
   changeModifyStroageTime();
 }
 
@@ -185,12 +185,12 @@ function getNewerComment(currentNoteId, commentArray) {
   for (i in commentArray) {
     var commentTime = new Date(commentArray[i].create_time).getTime();
     if (commentTime > lastestCreateTime) {
-      lastestCreateTime = commentArray[i];
+      lastestCreateTime = commentArray[i].create_time;
     }
   }
   //check server if has newer comment on this note
   if (lastestCreateTime !== 0) {
-    getComment(currentNoteId, new Date(lastestCreateTime).toString());
+    getComment(currentNoteId, lastestCreateTime);
   }
 }
 

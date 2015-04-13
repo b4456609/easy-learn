@@ -1,3 +1,78 @@
+function syncImg(files) {
+  console.log(files);
+  var i;
+  for (i in files) {
+    uploadImg(files[i].name, files[i].version_pack_id, files[i].version_id);
+  }
+}
+
+function uploadImg(filename, packId, versionId) {
+  var filePath = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + filename;
+  console.log('filepath' + filePath);
+  window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
+    console.log(fileEntry);
+
+    fileEntry.file(function(file) {
+      console.log(file);
+
+      var reader = new FileReader();
+
+      reader.onloadend = function() {
+        var srcdata = reader.result;
+        console.log(srcdata);
+        $.ajax({
+          type: "POST",
+          url: "http://140.121.197.135:11116/easylearn/upload",
+          data: {
+            file: srcdata,
+            filename: filename,
+            pack_id: packId,
+            version_id: versionId
+          },
+          cache: false,
+          contentType: "application/x-www-form-urlencoded",
+          success: function() {
+            alert('success upload img');
+          }
+        });
+      };
+
+      reader.readAsDataURL(file);
+    }, fail);
+  }, fail);
+
+
+  // console.log('upload file' + filePath);
+  //
+  //
+  // var win = function(r) {
+  //   console.log("Code = " + r.responseCode);
+  //   console.log("Response = " + r.response);
+  //   console.log("Sent = " + r.bytesSent);
+  // };
+  //
+  // var fail = function(error) {
+  //   alert("An error has occurred: Code = " + error.code);
+  //   console.log("upload error source " + error.source);
+  //   console.log("upload error target " + error.target);
+  // };
+  //
+  // var options = new FileUploadOptions();
+  // options.fileKey = "file";
+  // options.fileName = filename;
+  // options.mimeType = "image/jpeg";
+  //
+  // var params = {};
+  // params.pack_id = packId;
+  // params.version_id = versionId;
+  //
+  // options.params = params;
+  //
+  // var ft = new FileTransfer();
+  // ft.upload(filePath, encodeURI("http://140.121.197.135:11116/easylearn/upload"), win, fail, options);
+}
+
+
 //change last sync time to indicate newer data
 function changeModifyStroageTime() {
   var user = JSON.parse(localStorage.user);
@@ -88,6 +163,7 @@ function sync() {
 
     } else { //success sync
       //length = 1 no data need to update in locale stroage
+      syncImg(data.sync.upload_file);
       saveInLocalStroage(data);
       refreshPage();
     }
@@ -154,8 +230,7 @@ function testLocalStorage() {
         "id": "noteId",
         "content": "content"
       }],
-      "file": ["filename"
-      ],
+      "file": ["filename"],
       "create_time": 1428408016186,
       "is_public": false,
       "id": "versionId",

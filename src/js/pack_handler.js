@@ -266,7 +266,8 @@ function savePackHandler() {
   newPackTemp = {
     id: '',
     content: '', //new pack content
-    youtube: []
+    youtube: [],
+    file:[]
   };
 
   changeModifyStroageTime();

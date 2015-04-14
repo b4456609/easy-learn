@@ -6,7 +6,7 @@ var newPackTemp = {
   content: '', //new pack content
   youtube: [],
   versionId: '',
-  file:[]
+  file: []
 };
 
 //for new pack and save to localStorage
@@ -31,6 +31,37 @@ $(document).on("pageshow", "#new_pack_edit", function() {
   $('#save_pack').click(savePackHandler);
   $('#edit_back').click(function() {
     newPackTemp.content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
+  });
+
+
+  //image button
+  //submit handler
+  $("#image_submit").click(image_submit_handler);
+  $("#image_choose").click(function() {
+    $('#popup_image').popup("close");
+    getPhotoWithModifySize(newPackTemp.versionId, displayImgInEditor);
+  });
+  //cancel handler
+  $('#image_cancel').click(function() {
+    $('#popup_image').popup("close");
+  });
+
+  //slideshare button
+  //submit handler
+  $("#slideshare_submit").click(slideshare_submit_handler);
+
+  //cancel handler
+  $('#slideshare_cancel').click(function() {
+    $('#popup_slideshare').popup("close");
+  });
+
+  //youtube button
+  //submit handler
+  $("#youtube_submit").click(youtube_submit_handler);
+
+  //cancel handler
+  $('#youtube_cancel').click(function() {
+    $('#popup_youtube').popup("close");
   });
 });
 
@@ -218,15 +249,19 @@ function savePackHandler() {
   //get editor word and replace the img
   content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
+  console.log(newPackTemp.youtube);
 
   var i;
   for (i = 0; i < newPackTemp.youtube.length; i++) {
-    var index = content.indexOf('<div class="video-container"');
-    var endIndex = content.indexOf('</div>');
+    var index = content.indexOf('<div class="video-container" id="' + i + '">');
+    var endIndex = content.indexOf('</div>',index);
+    content = content.replace(content.substring(index, endIndex + 6), newPackTemp.youtube[i]);
     console.log(i);
     console.log(index);
-    content = content.replace(content.substring(index, endIndex + 6), newPackTemp.youtube[i]);
+    console.log(content);
   }
+
+  content = content.replace('<div class="video-container" id="0"><br></div>', '');
 
   //get current time
   var time = new Date().getTime();
@@ -267,7 +302,7 @@ function savePackHandler() {
     id: '',
     content: '', //new pack content
     youtube: [],
-    file:[]
+    file: []
   };
 
   changeModifyStroageTime();
@@ -296,16 +331,7 @@ function load_editor() {
         },
         callback: function() {
           //open popup slideshare setting
-          $("#popup_slideshare").popup("open");
-
-          //submit handler
-          $("#slideshare_submit").click(slideshare_submit_handler);
-
-          //cancel handler
-          $('#slideshare_cancel').click(function() {
-            $('#popup_slideshare').popup("close");
-          });
-        },
+          $("#popup_slideshare").popup("open");},
         refresh: function() {}
       },
       youtube: {
@@ -320,13 +346,6 @@ function load_editor() {
           //open popup slideshare setting
           $("#popup_youtube").popup("open");
 
-          //submit handler
-          $("#youtube_submit").click(youtube_submit_handler);
-
-          //cancel handler
-          $('#youtube_cancel').click(function() {
-            $('#popup_youtube').popup("close");
-          });
         },
         refresh: function() {}
       },
@@ -339,19 +358,8 @@ function load_editor() {
           value: 'fa fa-image'
         },
         callback: function() {
-          //open popup slideshare setting
           $("#popup_image").popup("open");
 
-          //submit handler
-          $("#image_submit").click(image_submit_handler);
-          $("#image_choose").click(function() {
-						$('#popup_image').popup("close");
-            getPhotoWithModifySize(newPackTemp.versionId, displayImgInEditor);
-          });
-          //cancel handler
-          $('#image_cancel').click(function() {
-            $('#popup_image').popup("close");
-          });
         },
         refresh: function() {}
       }
@@ -360,12 +368,12 @@ function load_editor() {
 }
 
 function image_submit_handler() {
-	//get img url
-	var imgUrl = $('#image_url').val();
-	//close popup
-	$('#popup_image').popup("close");
-	//download img and display in editor
-	downloadImgByUrl(imgUrl, newPackTemp.id, newPackTemp.versionId, 'user', displayImgInEditor);
+  //get img url
+  var imgUrl = $('#image_url').val();
+  //close popup
+  $('#popup_image').popup("close");
+  //download img and display in editor
+  downloadImgByUrl(imgUrl, newPackTemp.id, newPackTemp.versionId, 'user', displayImgInEditor);
 }
 
 function youtube_submit_handler() {
@@ -393,9 +401,9 @@ function youtube_submit_handler() {
   var videoId = youtube_parser(user_url);
 
   //set embed code
-  var embedCode = '<div class="video-container" youtube="' + newPackTemp.youtube.length + '">' +
+  var embedCode = '<p><div class="video-container" id="' + newPackTemp.youtube.length + '">' +
     '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + videoId +
-    '?controls=1&disablekb=1&modestbranding=1&showinfo=0&rel=0' + startPar + endPar + '" frameborder="0" allowfullscreen></iframe>' + '</div>';
+    '?controls=1&disablekb=1&modestbranding=1&showinfo=0&rel=0' + startPar + endPar + '" frameborder="0" allowfullscreen></iframe>' + '</div></p>';
 
   //push to globle array
   newPackTemp.youtube.push(embedCode);

@@ -1,57 +1,86 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-  <!-- Include meta tag to ensure proper rendering and touch zooming -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Include jQuery Mobile stylesheets -->
-  <link rel="stylesheet" href="lib/jquery.mobile-1.4.5.min.css">
-
-  <!-- Include the jQuery library -->
-  <script src="lib/jquery-1.11.2.min.js"></script>
-
-  <!-- Include the jQuery Mobile library -->
-  <script src="lib/jquery.mobile-1.4.5.min.js"></script>
-
+ <div data-role="page" id="co_pack">
+ 
+ 
+ <div data-role="header">
+    <a href="view_pack.html" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
+    <h1 id="pack_title"></h1>
+    <a href="index.html" id ="pack_comple" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-carat-r">修改完成</a>
+	<a href="index.html" id ="pack_branch" class=" ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-carat-">發布版本</a>
+	
+  </div>
   
-  <!-- load the edit-->
+  
+  
+   <!-- Include JS files. -->
   <script src="lib/froala-editor/js/froala_editor.min.js"></script>
-  <script src="lib/jquery-ui.min.js"></script>
+  <script src="lib/froala-editor/js/plugins/video.min.js"></script>
+  <script src="lib/froala-editor/js/plugins/lists.min.js"></script>
+  <script src="lib/froala-editor/js/plugins/colors.min.js"></script>
+  <!-- <script src="lib/froala-editor/js/plugins/inline_styles.min.js"></script> -->
+  <script src="lib/froala-editor/js/plugins/tables.min.js"></script>
+  <!-- <script src="lib/froala-editor/js/plugins/urls.min.js"></script>-->
+  <script src="lib/froala-editor/js/plugins/font_size.min.js"></script>
+  <script src="lib/froala-editor/js/plugins/font_family.min.js"></script>
 
-  <link rel="stylesheet" href="css/style.css">
+ 
+ 
+ 
+ 
+  <div data-role="popup" id="popup_slideshare" data-theme="a" class="ui-corner-all">
+    <div style="padding:10px 20px;">
 
-</head>
+      <label for="slideshare_url">輸入slideshare網址:</label>
+      <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
 
-<body>
-  <div data-role="page" id="co_pack">
-    <div data-role="header">
-      <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-delete">Cancel</a>
-      <h1>修改懶人包</h1>
-      <a href="index.html" id="Complete" class="ui-btn ui-corner-all ui-btn-inline ui-mini footer-button-right ui-btn-icon-right ui-icon-carat-r">Complete</a>
+      <label for="slideshare_start_page">起始頁數:</label>
+      <input type="number" name="slideshare_start_page" pattern="[0-9]*" id="slideshare_start_page" value="0">
+
+      <label for="slideshare_end_page">結束頁數:</label>
+      <input type="number" name="slideshare_end_page" pattern="[0-9]*" id="slideshare_end_page" value="0">
+
+      <a id="slideshare_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
+
+      <button id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
     </div>
+  </div>
+  <div data-role="popup" id="popup_youtube" data-theme="a" class="ui-corner-all">
+    <div style="padding:10px 20px;">
 
+      <label for="youtube_url">輸入Youtube網址:</label>
+      <input type="text" name="youtube_url" id="youtube_url" value="https://www.youtube.com/watch?v=w1cqaTttINg" data-theme="a">
 
-    <div data-role="main" class="ui-content">
-      <div class="ui-field-contain">
-		
-		 <form>
-			<textarea id="edit" name="content" onload ="load_editor()" >
+      <label for="youtube_start_time">開始秒數:</label>
+      <input type="number" name="youtube_start_time" pattern="[0-9]*" id="youtube_start_time" value="0">
 
-		
-		
-			<p class=\"first\" id=\"yui_3_9_1_1_1428407726192_209\" style=\"margin-bottom: 0px; padding: 0px; line-height: 27.972000122070313px; font-size: 15px; font-family: arial, STHeiti, pmingliu, sans-serif !important;\">（中央社記者張茗喧台北7日電）食安問題多，速食業者提出自主油品檢測盼民眾吃的安心。但今天爆發四大速食業者油品檢驗不落實，其中摩斯漢堡甚至出現油品檢測「預填」狀況，摩斯漢堡表示會進一步了解處理。</p><p style=\"margin-top: 11px; margin-bottom: 0px; padding: 0px; line-height: 27.972000122070313px; font-size: 15px; font-family: arial, STHeiti, pmingliu, sans-serif !important;\">2009年曾爆發速食業者的炸油驗出酸價、砷含量超標，隨後衛生福利部要求業者必須自主管理進行油品檢測；不過，今天卻有媒體報導，台灣四大速食業者麥當勞、摩斯、肯德基和漢堡王在油品檢測表上都有缺失，尤其摩斯漢堡不僅沒有填檢測表，甚至有補填、預填的情況，引發網友批評。</p><p style=\"margin-top: 11px; margin-bottom: 0px; padding: 0px; line-height: 27.972000122070313px; font-size: 15px; font-family: arial, STHeiti, pmingliu, sans-serif !important;\">摩斯漢堡今天上午發聲明稿指出，每天只有在營業前及營業中的離峰時間才會進行油品檢測，將了解是否有未按規定填表的狀況，進行懲處。</p><p><br></p><p style=\"margin-top: 11px; margin-bottom: 0px; padding: 0px; line-height: 27.972000122070313px; font-size: 15px; font-family: arial, STHeiti, pmingliu, sans-serif !important;\">麥當勞表示，每天會<span class=\"note note-teal\" noteid=\"note1428407991262\">進行2次炸油檢測</span>並且公布在點餐櫃檯附近，強調比政府的換油標準更嚴格；肯德基則指出，表格設計以民眾可以簡單看得懂為主；漢堡王則表示，因衛福部沒有強制規定要公開，但若其他業者都有公開，也會考慮跟進。</p><div class=\"video-container\" youtube=\"0\"><iframe width=\"560\" height=\"315\" src=\"http://www.youtube.com/embed/EN3IonBXxnE?controls=1&amp;disablekb=1&amp;modestbranding=1&amp;showinfo=0&amp;rel=0\" frameborder=\"0\" allowfullscreen=\"\"></iframe></div>"
-		  </textarea>
-		  
-		  </form>
-      </div>
+      <label for="youtube_end_time">結束秒數:</label>
+      <input type="number" name="youtube_end_time" pattern="[0-9]*" id="youtube_end_time" value="0">
+
+      <a id="youtube_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
+
+      <button id="youtube_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
     </div>
+  </div>
+  <div data-role="popup" id="popup_image" data-theme="a" class="ui-corner-all">
+    <div style="padding:10px 20px;">
 
+      <label for="image_url">輸入圖片網址:</label>
+      <input type="text" name="image_url" id="image_url" value="http://www.sportsdestinations.com/files/sports_destination_management/nodes/2015/8968/IMG.jpg" data-theme="a">
+
+      <a id="image_choose" class="ui-btn ui-corner-all ui-shadow ui-btn-b">選擇圖片</a>
+
+      <a id="image_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
+
+      <button id="image_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
+    </div>
   </div>
 
-  </div>
-</body>
 
-</html>
+ 
+  <iframe src="new_pack_editor.html" id="iframe1" onload="load_editor()"></iframe>
+			
+	
+  <div data-role="footer" id="note-display">
+  </div>
+</div>
+
+

@@ -33,7 +33,7 @@ $.when(gapReady, jqmReady).then(myAppLogic);
 function myAppLogic() {
   console.log(cordova.file);
   console.log(FileTransfer);
-  
+
   localStorage.clear();
   testLocalStorage();
   display_all_pack();
@@ -45,11 +45,11 @@ var headerHeight;
 
 //remember the pack to display
 var viewPackId;
-var viewPackVersion = 0;
+var viewPackVersion = {
+  index: 0,
+  id: ''
+};
 
-$(document).on("pageinit", "#home", function() {});
-
-$(document).on("pagebeforecreate", "#home", function() {});
 
 $(document).on("pageshow", "#home", function() {
 
@@ -149,22 +149,6 @@ function displayCoverImgAtHome(packId, img) {
   $('li[packid=' + packId + ']').prepend(img);
   $("#pack_display_area").listview("refresh");
 }
-
-// function getFileDisplayAtHome(file){
-//   console.log('display_pack.file');
-//   console.log('return' + file);
-//   var img = document.createElement("img");
-//   var reader = new FileReader();
-//   reader.onloadend = function() {
-//     img.src = reader.result;
-//   };
-//
-//   reader.readAsDataURL(file);
-//
-//   var pack_templete = '<li packid= "' + packArray[j] + '"><a href="#">' + img.toString() + '<h2>' + pack.name + '</h2><p>' + pack.description + '</p></a></li>';
-//   result += pack_templete;
-//}
-
 
 function folder_click_handler() {
   var folderArray = JSON.parse(localStorage.folder);

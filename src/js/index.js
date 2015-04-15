@@ -38,7 +38,7 @@ function myAppLogic() {
   testLocalStorage();
   display_all_pack();
   display_folder();
-  loggin();
+  loggin();  
 }
 
 var headerHeight;
@@ -193,10 +193,12 @@ function go_pack_handler() {
 
 function loggin(){
 
-$.mobile.changePage( "loggin.html", {
+$.mobile.changePage( "login.html", {
 		transition: "pop",
 		reverse: false,
 		changeHash: false
 });
 
 }
+
+

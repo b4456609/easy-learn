@@ -38,7 +38,7 @@ function myAppLogic() {
   testLocalStorage();
   display_all_pack();
   display_folder();
-  loggin();
+  //loggin();
 }
 
 var headerHeight;
@@ -81,7 +81,9 @@ function display_folder() {
   var result = "";
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li><a href="#" class="folder ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r" folderid="' + folderArray[i].id + '"><h2>' + folderArray[i].name + '</h2><span class="ui-li-count ui-body-inherit">' + folderArray[i].pack.length + '</span></a></li>';
+    var folder_templete = '<li><a href="#" class="folder ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r" folderid="' +
+      folderArray[i].id + '"><h2>' + folderArray[i].name + '</h2><span class="ui-li-count ui-body-inherit">' +
+      folderArray[i].pack.length + '</span></a></li>';
     result += folder_templete;
   }
   $(result).insertAfter('#folder_display');
@@ -128,7 +130,7 @@ function display_pack(packArray) {
       getImgNode(packId, null, pack.cover_filename, displayCoverImgAtHome);
       pack_templete = '<li packid= "' + packId + '"><a href="#"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     } else {
-      pack_templete = '<li packid= "' + packId + '"><a href="#"><img src="img/chrome.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
+      pack_templete = '<li packid= "' + packId + '"><a href="#"><img src="img/light102.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     }
     result += pack_templete;
   }
@@ -170,12 +172,12 @@ function go_pack_handler() {
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
-function loggin(){
+function loggin() {
 
-$.mobile.changePage( "loggin.html", {
-		transition: "pop",
-		reverse: false,
-		changeHash: false
-});
+  $.mobile.changePage("loggin.html", {
+    transition: "pop",
+    reverse: false,
+    changeHash: false
+  });
 
 }

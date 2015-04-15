@@ -1,9 +1,99 @@
+var uploadImgCount = 0;
+var uploadTotal = 0;
+var downloadCount = 0;
+var downloadTotal = 0;
+
 function syncImg(files) {
+
+  //upload image
   console.log(files);
+  uploadImgCount = 0;
+  uploadTotal = files.length;
+
   var i;
   for (i in files) {
     uploadImg(files[i].name, files[i].version_pack_id, files[i].version_id);
   }
+
+  downloadServerImg();
+
+  if(uploadImgCount == uploadTotal && downloadCount == downloadTotal){
+    $.mobile.loading("hide");
+  }
+
+}
+
+function downloadServerImg() {
+  //initial variable
+  downloadCount = 0;
+  downloadTotal = 0;
+
+  //download image sync
+  for (var i = 0; i < localStorage.length; i++) {
+    //get pack id and object
+    var packId = localStorage.key(i);
+
+    //doesn't contain img file so jump
+    if (packId === 'user') {
+      continue;
+    }
+    if (packId === 'folder') {
+      continue;
+    }
+
+    var packObj = JSON.parse(localStorage.getItem(packId));
+
+    //download cover file
+    if (packObj.cover_filename !== '') {
+      FileNotExistThenDownload(packId, '', packObj.cover_filename);
+    }
+
+    //get pack's version
+    var packVersion = packObj.version;
+
+    for (var j in packVersion) {
+      var versionId = packVersion[j].id;
+      var filesInVersion = packVersion[j].file;
+      //console.log('packVersion for' + packId + ' ' + versionId + ' ' + filesInVersion);
+      //console.log(filesInVersion);
+      for (var fileIndex in filesInVersion) {
+        FileNotExistThenDownload(packId, versionId, filesInVersion[fileIndex]);
+      }
+    }
+  }
+}
+
+function FileNotExistThenDownload(packId, versionId, filename) {
+  //console.log('FileNotExistThenDownload:' + ' ' + packId + ' ' + versionId + ' ' + filename);
+  var filePath = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + filename;
+  window.resolveLocalFileSystemURL(filePath, function(fileEntry) {}, function(error) {
+    if (downloadTotal === 0) {
+      $.mobile.loading("show", {
+        text: "下載圖片中",
+        textVisible: true,
+        theme: "z",
+        html: ""
+      });
+    }
+    downloadTotal++;
+    console.log('checkFileExist:' + ' ' + error.code + ' ' + packId + ' ' + versionId + ' ' + filename);
+    //first in to download show loading message
+    downloadImg(filename, packId, versionId);
+  });
+}
+
+
+function downloadImg(filename, packId, versionId) {
+  var url = 'http://140.121.197.135:11116/easylearn/download?pack_id=' +
+    packId + '&version_id=' + versionId + '&filename=' + filename;
+  console.log('downloadImgurl:' + url);
+
+  downloadImgByUrl(url, packId, versionId, filename, function() {
+    downloadCount++;
+    if (downloadCount === downloadTotal) {
+      $.mobile.loading("hide");
+    }
+  });
 }
 
 function uploadImg(filename, packId, versionId) {
@@ -32,7 +122,12 @@ function uploadImg(filename, packId, versionId) {
           cache: false,
           contentType: "application/x-www-form-urlencoded",
           success: function() {
-            alert('success upload img');
+            console.log('success upload img');
+            uploadImgCount++;
+            //hide for upload img
+            if (uploadImgCount === uploadTotal) {
+              $.mobile.loading("hide");
+            }
           }
         });
       };
@@ -40,36 +135,6 @@ function uploadImg(filename, packId, versionId) {
       reader.readAsDataURL(file);
     }, fail);
   }, fail);
-
-
-  // console.log('upload file' + filePath);
-  //
-  //
-  // var win = function(r) {
-  //   console.log("Code = " + r.responseCode);
-  //   console.log("Response = " + r.response);
-  //   console.log("Sent = " + r.bytesSent);
-  // };
-  //
-  // var fail = function(error) {
-  //   alert("An error has occurred: Code = " + error.code);
-  //   console.log("upload error source " + error.source);
-  //   console.log("upload error target " + error.target);
-  // };
-  //
-  // var options = new FileUploadOptions();
-  // options.fileKey = "file";
-  // options.fileName = filename;
-  // options.mimeType = "image/jpeg";
-  //
-  // var params = {};
-  // params.pack_id = packId;
-  // params.version_id = versionId;
-  //
-  // options.params = params;
-  //
-  // var ft = new FileTransfer();
-  // ft.upload(filePath, encodeURI("http://140.121.197.135:11116/easylearn/upload"), win, fail, options);
 }
 
 
@@ -164,13 +229,18 @@ function sync() {
     if (data.sync.status === 'fail') {
 
     } else { //success sync
-      //length = 1 no data need to update in locale stroage
-      syncImg(data.sync.upload_file);
+      //save data in local storage
       saveInLocalStroage(data);
+
+      //sync image
+      syncImg(data.sync.upload_file);
+
+      //refresh home page
       refreshPage();
     }
-    $.mobile.loading("hide");
-    alert('同步成功');
+
+
+
   });
 }
 
@@ -180,7 +250,12 @@ function saveInLocalStroage(data) {
   var keys = Object.keys(data);
   var i;
   for (i in keys) {
-    if (keys[i] !== 'sync') {
+    if (keys[i] === 'setting') {
+      var user = JSON.parse(localStorage.user);
+      user.setting = data[keys[i]];
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+    else if (keys[i] !== 'sync') {
       localStorage.setItem(keys[i], JSON.stringify(data[keys[i]]));
     }
   }
@@ -232,7 +307,7 @@ function testLocalStorage() {
         "id": "noteId",
         "content": "content"
       }],
-      "file": ["filename"],
+      "file": [],
       "create_time": 1428408016186,
       "is_public": false,
       "id": "versionId",
@@ -272,7 +347,7 @@ function testLocalStorage() {
     "is_public": true,
     "description": "食安問題多，速食業者提出自主油品檢測盼民眾吃的安心。",
     "tags": "食安",
-    "cover_filename": "1428407811333.jpg",
+    "cover_filename": "",
     "version": [{
       "creator_user_id": "00157016",
       "bookmark": [],

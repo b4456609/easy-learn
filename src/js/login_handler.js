@@ -17,7 +17,7 @@ function login_check() {
     user.name = '洛林';
     success(user);
   } else if ((account === 'b4456609') && (password === 'b4456609')) {
-    user.id = '00157016';
+    user.id = 'b4456609';
     user.name = 'Bernie';
     success(user);
   } else {
@@ -29,7 +29,17 @@ function login_check() {
 function success(user) {
   $('#msg').text('登入成功');
   localStorage.setItem('user', JSON.stringify(user));
-  testLocalStorage();
+  var folder = [{
+    "name": "All",
+    "id": "folderId",
+    "pack": []
+  }, {
+    "name": "我的最愛",
+    "id": "fjoeiwjowfe",
+    "pack": []
+  }];
+  localStorage.folder = JSON.stringify(folder);
+  //testLocalStorage();
 
   $.mobile.changePage("index.html", {
     transition: "pop",

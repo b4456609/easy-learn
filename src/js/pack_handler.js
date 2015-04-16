@@ -597,6 +597,10 @@ function display_version_info() {
     // get version's create time
     var time = new Date(version[i].create_time);
 
+    var userName = version[i].creator_user_id;
+    if(version[i].creator_user_id === 'b4456609')userName = "Bernie";
+    if(version[i].creator_user_id === 'loko')userName = '洛林';
+
     if (i === viewPackVersion.index) {
       html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
         time.toLocaleString(navigator.language, {
@@ -606,7 +610,7 @@ function display_version_info() {
           month: "numeric",
           year: 'numeric'
         }) +
-        '   ' + version[i].creator_user_id + ' </li>';
+        '   ' + userName + ' </li>';
     } else {
       html += '  <li version_index="' + i + '"><a href="#">' +
         time.toLocaleString(navigator.language, {
@@ -616,7 +620,7 @@ function display_version_info() {
           month: "numeric",
           year: 'numeric'
         }) +
-        '   ' + version[i].creator_user_id + '</a></li>';
+        '   ' + userName + '</a></li>';
     }
   }
   console.log(html);

@@ -47,30 +47,40 @@ function myAppLogic() {
   console.log(cordova.file);
   console.log(FileTransfer);
 
-  localStorage.clear();
-  testLocalStorage();
-  display_pack();
-  display_folder();
-  login();
+  //localStorage.clear();
+  //testLocalStorage();
+  if (localStorage.getItem('user') === null) {
+    login();
+  }
+  else{
+    $('#home_title').text(folderName);
+    display_pack();
+    display_folder();
+    $('#user_name').text((JSON.parse(localStorage.user)).name);
+  }
+
+    $('#logout').click(logout);
+
 }
 
 $(document).on("pageshow", "#home", function() {
 
-  $('#home_title').text(folderName);
 
-  console.log('Home:pageshow');
 
   //if device not ready deferred exec
   //this will happened when user first open app
   if (gapReady.state() != "pending") {
+    $('#home_title').text(folderName);
+
+    console.log('Home:pageshow');
     //refresh every visit home page
     display_pack();
 
     //update count in panel page
     display_folder();
+    $('#user_name').text((JSON.parse(localStorage.user)).name);
   }
 
-  //$('#sync').click(sync);
 });
 
 
@@ -173,12 +183,4 @@ function go_pack_handler() {
   viewPackId = $(this).attr('packid');
 
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
-}
-
-function login() {
-  $.mobile.changePage("login.html", {
-    transition: "pop",
-    reverse: false,
-    changeHash: false
-  });
 }

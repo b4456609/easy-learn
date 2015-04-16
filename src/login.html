@@ -1,43 +1,22 @@
-<div data-role="page" id="new_pack_edit">
-  <div data-role="header" data-position="fixed">
-    <a href="#index" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
+<div data-role="page" id="login">
+  <div data-role="header">
+    <!-- <a href="#index" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a> -->
     <h1>登入</h1>
 
   </div>
-	<style>
-	  #post { width : 120 px ;}
-	  
-	</style>
 
+  <div data-role="main" class="ui-content">
+    <form action="first.php" method="POST">
 
+      <label for="account">帳號:</label>
+      <input type="text" name="account" id="account" value="">
 
+      <label for="password">密碼:</label>
+      <input type="password" name="password" id="password" value="" autocomplete="off">
 
-  <body>
-    <div id="container">
-      <div id="center" >
-        <div class="feature">
-        <div class="post"  >
-            <p class="date">Thanks for your coming</p>
-            <h2>會員登入</h2>
-            
-            <div class="blockquote" >
-            
-              
-                <form action="first.php" method="POST" >
-				<p style = "font-size: 25px" >
-						帳號: <input type="text" name="account" value="" width = "25px"><br>
-						密碼: <input type="text" name="password" value=""><br>
-							  
-				</p>
-				<p align="right">		 <input type="button" value="確定" align="left"  onclick="login_check()">
-										
-				 </p>
-				</form>
-              
-            </div>
-            <hr />
+      <input type="button" value="確定" align="left" onclick="login_check()">
+    </form>
+    <p id="msg"></p>
+  </div>
 
-         
-        </div>
-  </body>
 </div>

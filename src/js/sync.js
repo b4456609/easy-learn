@@ -268,15 +268,6 @@ function refreshPage() {
 }
 
 function testLocalStorage() {
-  var user = {
-    "id": "00157016",
-    "name": "Bernie",
-    "setting": {
-      "wifi_sync": true,
-      "mobile_network_sync": true,
-      "last_sync_time": 1419519614000
-    }
-  };
 
   var pack_id = {
     "cover_filename": "",
@@ -401,35 +392,28 @@ function testLocalStorage() {
     ]
   }];
 
-  localStorage.user = JSON.stringify(user);
   localStorage.folder = JSON.stringify(folder);
   localStorage.pack_id = JSON.stringify(pack_id);
   localStorage.pack_id2 = JSON.stringify(pack_id2);
   localStorage.pack1428407706975 = JSON.stringify(pack1428407706975);
 
-  var send = {
-    user: JSON.parse(localStorage.user),
-    folder: JSON.parse(localStorage.folder),
-    pack_id: JSON.parse(localStorage.pack_id),
-    pack_id2: JSON.parse(localStorage.pack_id2),
-    pack1428407706975: JSON.parse(localStorage.pack1428407706975),
-  };
-
-  console.log(JSON.stringify(send));
 }
 
-$(document).on("click", ".show-page-loading-msg", function() {    
-  var $this = $(this),
-            theme = $this.jqmData("theme") || $.mobile.loader.prototype.options.theme,
-            msgText = $this.jqmData("msgtext") || $.mobile.loader.prototype.options.text,
-            textVisible = $this.jqmData("textvisible") || $.mobile.loader.prototype.options.textVisible,
-            textonly = !!$this.jqmData("textonly");        
-  html = $this.jqmData("html") || "";    
-  $.mobile.loading("show", {            
-    text: msgText,
-                textVisible: textVisible,
-                theme: theme,
-                textonly: textonly,
-                html: html    
-  });
+$( document ).on( "click", ".show-page-loading-msg", function() {
+    var $this = $( this ),
+        theme = $this.jqmData( "theme" ) || $.mobile.loader.prototype.options.theme,
+        msgText = $this.jqmData( "msgtext" ) || $.mobile.loader.prototype.options.text,
+        textVisible = $this.jqmData( "textvisible" ) || $.mobile.loader.prototype.options.textVisible,
+        textonly = !!$this.jqmData( "textonly" );
+        html = $this.jqmData( "html" ) || "";
+    $.mobile.loading( "show", {
+            text: msgText,
+            textVisible: textVisible,
+            theme: theme,
+            textonly: textonly,
+            html: html
+    });
 })
+.on( "click", ".hide-page-loading-msg", function() {
+    $.mobile.loading( "hide" );
+});

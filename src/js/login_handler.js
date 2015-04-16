@@ -1,48 +1,54 @@
-/*$(document).on("pageinit", "#login", function() {
-  //show saved html
-  
-  //$('#iframe1').contents().find('#edit').editable("insertHTML", newPackTemp.content, true);
-  
- 
-   var iframe = document.getElementById('iiframe');
-	iframe.src = iframe.src;
-	console.log("test");
-	console.log("tes");
-  //save pack in localStorage
-  
-});
- 
- $(document).on("pageshow", "#login", function() {
-  //set editor height
-  $('#iiframe').load(function() {
-    $(this).height($(window).height() - headerHeight - 8);
-    $(this).width($(window).width());
-  });
-});
- 
- 
- 
- 
- function test(){
- $('#iiframe').contents().find('#ok').click(pass);
-  console.log("test");
- }
- function pass(){
- var test = $('#iiframe').contents().find('#status').html();
-	console.log(test);
- 
- 
-   console.log("test");
- 
- }
- 
-*/
+function login_check() {
+  var account = $('#account').val();
+  var password = $('#password').val();
 
-function login_check(){
-	 var account = document.getElementById('account');
-	 var password = document.getElementById('password');
-	 localstorage.setitem('account',account);
-	 localstorage.setitem('password',password);
-	
-	
-}	
+  var user = {
+    "id": "",
+    "name": "Bernie",
+    "setting": {
+      "wifi_sync": true,
+      "mobile_network_sync": true,
+      "last_sync_time": 1419519614000
+    }
+  };
+
+  if ((account === 'loko') && (password === '123456789')) {
+    user.id = 'loko';
+    user.name = '洛林';
+    success(user);
+  } else if ((account === 'b4456609') && (password === 'b4456609')) {
+    user.id = '00157016';
+    user.name = 'Bernie';
+    success(user);
+  } else {
+    $('#msg').text('帳號或密碼有錯誤!!');
+  }
+
+}
+
+function success(user) {
+  $('#msg').text('登入成功');
+  localStorage.setItem('user', JSON.stringify(user));
+  testLocalStorage();
+
+  $.mobile.changePage("index.html", {
+    transition: "pop",
+    reverse: false,
+    changeHash: false
+  });
+}
+
+function logout() {
+  localStorage.clear();
+
+  login();
+}
+
+
+function login() {
+  $.mobile.changePage("login.html", {
+    transition: "pop",
+    reverse: false,
+    changeHash: false
+  });
+}

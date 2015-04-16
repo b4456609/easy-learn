@@ -184,6 +184,7 @@ function comment_submit_handler() {
 }
 
 function getNewerComment(currentNoteId, commentArray) {
+  console.log('getNewerComment');
 
   //get the newst comment date for ajax
   var lastestCreateTime = 0;

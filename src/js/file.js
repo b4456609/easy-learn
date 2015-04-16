@@ -57,7 +57,7 @@ function downloadImgByUrl(url, packId, prefixOrName, callback) {
     filepath,
     function(entry) {
       //add to version's file
-      newPackTemp.file[newPackTemp.file.length] = prefixOrName + time + '.jpg';
+      editingFile[editingFile.length] = prefixOrName + time + '.jpg';
       console.log("download complete: " + entry.toURL());
       callback(entry);
     },

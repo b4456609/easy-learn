@@ -5,8 +5,7 @@ var newPackTemp = {
   id: '',
   content: '', //new pack content
   youtube: [],
-  versionId: '',
-  file: []
+  versionId: ''
 };
 
 //for new pack and save to localStorage
@@ -14,6 +13,13 @@ var new_pack = null;
 
 //for new version bug
 var packName;
+
+//for version edit use
+var version_content;
+
+//for editing img
+var editingPackId = null;
+var editingFile = [];
 
 $(document).on("pageinit", "#version_pack", function() {
   display_version_info();
@@ -29,6 +35,8 @@ $(document).on("pageinit", "#co_pack", function() {
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width($(window).width());
   });
+
+  version_content = $('#veiw_pack_content').html();
 });
 
 $(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean edit !!
@@ -36,16 +44,13 @@ $(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean e
   //get pack from localStorage
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
-  //get version from pack
-  var content = pack.version[viewPackVersion.index].content;
-
   //set pack title
   $('#pack_title').html(pack.name);
 
   //parseImgForEditor(content);
 
   // set edit content
-  $('#iframe1').contents().find('#edit').editable("insertHTML", $('#veiw_pack_content').html(), true);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", version_content, true);
   editor_button_handler();
 
   //header button handler
@@ -54,6 +59,7 @@ $(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean e
     saveNewVersionHandler(pack);
   });
 
+  editingPackId = viewPackId;
 });
 
 $(document).on("pageinit", "#new_pack_edit", function() {
@@ -89,6 +95,9 @@ $(document).on('pageinit', "#new_pack", function() {
 
     //initail the pack setting
     newPackTemp.id = 'pack' + time;
+
+    //initial editor's setting
+    editingPackId = newPackTemp.id;
 
     //set versin id
     newPackTemp.versionId = "version" + time;
@@ -290,7 +299,7 @@ function savePackHandler() {
     "creator_user_id": JSON.parse(localStorage.user).id,
     "bookmark": [],
     "note": [],
-    "file": newPackTemp.file,
+    "file": editingFile,
     "create_time": time,
     "is_public": new_pack.is_public,
     "id": newPackTemp.versionId,
@@ -326,6 +335,7 @@ function savePackHandler() {
 
   changeModifyStroageTime();
   new_pack = null;
+  editingFile = [];
 }
 
 function savePackHandler_edit() {
@@ -417,7 +427,7 @@ function image_submit_handler() {
   //close popup
   $('#popup_image').popup("close");
   //download img and display in editor
-  downloadImgByUrl(imgUrl, newPackTemp.id, 'user', displayImgInEditor);
+  downloadImgByUrl(imgUrl, editingPackId, 'user', displayImgInEditor);
 }
 
 function youtube_submit_handler() {
@@ -498,7 +508,7 @@ function slideshare_submit_handler() {
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         console.log(http);
-        downloadImgByUrl(http, newPackTemp.id, 'slideshare', displayImgInEditor);
+        downloadImgByUrl(http, editingPackId, 'slideshare', displayImgInEditor);
       }
     });
 }
@@ -559,12 +569,18 @@ function saveNewVersionHandler(pack) {
   var versionId = 'version' + time;
   var new_index = pack.version.length;
 
+  var files = pack.version[viewPackVersion.index].file;
+
+  for(var i in files){
+    editingFile.push(files[i]);
+  }
+
   //create this page's information add it in pack
   pack.version[new_index] = {
     "creator_user_id": JSON.parse(localStorage.user).id,
     "bookmark": [],
     "note": pack.version[viewPackVersion.index].note,
-    "file": pack.version[viewPackVersion.index].file,
+    "file": editingFile,
     "create_time": time,
     "is_public": true,
     "id": versionId,
@@ -576,6 +592,7 @@ function saveNewVersionHandler(pack) {
 
   //set view this version
   viewPackVersion.index = new_index;
+  editingFile = [];
 
   changeModifyStroageTime();
 
@@ -628,21 +645,3 @@ function display_version_info() {
   $('#version_pack_content').html(html);
   $('#version_pack_content').listview("refresh");
 }
-//
-// function parseImgForEditor(content) {
-//   getImgNode(packId, fileName, displayVersionImgEditor);
-//   fileEntry.file(function(file) {
-//
-//     var reader = new FileReader();
-//     reader.onloadend = function() {
-//       var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
-//       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
-//     };
-//
-//     reader.readAsDataURL(file);
-//   }, fail);
-// }
-//
-// function displayVersionImgEditor(packId, img){
-//   var html = img.outerHTML;
-// }

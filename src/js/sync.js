@@ -12,7 +12,7 @@ function syncImg(files) {
 
   var i;
   for (i in files) {
-    uploadImg(files[i].name, files[i].version_pack_id, files[i].version_id);
+    uploadImg(files[i].name, files[i].version_pack_id);
   }
 
   downloadServerImg();
@@ -83,12 +83,12 @@ function FileNotExistThenDownload(packId, versionId, filename) {
 }
 
 
-function downloadImg(filename, packId, versionId) {
+function downloadImg(filename, packId) {
   var url = 'http://140.121.197.135:11116/easylearn/download?pack_id=' +
-    packId + '&version_id=' + versionId + '&filename=' + filename;
+    packId + '&filename=' + filename;
   console.log('downloadImgurl:' + url);
 
-  downloadImgByUrl(url, packId, versionId, filename, function() {
+  downloadImgByUrl(url, packId, filename, function() {
     downloadCount++;
     if (downloadCount === downloadTotal) {
       $.mobile.loading("hide");
@@ -96,8 +96,8 @@ function downloadImg(filename, packId, versionId) {
   });
 }
 
-function uploadImg(filename, packId, versionId) {
-  var filePath = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + filename;
+function uploadImg(filename, packId) {
+  var filePath = cordova.file.externalDataDirectory + packId + '/' +  filename;
   console.log('filepath' + filePath);
   window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
     console.log(fileEntry);
@@ -116,8 +116,7 @@ function uploadImg(filename, packId, versionId) {
           data: {
             file: srcdata,
             filename: filename,
-            pack_id: packId,
-            version_id: versionId
+            pack_id: packId
           },
           cache: false,
           contentType: "application/x-www-form-urlencoded",

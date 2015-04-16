@@ -11,6 +11,10 @@
     <feature name="FileTransfer">
         <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer" />
     </feature>
+    <icon density="ldpi" src="res/ldpi.png" />
+    <icon density="mdpi" src="res/mdpi.png" />
+    <icon density="hdpi" src="res/hdpi.png" />
+    <icon density="xhdpi" src="res/xhdpi.png" />
     <name>EasyLearn</name>
     <description>
     A sample Apache Cordova application that responds to the deviceready event.

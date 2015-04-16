@@ -12,5 +12,11 @@
   <preference name="AndroidPersistentFileLocation" value="Internal" />
   <feature name="Camera">
     <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
-</feature>
+  </feature>
+  <platform name="android">
+    <icon src="res/ldpi.png" density="ldpi" />
+    <icon src="res/mdpi.png" density="mdpi" />
+    <icon src="res/hdpi.png" density="hdpi" />
+    <icon src="res/xhdpi.png" density="xhdpi" />
+  </platform>
 </widget>

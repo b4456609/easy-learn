@@ -69,7 +69,6 @@ $(document).on("pageshow", "#home", function() {
 });
 
 
-
 //display folder in left panel
 function display_folder() {
   console.log('display_folder');

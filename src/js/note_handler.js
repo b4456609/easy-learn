@@ -31,6 +31,12 @@ $(document).on('pageinit', "#comment", function() {
 $(document).on('pageshow', "#comment", function() {
   //comment submit button
   $('#comment_submit').click(comment_submit_handler);
+  $('#reload_comment').click(function(){
+    var pack = JSON.parse(localStorage.getItem(viewPackId));
+    var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
+    var commentArray = currentNote.comment;
+    getNewerComment(currentNote.id, commentArray);
+  });
 });
 
 

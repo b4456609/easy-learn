@@ -16,44 +16,7 @@ var new_pack = null;
 var packName;
 
 $(document).on("pageinit", "#version_pack", function() {
-  //get pack from localStorage
-  var version = JSON.parse(localStorage.getItem(viewPackId)).version;
-  console.log(version);
-  console.log(viewPackVersion.index);
-
-  //generate display code
-  var html = '';
-  var i = 0;
-  for (i = 0; i < version.length; i++) {
-    console.log(i);
-    // get version's create time
-    var time = new Date(version[i].create_time);
-
-    if (i === viewPackVersion.index) {
-      html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
-        time.toLocaleString(navigator.language, {
-          hour: '2-digit',
-          minute: 'numeric',
-          day: "numeric",
-          month: "numeric",
-          year: 'numeric'
-        }) +
-        '   ' + version[i].creator_user_id + ' </li>';
-    } else {
-      html += '  <li version_index="' + i + '"><a href="#">' +
-        time.toLocaleString(navigator.language, {
-          hour: '2-digit',
-          minute: 'numeric',
-          day: "numeric",
-          month: "numeric",
-          year: 'numeric'
-        }) +
-        '   ' + version[i].creator_user_id + '</a></li>';
-    }
-  }
-  console.log(html);
-  $('#version_pack_content').html(html);
-  $('#version_pack_content').listview("refresh");
+  display_version_info();
 });
 
 $(document).on("pageshow", "#version_pack", function() {
@@ -74,13 +37,15 @@ $(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean e
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
   //get version from pack
-  var version = pack.version[viewPackVersion.index];
+  var content = pack.version[viewPackVersion.index].content;
 
   //set pack title
   $('#pack_title').html(pack.name);
 
+  //parseImgForEditor(content);
+
   // set edit content
-  $('#iframe1').contents().find('#edit').editable("insertHTML", version.content, true);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", $('#veiw_pack_content').html(), true);
   editor_button_handler();
 
   //header button handler
@@ -622,3 +587,62 @@ function go_version_handler() {
   viewPackVersion.index = parseInt($(this).attr('version_index'));
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
+
+function display_version_info() {
+  //get pack from localStorage
+  var version = JSON.parse(localStorage.getItem(viewPackId)).version;
+  console.log(version);
+  console.log(viewPackVersion.index);
+
+  //generate display code
+  var html = '';
+  var i = 0;
+  for (i = 0; i < version.length; i++) {
+    console.log(i);
+    // get version's create time
+    var time = new Date(version[i].create_time);
+
+    if (i === viewPackVersion.index) {
+      html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
+        time.toLocaleString(navigator.language, {
+          hour: '2-digit',
+          minute: 'numeric',
+          day: "numeric",
+          month: "numeric",
+          year: 'numeric'
+        }) +
+        '   ' + version[i].creator_user_id + ' </li>';
+    } else {
+      html += '  <li version_index="' + i + '"><a href="#">' +
+        time.toLocaleString(navigator.language, {
+          hour: '2-digit',
+          minute: 'numeric',
+          day: "numeric",
+          month: "numeric",
+          year: 'numeric'
+        }) +
+        '   ' + version[i].creator_user_id + '</a></li>';
+    }
+  }
+  console.log(html);
+  $('#version_pack_content').html(html);
+  $('#version_pack_content').listview("refresh");
+}
+//
+// function parseImgForEditor(content) {
+//   getImgNode(packId, fileName, displayVersionImgEditor);
+//   fileEntry.file(function(file) {
+//
+//     var reader = new FileReader();
+//     reader.onloadend = function() {
+//       var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
+//       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+//     };
+//
+//     reader.readAsDataURL(file);
+//   }, fail);
+// }
+//
+// function displayVersionImgEditor(packId, img){
+//   var html = img.outerHTML;
+// }

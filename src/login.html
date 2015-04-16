@@ -1,13 +1,43 @@
-<div data-role="page" id="login">
+<div data-role="page" id="new_pack_edit">
   <div data-role="header" data-position="fixed">
-    <a href="#" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
-    <h1>編輯懶人包</h1>
-    <a href="#" id="save_pack" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check">儲存</a>
+    <a href="#index" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
+    <h1>登入</h1>
+
   </div>
+	<style>
+	  #post { width : 120 px ;}
+	  
+	</style>
 
-<iframe id ="iiframe" src="http://140.121.197.135:11116/easylearn/login.html"/ "></iframe>
-
-<div><a href="index.html"> <input type="button" name="change"    value="OK" onclick  = "change()" ></input>  </a></div>
 
 
+
+  <body>
+    <div id="container">
+      <div id="center" >
+        <div class="feature">
+        <div class="post"  >
+            <p class="date">Thanks for your coming</p>
+            <h2>會員登入</h2>
+            
+            <div class="blockquote" >
+            
+              
+                <form action="first.php" method="POST" >
+				<p style = "font-size: 25px" >
+						帳號: <input type="text" name="account" value="" width = "25px"><br>
+						密碼: <input type="text" name="password" value=""><br>
+							  
+				</p>
+				<p align="right">		 <input type="button" value="確定" align="left"  onclick="login_check()">
+										
+				 </p>
+				</form>
+              
+            </div>
+            <hr />
+
+         
+        </div>
+  </body>
 </div>

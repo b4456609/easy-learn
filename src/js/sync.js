@@ -45,27 +45,26 @@ function downloadServerImg() {
 
     //download cover file
     if (packObj.cover_filename !== '') {
-      FileNotExistThenDownload(packId, '', packObj.cover_filename);
+      FileNotExistThenDownload(packId, packObj.cover_filename);
     }
 
     //get pack's version
     var packVersion = packObj.version;
 
     for (var j in packVersion) {
-      var versionId = packVersion[j].id;
       var filesInVersion = packVersion[j].file;
       //console.log('packVersion for' + packId + ' ' + versionId + ' ' + filesInVersion);
       //console.log(filesInVersion);
       for (var fileIndex in filesInVersion) {
-        FileNotExistThenDownload(packId, versionId, filesInVersion[fileIndex]);
+        FileNotExistThenDownload(packId, filesInVersion[fileIndex]);
       }
     }
   }
 }
 
-function FileNotExistThenDownload(packId, versionId, filename) {
+function FileNotExistThenDownload(packId, filename) {
   //console.log('FileNotExistThenDownload:' + ' ' + packId + ' ' + versionId + ' ' + filename);
-  var filePath = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + filename;
+  var filePath = cordova.file.externalDataDirectory + packId +  '/' + filename;
   window.resolveLocalFileSystemURL(filePath, function(fileEntry) {}, function(error) {
     if (downloadTotal === 0) {
       $.mobile.loading("show", {
@@ -76,9 +75,9 @@ function FileNotExistThenDownload(packId, versionId, filename) {
       });
     }
     downloadTotal++;
-    console.log('checkFileExist:' + ' ' + error.code + ' ' + packId + ' ' + versionId + ' ' + filename);
+    console.log('checkFileExist:' + ' ' + error.code + ' ' + packId + ' ' + filename);
     //first in to download show loading message
-    downloadImg(filename, packId, versionId);
+    downloadImg(filename, packId);
   });
 }
 

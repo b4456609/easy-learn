@@ -163,6 +163,7 @@ function displayCoverImgAtHome(packId, img) {
 function folder_click_handler() {
   var folderArray = JSON.parse(localStorage.folder);
 
+
   var packArray;
   //find current folder in data
   var i;
@@ -170,6 +171,7 @@ function folder_click_handler() {
     if (folderArray[i].id == $(this).attr('folderid')) {
       folderName = folderArray[i].name;
       packArray = folderArray[i].pack;
+      $('#home_title').text(folderName);
       break;
     }
   }

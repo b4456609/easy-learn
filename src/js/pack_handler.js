@@ -12,7 +12,55 @@ var newPackTemp = {
 //for new pack and save to localStorage
 var new_pack = null;
 
-$(document).on("pageinit", "#new_pack_edit", function() {
+//for new version bug
+var packName;
+
+$(document).on("pageinit", "#version_pack", function() {
+  //get pack from localStorage
+  var version = JSON.parse(localStorage.getItem(viewPackId)).version;
+  console.log(version);
+  console.log(viewPackVersion.index);
+
+  //generate display code
+  var html = '';
+  var i = 0;
+  for (i = 0; i < version.length; i++) {
+    console.log(i);
+    // get version's create time
+    var time = new Date(version[i].create_time);
+
+    if (i === viewPackVersion.index) {
+      html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
+        time.toLocaleString(navigator.language, {
+          hour: '2-digit',
+          minute: 'numeric',
+          day: "numeric",
+          month: "numeric",
+          year: 'numeric'
+        }) +
+        '   ' + version[i].creator_user_id + ' </li>';
+    } else {
+      html += '  <li version_index="' + i + '"><a href="#">' +
+        time.toLocaleString(navigator.language, {
+          hour: '2-digit',
+          minute: 'numeric',
+          day: "numeric",
+          month: "numeric",
+          year: 'numeric'
+        }) +
+        '   ' + version[i].creator_user_id + '</a></li>';
+    }
+  }
+  console.log(html);
+  $('#version_pack_content').html(html);
+  $('#version_pack_content').listview("refresh");
+});
+
+$(document).on("pageshow", "#version_pack", function() {
+  $("li[version_index]").click(go_version_handler);
+});
+
+$(document).on("pageinit", "#co_pack", function() {
   //set editor height
   $('#iframe1').load(function() {
     $(this).height($(window).height() - headerHeight - 8);
@@ -20,8 +68,30 @@ $(document).on("pageinit", "#new_pack_edit", function() {
   });
 });
 
+$(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean edit !!
 
-$(document).on("pageinit", "#co_pack", function() {
+  //get pack from localStorage
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  //get version from pack
+  var version = pack.version[viewPackVersion.index];
+
+  //set pack title
+  $('#pack_title').html(pack.name);
+
+  // set edit content
+  $('#iframe1').contents().find('#edit').editable("insertHTML", version.content, true);
+  editor_button_handler();
+
+  //header button handler
+  //$('#pack_comple').click(savePackHandler_edit);
+  $('#pack_branch').click(function() {
+    saveNewVersionHandler(pack);
+  });
+
+});
+
+$(document).on("pageinit", "#new_pack_edit", function() {
   //set editor height
   $('#iframe1').load(function() {
     $(this).height($(window).height() - headerHeight - 8);
@@ -42,37 +112,9 @@ $(document).on("pageshow", "#new_pack_edit", function() {
     newPackTemp.content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
   });
 
-
-  //image button
-  //submit handler
-  $("#image_submit").click(image_submit_handler);
-  $("#image_choose").click(function() {
-    $('#popup_image').popup("close");
-    getPhotoWithModifySize(newPackTemp.versionId, displayImgInEditor);
-  });
-  //cancel handler
-  $('#image_cancel').click(function() {
-    $('#popup_image').popup("close");
-  });
-
-  //slideshare button
-  //submit handler
-  $("#slideshare_submit").click(slideshare_submit_handler);
-
-  //cancel handler
-  $('#slideshare_cancel').click(function() {
-    $('#popup_slideshare').popup("close");
-  });
-
-  //youtube button
-  //submit handler
-  $("#youtube_submit").click(youtube_submit_handler);
-
-  //cancel handler
-  $('#youtube_cancel').click(function() {
-    $('#popup_youtube').popup("close");
-  });
+  editor_button_handler();
 });
+
 
 $(document).on('pageinit', "#new_pack", function() {
   //check is user back from edit page
@@ -129,52 +171,32 @@ $(document).on('pageshow', "#new_pack", function() {
 $(document).on('pageinit', "#view_pack", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
-  //set look's version's index
-  viewPackVersion.index = 0;
+  //set look's version's index, check if index exits
+  if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
+    viewPackVersion.index = 0;
+  }
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
 
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
+  packName = pack.name;
+
   $('#veiw_pack_content').html(pack.version[viewPackVersion.index].content);
-  $('#pack_title').html(pack.name);
 });
 
-
 $(document).on('pageshow', "#view_pack", function() {
-
+  //show pack's title
+  $('#pack_title').text(packName);
+  //note initail
   $("#note-display").toolbar("option", "position", "fixed");
   $("#note-display").toolbar("option", "tapToggle", false);
 
-  //    click and show note hanlder
+  //click and show note hanlder
   $(".note").click(showNoteHandler);
 
   showPackImg();
 });
-
-$(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean edit !!
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
-
-  //set look's version's index
-  viewPackVersion.index = 0;
-  //set look version's id
-  viewPackVersion.id = pack.version[viewPackVersion.index].id;
-
-  console.log('view pack ID:' + viewPackId);
-  console.log('view pack name:' + pack.name);
-  $('#iframe1').contents().find('#edit').editable("insertHTML", pack.version[viewPackVersion.index].content, true);
-  $('#pack_title').html(pack.name);
-  $('#pack_comple').click(savePackHandler_edit);
-  $('#pack_branch').click(savePackHandler);
-  
-});
-
-
-
-
-
-
-
 
 function showPackImg() {
   var imgArray = $("div.ui-content img[imgname]");
@@ -286,7 +308,7 @@ function savePackHandler() {
   var i;
   for (i = 0; i < newPackTemp.youtube.length; i++) {
     var index = content.indexOf('<div class="video-container" id="' + i + '">');
-    var endIndex = content.indexOf('</div>',index);
+    var endIndex = content.indexOf('</div>', index);
     content = content.replace(content.substring(index, endIndex + 6), newPackTemp.youtube[i]);
     console.log(i);
     console.log(index);
@@ -345,13 +367,15 @@ function savePackHandler_edit() {
   console.log(viewPackId);
   //get editor word and replace the img
   content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
-  
+
 
   console.log(pack);
-  pack.version[0]={'content':content}
-  
-  
-  
+  pack.version[0] = {
+    'content': content
+  };
+
+
+
   //set new pack in localStorage
   localStorage.setItem(viewPackId, JSON.stringify(pack));
   var pack1 = JSON.parse(localStorage.getItem(viewPackId));
@@ -384,7 +408,8 @@ function load_editor() {
         },
         callback: function() {
           //open popup slideshare setting
-          $("#popup_slideshare").popup("open");},
+          $("#popup_slideshare").popup("open");
+        },
         refresh: function() {}
       },
       youtube: {
@@ -523,4 +548,76 @@ function displayImgInEditor(fileEntry) {
 
     reader.readAsDataURL(file);
   }, fail);
+}
+
+function editor_button_handler() {
+  //image button
+  //submit handler
+  $("#image_submit").click(image_submit_handler);
+  $("#image_choose").click(function() {
+    $('#popup_image').popup("close");
+    getPhotoWithModifySize(newPackTemp.versionId, displayImgInEditor);
+  });
+  //cancel handler
+  $('#image_cancel').click(function() {
+    $('#popup_image').popup("close");
+  });
+
+  //slideshare button
+  //submit handler
+  $("#slideshare_submit").click(slideshare_submit_handler);
+
+  //cancel handler
+  $('#slideshare_cancel').click(function() {
+    $('#popup_slideshare').popup("close");
+  });
+
+  //youtube button
+  //submit handler
+  $("#youtube_submit").click(youtube_submit_handler);
+
+  //cancel handler
+  $('#youtube_cancel').click(function() {
+    $('#popup_youtube').popup("close");
+  });
+}
+
+function saveNewVersionHandler(pack) {
+
+  //get editor word and replace the img
+  content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  console.log(content);
+
+  //get current time
+  var time = new Date().getTime();
+  var versionId = 'version' + time;
+  var new_index = pack.version.length;
+
+  //create this page's information add it in pack
+  pack.version[new_index] = {
+    "creator_user_id": JSON.parse(localStorage.user).id,
+    "bookmark": [],
+    "note": pack.version[viewPackVersion.index].note,
+    "file": pack.version[viewPackVersion.index].file,
+    "create_time": time,
+    "is_public": true,
+    "id": versionId,
+    "content": content,
+  };
+
+  //set new pack in localStorage
+  localStorage.setItem(viewPackId, JSON.stringify(pack));
+
+  //set view this version
+  viewPackVersion.index = new_index;
+
+  changeModifyStroageTime();
+
+  //change page
+  $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
+}
+
+function go_version_handler() {
+  viewPackVersion.index = parseInt($(this).attr('version_index'));
+  $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }

@@ -172,20 +172,10 @@ function go_pack_handler() {
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
-function loggin() {
-
-<<<<<<< HEAD
-  $.mobile.changePage("loggin.html", {
+function login() {
+  $.mobile.changePage("login.html", {
     transition: "pop",
     reverse: false,
     changeHash: false
   });
-=======
-$.mobile.changePage( "login.html", {
-		transition: "pop",
-		reverse: false,
-		changeHash: false
-});
->>>>>>> login
-
 }

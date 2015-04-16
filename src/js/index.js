@@ -174,10 +174,18 @@ function go_pack_handler() {
 
 function loggin() {
 
+<<<<<<< HEAD
   $.mobile.changePage("loggin.html", {
     transition: "pop",
     reverse: false,
     changeHash: false
   });
+=======
+$.mobile.changePage( "login.html", {
+		transition: "pop",
+		reverse: false,
+		changeHash: false
+});
+>>>>>>> login
 
 }

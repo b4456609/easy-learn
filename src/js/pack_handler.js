@@ -144,7 +144,7 @@ $(document).on('pageinit', "#new_pack", function() {
     $('#new_pack_description').val(new_pack.description);
     $('#tags').val(new_pack.tags);
     if (new_pack.cover_filename !== '') {
-      getImgNode(newPackTemp.id, null, new_pack.cover_filename, function(packId, img) {
+      getImgNode(newPackTemp.id, new_pack.cover_filename, function(packId, img) {
         $("#cover_photo_area").html(img.outerHTML);
       });
     }
@@ -164,7 +164,7 @@ $(document).on('pageshow', "#new_pack", function() {
 
   // choose cover image file hanlder
   $('#choose_photo').click(function() {
-    getPhotoWithModifySize('', displayCoverImg);
+    getPhotoWithModifySize(displayCoverImg);
   });
 });
 
@@ -203,7 +203,7 @@ function showPackImg() {
   var i;
 
   $("div.ui-content img[imgname]").map(function() {
-    displayPackImg(viewPackId, viewPackVersion.id, $(this), $(this).attr('imgname'));
+    displayPackImg(viewPackId, $(this), $(this).attr('imgname'));
   });
 
 }
@@ -263,11 +263,11 @@ function hideButtonHandler() {
   $("#note-display").toolbar("refresh");
 }
 
-function getPhotoWithModifySize(versionId, successCallback) {
+function getPhotoWithModifySize(successCallback) {
   // Retrieve image file location from specified source
   navigator.camera.getPicture(function(imageData) {
     window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
-      addFileToPack(newPackTemp.id, fileEntry, versionId, successCallback);
+      addFileToPack(newPackTemp.id, fileEntry, successCallback);
     }, fail);
   }, onFail, {
     quality: 70,
@@ -360,6 +360,7 @@ function savePackHandler() {
   };
 
   changeModifyStroageTime();
+  new_pack = null;
 }
 
 function savePackHandler_edit() {
@@ -451,7 +452,7 @@ function image_submit_handler() {
   //close popup
   $('#popup_image').popup("close");
   //download img and display in editor
-  downloadImgByUrl(imgUrl, newPackTemp.id, newPackTemp.versionId, 'user', displayImgInEditor);
+  downloadImgByUrl(imgUrl, newPackTemp.id, 'user', displayImgInEditor);
 }
 
 function youtube_submit_handler() {
@@ -532,7 +533,7 @@ function slideshare_submit_handler() {
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         console.log(http);
-        downloadImgByUrl(http, newPackTemp.id, newPackTemp.versionId, 'slideshare', displayImgInEditor);
+        downloadImgByUrl(http, newPackTemp.id, 'slideshare', displayImgInEditor);
       }
     });
 }
@@ -556,7 +557,7 @@ function editor_button_handler() {
   $("#image_submit").click(image_submit_handler);
   $("#image_choose").click(function() {
     $('#popup_image').popup("close");
-    getPhotoWithModifySize(newPackTemp.versionId, displayImgInEditor);
+    getPhotoWithModifySize(displayImgInEditor);
   });
   //cancel handler
   $('#image_cancel').click(function() {

@@ -1,33 +1,26 @@
-function addFileToPack(packId, fileEntry, versionId, callback) {
+function addFileToPack(packId, fileEntry, callback) {
   var time = new Date().getTime();
   window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
     dirEntry.getDirectory(packId, {
       create: true
-    }, function(dirEntry) {
-      dirEntry.getDirectory(versionId, {
-        create: true
-      }, function(destDirEntry) {
-        fileEntry.moveTo(destDirEntry, time + '.jpg');
-        //add to pack's cover
-        if (versionId === '') {
-          new_pack.cover_filename = time + '.jpg';
-        }
-        destDirEntry.getFile(time + '.jpg', {
-          create: false
-        }, function(fileEntry) {
-          callback(fileEntry);
-        }, fail);
+    }, function(destDirEntry) {
+      fileEntry.moveTo(destDirEntry, time + '.jpg');
+      //add to pack's cover
+      if (new_pack !== null) {
+        new_pack.cover_filename = time + '.jpg';
+      }
+      destDirEntry.getFile(time + '.jpg', {
+        create: false
+      }, function(fileEntry) {
+        callback(fileEntry);
       }, fail);
     }, fail);
   }, fail);
 }
 
-function getImgNode(packId, versionId, fileName, callback) {
+function getImgNode(packId, fileName, callback) {
 
   var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
-  if (versionId !== null) {
-    path = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + fileName;
-  }
 
   window.resolveLocalFileSystemURL(path, function(fileEntry) {
     fileEntry.file(function(file) {
@@ -47,7 +40,7 @@ function getImgNode(packId, versionId, fileName, callback) {
 
 
 
-function downloadImgByUrl(url, packId, versionId, prefixOrName, callback) {
+function downloadImgByUrl(url, packId, prefixOrName, callback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
@@ -55,9 +48,9 @@ function downloadImgByUrl(url, packId, versionId, prefixOrName, callback) {
   //set file path
   var filepath;
   if (prefixOrName.indexOf('jpg') > 0)
-    filepath = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + prefixOrName;
+    filepath = cordova.file.externalDataDirectory + packId + '/'  + prefixOrName;
   else
-    filepath = cordova.file.externalDataDirectory + packId + '/' + versionId + '/' + prefixOrName + time + '.jpg';
+    filepath = cordova.file.externalDataDirectory + packId + '/'  + prefixOrName + time + '.jpg';
 
   fileTransfer.download(
     uri,
@@ -77,8 +70,8 @@ function downloadImgByUrl(url, packId, versionId, prefixOrName, callback) {
   );
 }
 
-function displayPackImg(viewPackId, versionId, imgNode, imgName) {
-  var path = cordova.file.externalDataDirectory + viewPackId + '/' + versionId + '/' + imgName;
+function displayPackImg(viewPackId, imgNode, imgName) {
+  var path = cordova.file.externalDataDirectory + viewPackId + '/' + imgName;
   console.log(path);
   //console.log(imgNode);
 

@@ -261,7 +261,7 @@ function saveInLocalStroage(data) {
 
 function refreshPage() {
   //refresh every visit home page
-  display_all_pack();
+  display_pack();
 
   //update count in panel page
   display_folder();

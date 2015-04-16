@@ -29,18 +29,6 @@ $(document).one("mobileinit", function() {
  */
 $.when(gapReady, jqmReady).then(myAppLogic);
 
-// App Logic
-function myAppLogic() {
-  console.log(cordova.file);
-  console.log(FileTransfer);
-
-  localStorage.clear();
-  testLocalStorage();
-  display_all_pack();
-  display_folder();
-  //loggin();
-}
-
 var headerHeight;
 
 //remember the pack to display
@@ -50,10 +38,25 @@ var viewPackVersion = {
   id: ''
 };
 
+var folderName = 'All';
+
+
+// App Logic
+function myAppLogic() {
+  headerHeight = $(".ui-header").outerHeight();
+  console.log(cordova.file);
+  console.log(FileTransfer);
+
+  localStorage.clear();
+  testLocalStorage();
+  display_pack();
+  display_folder();
+  //loggin();
+}
 
 $(document).on("pageshow", "#home", function() {
 
-  headerHeight = $(".ui-header").outerHeight();
+  $('#home_title').text(folderName);
 
   console.log('Home:pageshow');
 
@@ -61,7 +64,7 @@ $(document).on("pageshow", "#home", function() {
   //this will happened when user first open app
   if (gapReady.state() != "pending") {
     //refresh every visit home page
-    display_all_pack();
+    display_pack();
 
     //update count in panel page
     display_folder();
@@ -95,23 +98,23 @@ function display_folder() {
 }
 
 //display default all page
-function display_all_pack() {
+function display_pack() {
   var folderArray = JSON.parse(localStorage.folder);
 
   var packArray;
   //find current folder in data
   var i;
   for (i in folderArray) {
-    if (folderArray[i].name == 'All') {
+    if (folderArray[i].name === folderName) {
       packArray = folderArray[i].pack;
       break;
     }
   }
-  display_pack(packArray);
+  display_pack_content(packArray);
 }
 
 //display pack in content
-function display_pack(packArray) {
+function display_pack_content(packArray) {
   //generate pack html code
   var result = "";
   var pack_templete = "";
@@ -156,12 +159,13 @@ function folder_click_handler() {
   var i;
   for (i in folderArray) {
     if (folderArray[i].id == $(this).attr('folderid')) {
+      folderName = folderArray[i].name;
       packArray = folderArray[i].pack;
       break;
     }
   }
 
-  display_pack(packArray);
+  display_pack_content(packArray);
 
   $("#menu_panel").panel("close");
 }

@@ -51,7 +51,7 @@ function myAppLogic() {
   testLocalStorage();
   display_pack();
   display_folder();
-  //loggin();
+  login();
 }
 
 $(document).on("pageshow", "#home", function() {

@@ -74,7 +74,6 @@ $(document).on("pageshow", "#home", function() {
 });
 
 
-
 //display folder in left panel
 function display_folder() {
   $("li:has([folderid])").remove();

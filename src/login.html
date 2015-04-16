@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
- <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<div data-role="page" id="login">
+  <div data-role="header" data-position="fixed">
+    <a href="#" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
+    <h1>編輯懶人包</h1>
+    <a href="#" id="save_pack" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check">儲存</a>
+  </div>
 
-  <!-- Include meta tag to ensure proper rendering and touch zooming -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- use the handler to check the view-->
-  <script src="js/login_handler.js"></script>
-</head>
- 
-<body >
+<iframe id ="iiframe" src="http://140.121.197.135:11116/easylearn/login.html"/ "></iframe>
 
-<iframe src="http://140.121.197.135:11116/easylearn/login.html"/ ></iframe>
-
-<div><a href="index.html"> <input type="button" name="change"    value="OK" onclick  = "change()"></input>  </a></div>
+<div><a href="index.html"> <input type="button" name="change"    value="OK" onclick  = "change()" ></input>  </a></div>
 
 
-</body>
-</html>
+</div>

@@ -338,29 +338,6 @@ function savePackHandler() {
   editingFile = [];
 }
 
-function savePackHandler_edit() {
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
-  console.log(viewPackId);
-  //get editor word and replace the img
-  content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
-
-
-  console.log(pack);
-  pack.version[0] = {
-    'content': content
-  };
-
-
-
-  //set new pack in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
-  var pack1 = JSON.parse(localStorage.getItem(viewPackId));
-  console.log(pack1);
-}
-
-
-
-
 function load_editor() {
   $('#iframe1').contents().find('#edit').editable({
     'buttons': ['bold', 'italic', 'underline', 'color', 'strikeThrough', 'fontFamily',
@@ -571,8 +548,9 @@ function saveNewVersionHandler(pack) {
 
   var files = pack.version[viewPackVersion.index].file;
 
+  editingFile = [];
   for(var i in files){
-    editingFile.push(files[i]);
+    editingFile[editingFile.length] = files[i];
   }
 
   //create this page's information add it in pack

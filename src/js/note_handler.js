@@ -31,7 +31,7 @@ $(document).on('pageinit', "#comment", function() {
 $(document).on('pageshow', "#comment", function() {
   //comment submit button
   $('#comment_submit').click(comment_submit_handler);
-  $('#reload_comment').click(function(){
+  $('#reload_comment').click(function() {
     var pack = JSON.parse(localStorage.getItem(viewPackId));
     var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
     var commentArray = currentNote.comment;
@@ -195,10 +195,7 @@ function getNewerComment(currentNoteId, commentArray) {
       lastestCreateTime = commentArray[i].create_time;
     }
   }
-  //check server if has newer comment on this note
-  if (lastestCreateTime !== 0) {
-    getComment(currentNoteId, lastestCreateTime);
-  }
+  getComment(currentNoteId, lastestCreateTime);
 }
 
 function displayComment(commentArray) {

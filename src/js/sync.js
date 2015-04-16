@@ -209,7 +209,7 @@ function sync() {
     }
   }
 
-  //console.log(sendData);
+  console.log(sendData);
 
   $.ajax({
     method: "POST",

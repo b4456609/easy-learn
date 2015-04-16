@@ -1,4 +1,4 @@
-$(document).on("pageinit", "#login", function() {
+/*$(document).on("pageinit", "#login", function() {
   //show saved html
   
   //$('#iframe1').contents().find('#edit').editable("insertHTML", newPackTemp.content, true);
@@ -36,3 +36,13 @@ $(document).on("pageinit", "#login", function() {
  
  }
  
+*/
+
+function login_check(){
+	 var account = document.getElementById('account');
+	 var password = document.getElementById('password');
+	 localstorage.setitem('account',account);
+	 localstorage.setitem('password',password);
+	
+	
+}	

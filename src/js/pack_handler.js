@@ -548,7 +548,8 @@ function saveNewVersionHandler(pack) {
 
   var files = pack.version[viewPackVersion.index].file;
 
-  editingFile = [];
+  console.log(files);
+
   for(var i in files){
     editingFile[editingFile.length] = files[i];
   }

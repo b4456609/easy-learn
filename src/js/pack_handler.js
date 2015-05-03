@@ -9,7 +9,7 @@ var newPackTemp = {
 };
 
 //for new pack and save to localStorage
-var new_pack = null;
+var NEW_PACK = null;
 
 //for new version bug
 var packName;
@@ -21,17 +21,17 @@ var version_content;
 var editingPackId = null;
 var editingFile = [];
 
-$(document).on("pageinit", "#version_pack", function() {
+$(document).on("pageinit", "#version_pack", function () {
   display_version_info();
 });
 
-$(document).on("pageshow", "#version_pack", function() {
+$(document).on("pageshow", "#version_pack", function () {
   $("li[version_index]").click(go_version_handler);
 });
 
-$(document).on("pageinit", "#co_pack", function() {
+$(document).on("pageinit", "#co_pack", function () {
   //set editor height
-  $('#iframe1').load(function() {
+  $('#iframe1').load(function () {
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width($(window).width());
   });
@@ -39,7 +39,7 @@ $(document).on("pageinit", "#co_pack", function() {
   version_content = $('#veiw_pack_content').html();
 });
 
-$(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean edit !!
+$(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean edit !!
 
   //get pack from localStorage
   var pack = JSON.parse(localStorage.getItem(viewPackId));
@@ -55,22 +55,22 @@ $(document).on('pageshow', "#co_pack", function() { //  Test co work  the mean e
 
   //header button handler
   //$('#pack_comple').click(savePackHandler_edit);
-  $('#pack_branch').click(function() {
+  $('#pack_branch').click(function () {
     saveNewVersionHandler(pack);
   });
 
   editingPackId = viewPackId;
 });
 
-$(document).on("pageinit", "#new_pack_edit", function() {
+$(document).on("pageinit", "#new_pack_edit", function () {
   //set editor height
-  $('#iframe1').load(function() {
+  $('#iframe1').load(function () {
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width($(window).width());
   });
 });
 
-$(document).on("pageshow", "#new_pack_edit", function() {
+$(document).on("pageshow", "#new_pack_edit", function () {
 
   //show saved html
   if (newPackTemp.content !== '') {
@@ -79,7 +79,7 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
-  $('#edit_back').click(function() {
+  $('#edit_back').click(function () {
     newPackTemp.content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
   });
 
@@ -87,7 +87,7 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 });
 
 
-$(document).on('pageinit', "#new_pack", function() {
+$(document).on('pageinit', "#new_pack", function () {
   //check is user back from edit page
   if (newPackTemp.id === '') {
     //get current time
@@ -102,7 +102,7 @@ $(document).on('pageinit', "#new_pack", function() {
     //set versin id
     newPackTemp.versionId = "version" + time;
 
-    new_pack = {
+    NEW_PACK = {
       "creator_user_id": JSON.parse(localStorage.user).id,
       "create_time": time,
       "name": '',
@@ -113,12 +113,12 @@ $(document).on('pageinit', "#new_pack", function() {
       "version": []
     };
   } else { //set saved value
-    $('#new_pack_title').val(new_pack.name);
-    $('#is_public').prop('checked', new_pack.is_public).checkboxradio("refresh");
-    $('#new_pack_description').val(new_pack.description);
-    $('#tags').val(new_pack.tags);
-    if (new_pack.cover_filename !== '') {
-      getImgNode(newPackTemp.id, new_pack.cover_filename, function(packId, img) {
+    $('#new_pack_title').val(NEW_PACK.name);
+    $('#is_public').prop('checked', NEW_PACK.is_public).checkboxradio("refresh");
+    $('#new_pack_description').val(NEW_PACK.description);
+    $('#tags').val(NEW_PACK.tags);
+    if (NEW_PACK.cover_filename !== '') {
+      getImgNode(newPackTemp.id, NEW_PACK.cover_filename, function (packId, img) {
         $("#cover_photo_area").html(img.outerHTML);
       });
     }
@@ -126,23 +126,23 @@ $(document).on('pageinit', "#new_pack", function() {
 
 });
 
-$(document).on('pageshow', "#new_pack", function() {
+$(document).on('pageshow', "#new_pack", function () {
   // save new pack storage for next page use
-  $('#new_pack_next').click(function() {
+  $('#new_pack_next').click(function () {
     //save user data
-    new_pack.name = $('#new_pack_title').val();
-    new_pack.is_public = document.getElementById("is_public").checked;
-    new_pack.description = $('#new_pack_description').val();
-    new_pack.tags = $('#tags').val();
+    NEW_PACK.name = $('#new_pack_title').val();
+    NEW_PACK.is_public = document.getElementById("is_public").checked;
+    NEW_PACK.description = $('#new_pack_description').val();
+    NEW_PACK.tags = $('#tags').val();
   });
 
   // choose cover image file hanlder
-  $('#choose_photo').click(function() {
+  $('#choose_photo').click(function () {
     getPhotoWithModifySize(displayCoverImg);
   });
 });
 
-$(document).on('pageinit', "#view_pack", function() {
+$(document).on('pageinit', "#view_pack", function () {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
   //set look's version's index, check if index exits
@@ -159,7 +159,7 @@ $(document).on('pageinit', "#view_pack", function() {
   $('#veiw_pack_content').html(pack.version[viewPackVersion.index].content);
 });
 
-$(document).on('pageshow', "#view_pack", function() {
+$(document).on('pageshow', "#view_pack", function () {
   //show pack's title
   $('#pack_title').text(packName);
   //note initail
@@ -176,7 +176,7 @@ function showPackImg() {
   var imgArray = $("div.ui-content img[imgname]");
   var i;
 
-  $("div.ui-content img[imgname]").map(function() {
+  $("div.ui-content img[imgname]").map(function () {
     displayPackImg(viewPackId, $(this), $(this).attr('imgname'));
   });
 
@@ -239,17 +239,17 @@ function hideButtonHandler() {
 
 function getPhotoWithModifySize(successCallback) {
   // Retrieve image file location from specified source
-  navigator.camera.getPicture(function(imageData) {
-    window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
+  navigator.camera.getPicture(function (imageData) {
+    window.resolveLocalFileSystemURL(imageData, function (fileEntry) {
       addFileToPack(newPackTemp.id, fileEntry, successCallback);
     }, fail);
   }, onFail, {
-    quality: 70,
-    targetWidth: 800,
-    targetHeight: 800,
-    destinationType: Camera.DestinationType.FILE_URI,
-    sourceType: Camera.PictureSourceType.PHOTOLIBRARY
-  });
+      quality: 70,
+      targetWidth: 800,
+      targetHeight: 800,
+      destinationType: Camera.DestinationType.FILE_URI,
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+    });
 }
 
 function onFail(message) {
@@ -258,11 +258,11 @@ function onFail(message) {
 }
 
 function displayCoverImg(packfileEntry) {
-  packfileEntry.file(function(file) {
+  packfileEntry.file(function (file) {
 
     var img = document.createElement("img");
     var reader = new FileReader();
-    reader.onloadend = function() {
+    reader.onloadend = function () {
       img.src = reader.result;
     };
     img.style.width = '100%';
@@ -275,7 +275,7 @@ function displayCoverImg(packfileEntry) {
 function savePackHandler() {
 
   //get editor word and replace the img
-  content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
   console.log(content);
   console.log(newPackTemp.youtube);
 
@@ -295,19 +295,19 @@ function savePackHandler() {
   var time = new Date().getTime();
 
   //create this page's information add it in pack
-  new_pack.version[new_pack.version.length] = {
+  NEW_PACK.version[NEW_PACK.version.length] = {
     "creator_user_id": JSON.parse(localStorage.user).id,
     "bookmark": [],
     "note": [],
     "file": editingFile,
     "create_time": time,
-    "is_public": new_pack.is_public,
+    "is_public": NEW_PACK.is_public,
     "id": newPackTemp.versionId,
     "content": content,
   };
 
   //set new pack in localStorage
-  localStorage.setItem(newPackTemp.id, JSON.stringify(new_pack));
+  localStorage.setItem(newPackTemp.id, JSON.stringify(NEW_PACK));
 
   //add it in folder all
   var folderArray = JSON.parse(localStorage.folder);
@@ -334,7 +334,7 @@ function savePackHandler() {
   };
 
   changeModifyStroageTime();
-  new_pack = null;
+  NEW_PACK = null;
   editingFile = [];
 }
 
@@ -359,11 +359,11 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-slideshare'
         },
-        callback: function() {
+        callback: function () {
           //open popup slideshare setting
           $("#popup_slideshare").popup("open");
         },
-        refresh: function() {}
+        refresh: function () { }
       },
       youtube: {
         title: 'insert youtube',
@@ -373,12 +373,12 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-youtube'
         },
-        callback: function() {
+        callback: function () {
           //open popup slideshare setting
           $("#popup_youtube").popup("open");
 
         },
-        refresh: function() {}
+        refresh: function () { }
       },
       imageUrlAndFile: {
         title: 'insert youtube',
@@ -388,11 +388,11 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-image'
         },
-        callback: function() {
+        callback: function () {
           $("#popup_image").popup("open");
 
         },
-        refresh: function() {}
+        refresh: function () { }
       }
     }
   });
@@ -468,7 +468,7 @@ function slideshare_submit_handler() {
 
   //ajax
   $.get(url,
-    function(data) {
+    function (data) {
       //error check
       if (start <= 0 | start === null | start > data.total_slides) {
         start = 1;
@@ -491,10 +491,10 @@ function slideshare_submit_handler() {
 }
 
 function displayImgInEditor(fileEntry) {
-  fileEntry.file(function(file) {
+  fileEntry.file(function (file) {
 
     var reader = new FileReader();
-    reader.onloadend = function() {
+    reader.onloadend = function () {
       var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
     };
@@ -507,12 +507,12 @@ function editor_button_handler() {
   //image button
   //submit handler
   $("#image_submit").click(image_submit_handler);
-  $("#image_choose").click(function() {
+  $("#image_choose").click(function () {
     $('#popup_image').popup("close");
     getPhotoWithModifySize(displayImgInEditor);
   });
   //cancel handler
-  $('#image_cancel').click(function() {
+  $('#image_cancel').click(function () {
     $('#popup_image').popup("close");
   });
 
@@ -521,7 +521,7 @@ function editor_button_handler() {
   $("#slideshare_submit").click(slideshare_submit_handler);
 
   //cancel handler
-  $('#slideshare_cancel').click(function() {
+  $('#slideshare_cancel').click(function () {
     $('#popup_slideshare').popup("close");
   });
 
@@ -530,7 +530,7 @@ function editor_button_handler() {
   $("#youtube_submit").click(youtube_submit_handler);
 
   //cancel handler
-  $('#youtube_cancel').click(function() {
+  $('#youtube_cancel').click(function () {
     $('#popup_youtube').popup("close");
   });
 }
@@ -550,7 +550,7 @@ function saveNewVersionHandler(pack) {
 
   console.log(files);
 
-  for(var i in files){
+  for (var i in files) {
     editingFile[editingFile.length] = files[i];
   }
 
@@ -599,29 +599,29 @@ function display_version_info() {
     var time = new Date(version[i].create_time);
 
     var userName = version[i].creator_user_id;
-    if(version[i].creator_user_id === 'b4456609')userName = "Bernie";
-    if(version[i].creator_user_id === 'loko')userName = '洛林';
+    if (version[i].creator_user_id === 'b4456609') userName = "Bernie";
+    if (version[i].creator_user_id === 'loko') userName = '洛林';
 
     if (i === viewPackVersion.index) {
       html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
-        time.toLocaleString(navigator.language, {
-          hour: '2-digit',
-          minute: 'numeric',
-          day: "numeric",
-          month: "numeric",
-          year: 'numeric'
-        }) +
-        '   ' + userName + ' </li>';
+      time.toLocaleString(navigator.language, {
+        hour: '2-digit',
+        minute: 'numeric',
+        day: "numeric",
+        month: "numeric",
+        year: 'numeric'
+      }) +
+      '   ' + userName + ' </li>';
     } else {
       html += '  <li version_index="' + i + '"><a href="#">' +
-        time.toLocaleString(navigator.language, {
-          hour: '2-digit',
-          minute: 'numeric',
-          day: "numeric",
-          month: "numeric",
-          year: 'numeric'
-        }) +
-        '   ' + userName + '</a></li>';
+      time.toLocaleString(navigator.language, {
+        hour: '2-digit',
+        minute: 'numeric',
+        day: "numeric",
+        month: "numeric",
+        year: 'numeric'
+      }) +
+      '   ' + userName + '</a></li>';
     }
   }
   console.log(html);

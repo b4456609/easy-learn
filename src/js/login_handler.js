@@ -6,9 +6,11 @@ function login_check() {
     "id": "",
     "name": "Bernie",
     "setting": {
-      "wifi_sync": true,
-      "mobile_network_sync": true,
-      "last_sync_time": 1419519614000
+      wifi_sync: true,
+      mobile_network_sync: true,
+      last_sync_time: 1419519614000,
+      version: -1,
+      modified: false
     }
   };
 
@@ -34,10 +36,10 @@ function success(user) {
     "id": "folderId",
     "pack": []
   }, {
-    "name": "我的最愛",
-    "id": "fjoeiwjowfe",
-    "pack": []
-  }];
+      "name": "我的最愛",
+      "id": "fjoeiwjowfe",
+      "pack": []
+    }];
   localStorage.folder = JSON.stringify(folder);
   //testLocalStorage();
 

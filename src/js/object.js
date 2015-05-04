@@ -47,6 +47,8 @@ function Version() {
   this.content;
   this.create_time;
   this.is_public;
+  this.version;
+  this.modified;
   this.creator_user_id;
   this.bookmark;
   this.note;

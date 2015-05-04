@@ -9,7 +9,7 @@ function Pack() {
   this.cover_filename;
   this.version;
 
-  this.getPack = function(packId) {
+  this.getPack = function (packId) {
     var pack = JSON.parse(localStorage.getItem(packId));
 
     //set all value
@@ -24,7 +24,7 @@ function Pack() {
     this.version = pack.version;
   };
 
-  this.savePack = function(packId) {
+  this.savePack = function (packId) {
     var pack;
     //set pack's all value
     pack.pack_id = this.pack_id;
@@ -79,10 +79,10 @@ function Comment() {
 function Folder() {
   this.folder;
 
-  this.getFolder = function() {
+  this.getFolder = function () {
     var folder = JSON.parse(localStorage.getItem('folder'));
     this.folder = folder;
-  }
+  };
 }
 
 function Setting() {
@@ -91,4 +91,34 @@ function Setting() {
   this.last_sync_time;
   this.last_version;
   this.modified;
+
+  //get setting form local storage
+  this.getSetting = function () {
+    var user = JSON.parse(localStorage.getItem('user'));
+    this.wifi_sync = user.setting.wifi_sync;
+    this.mobile_network_sync = user.setting.mobile_network_sync;
+    this.last_sync_time = user.setting.last_sync_time;
+    this.last_version = user.setting.last_version;
+    this.modified = user.setting.modified;
+  };
+
+  this.setSetting = function (source) {
+    this.wifi_sync = source.wifi_sync;
+    this.mobile_network_sync = source.mobile_network_sync;
+    this.last_sync_time = source.last_sync_time;
+    this.last_version = source.last_version;
+    this.modified = source.modified;
+  };
+}
+
+function User() {
+  this.id;
+  this.name;
+  
+  //get setting form local storage
+  this.getSetting = function () {
+    var user = JSON.parse(localStorage.getItem('user'));
+    this.id = user.id;
+    this.name = user.name;
+  };
 }

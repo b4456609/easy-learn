@@ -143,6 +143,7 @@ function changeModifyStroageTime() {
   localStorage.setItem('user', JSON.stringify(user));
 }
 
+//comment instant sync handler
 function postComment(noteId, newComment) {
   var jsonObj = JSON.stringify(newComment);
   $.ajax({
@@ -224,67 +225,91 @@ function sync() {
     console.log('success sync');
     console.log(data);
 
-    //deal with fail
-    if (data.sync.status === 'fail') {
+    if (data.sync.status !== 'fail') {
+      //success sync
+      if (!isConflict(data)) {
+        //save DB data to local storage
+        saveToLocalStorage(data);
+        
+        //sync image
+        syncImg(data.sync.upload_file);
 
-    } else { //success sync
-      //save data in local storage
-      saveInLocalStroage(data);
-
-      //sync image
-      syncImg(data.sync.upload_file);
-
-      //refresh home page
-      refreshPage();
+        //refresh home page
+        refreshPage();
+      }
+      else {
+        //decide To Replace
+        $("#popupDialog").popup("open");
+        //the user will decide Replace or keep;
+        // onclick will handle
+        //save to local storage for replace use
+        
+        localStorage.setItem('sync', JSON.stringify(data));
+      }
     }
-
-
-
+    else {
+      //deal with sync fail
+    }
   });
 }
 
-function saveInLocalStroage(data) {
+function saveToLocalStorage(data) {
   console.log('saveInLocalStroage');
   //get object's key
   var keys = Object.keys(data);
 
+  for (var i in keys) {
+    if ((keys[i] === 'setting') && !isConflict) {
+      var user = JSON.parse(localStorage.user);
+      user.setting = data[keys[i]];
+      localStorage.setItem('user', JSON.stringify(user));
+    } else if (keys[i] !== 'sync') {
+      localStorage.setItem(keys[i], JSON.stringify(data[keys[i]]));
+    }
+  }
+}
+
+function isConflict(data) {
+  //get object's key
+  var keys = Object.keys(data);
+
   //check if is sync conflict
-  var isConflict = false;
   for (var j in keys) {
     if (keys[i] === 'setting') {
       var DBsetting = data[keys[i]];
       
       //get local setting
-      var localSetting = new Setting();
-      localSetting.getSetting();
+      var localSetting = new User().getSetting();
       
       // conflict happen
       if ((DBsetting.last_version != localSetting.last_version) && localSetting.modified) {
-        isConflict = true;
-      }
-      break;
-    }
-  }  
-  
-  //if conflict, replace or not
-  if (isConflict && decideToReplace()) {
-    for (var i in keys) {
-      if ((keys[i] === 'setting') && !isConflict) {
-        var user = JSON.parse(localStorage.user);
-        user.setting = data[keys[i]];
-        localStorage.setItem('user', JSON.stringify(user));
-      } else if (keys[i] !== 'sync') {
-        localStorage.setItem(keys[i], JSON.stringify(data[keys[i]]));
+        return true;
       }
     }
   }
+  return false;
 }
 
-//ask user to replace setting
-function decideToReplace() {
-  //show popup
+function replaceDate() {
+  var data = JSON.parse(localStorage.getItem('sync'));
+  var user = new User().getUser();
   
-  return true;
+  //clear local storage
+  localStorage.clear();
+  
+  //add to local storage for next function use
+  user.saveUser();
+  saveToLocalStorage(data);
+  
+  //sync image
+  syncImg(data.sync.upload_file);
+
+  //refresh home page
+  refreshPage();
+}
+
+function cancelSync() {
+  localStorage.removeItem('sync');
 }
 
 function refreshPage() {

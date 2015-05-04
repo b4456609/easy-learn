@@ -24,7 +24,7 @@ function Pack() {
     this.version = pack.version;
   };
 
-  this.savePack = function (packId) {
+  this.savePack = function () {
     var pack;
     //set pack's all value
     pack.pack_id = this.pack_id;
@@ -47,12 +47,16 @@ function Version() {
   this.content;
   this.create_time;
   this.is_public;
-  this.version;
-  this.modified;
   this.creator_user_id;
   this.bookmark;
   this.note;
   this.file;
+  this.version;
+  this.modified;
+
+  this.setVersion = function (data) {
+
+  };
 }
 
 function Bookmark() {
@@ -87,40 +91,34 @@ function Folder() {
   };
 }
 
-function Setting() {
-  this.wifi_sync;
-  this.mobile_network_sync
-  this.last_sync_time;
-  this.last_version;
-  this.modified;
-
-  //get setting form local storage
-  this.getSetting = function () {
-    var user = JSON.parse(localStorage.getItem('user'));
-    this.wifi_sync = user.setting.wifi_sync;
-    this.mobile_network_sync = user.setting.mobile_network_sync;
-    this.last_sync_time = user.setting.last_sync_time;
-    this.last_version = user.setting.last_version;
-    this.modified = user.setting.modified;
-  };
-
-  this.setSetting = function (source) {
-    this.wifi_sync = source.wifi_sync;
-    this.mobile_network_sync = source.mobile_network_sync;
-    this.last_sync_time = source.last_sync_time;
-    this.last_version = source.last_version;
-    this.modified = source.modified;
-  };
-}
 
 function User() {
   this.id;
   this.name;
+  this.setting;
   
   //get setting form local storage
-  this.getSetting = function () {
+  this.getUser = function () {
     var user = JSON.parse(localStorage.getItem('user'));
     this.id = user.id;
     this.name = user.name;
+    
+    this.setting= user.setting;
+  };
+
+  //save to local storage
+  this.saveUser = function () {
+    var user;
+    user.id = this.id;
+    user.name = this.name;
+    user.setting= this.setting;
+
+    localStorage.setItem('user', JSON.stringify(user));
+  };
+  
+  //return setting
+  this.getSetting = function () {
+    this.getUser();
+    return this.setting;
   };
 }

@@ -239,7 +239,7 @@ function sync() {
       }
       else {
         //decide To Replace
-        $("#popupDialog").popup("open");
+        $("#sync_conflict_popup").popup("open");
         //the user will decide Replace or keep;
         // onclick will handle
         //save to local storage for replace use
@@ -290,7 +290,7 @@ function isConflict(data) {
   return false;
 }
 
-function replaceDate() {
+function replace_data() {
   var data = JSON.parse(localStorage.getItem('sync'));
   var user = new User().getUser();
   
@@ -308,7 +308,7 @@ function replaceDate() {
   refreshPage();
 }
 
-function cancelSync() {
+function cancel_sync() {
   localStorage.removeItem('sync');
 }
 

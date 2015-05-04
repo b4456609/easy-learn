@@ -239,7 +239,7 @@ function sync() {
       }
       else {
         //decide To Replace
-        $("#sync_conflict_popup").popup("open");
+        $("#sync_conflict_popup").popup("open", { history: false });
         //the user will decide Replace or keep;
         // onclick will handle
         //save to local storage for replace use

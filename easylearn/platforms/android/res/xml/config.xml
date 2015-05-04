@@ -11,6 +11,9 @@
     <feature name="FileTransfer">
         <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer" />
     </feature>
+    <feature name="Notification">
+        <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+    </feature>
     <icon density="ldpi" src="res/ldpi.png" />
     <icon density="mdpi" src="res/mdpi.png" />
     <icon density="hdpi" src="res/hdpi.png" />

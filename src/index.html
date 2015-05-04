@@ -122,14 +122,13 @@
       </div>
       <!-- end-->
       <!--sync conflict popup-->
-      <div data-role="popup" id="sync_conflict_popup" data-overlay-theme="b" data-theme="a" data-dismissible="false" style="max-width:400px;">    
-        <div data-role="header" data-theme="a">    
-          <h1>同步發生衝突</h1>    </div>    
-        <div role="main" class="ui-content">        
+      <div data-role="popup" id="sync_conflict_popup" data-overlay-theme="b" data-dismissible="false">        
+        <div style="padding:10px 20px;">
+          <h3>同步發生衝突</h3>
           <p>你可以取消同步並備份資料後再執行同步</p>
           <p>下載雲端資料捨棄目前手機上的資料</p>
-          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="cancelSync()">取消同步</a>        
-          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="replaceDate()">捨棄手機資料</a>
+          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="cancel_sync()">取消同步</a>        
+          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="replace_data()">捨棄手機資料</a>
         </div>
       </div>
       <!--end sync conflict popup-->

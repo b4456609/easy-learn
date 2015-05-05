@@ -92,7 +92,8 @@ $(document).on('pageinit', "#new_pack", function () {
   //initial form
   if (newPackTemp.id === '') {
     
-    NEW_PACK = new Pack().initial();
+    NEW_PACK = new Pack();
+    NEW_PACK.initial();
 
     //initail the pack setting
     newPackTemp.id = NEW_PACK.id;
@@ -101,6 +102,7 @@ $(document).on('pageinit', "#new_pack", function () {
     editingPackId = NEW_PACK.id;
 
     //set versin id
+    var time = new Date().getTime();
     newPackTemp.versionId = "version" + time;
   } else { //set saved value
     $('#new_pack_title').val(NEW_PACK.name);
@@ -281,7 +283,9 @@ function savePackHandler() {
 
   content = content.replace('<div class="video-container" id="0"><br></div>', '');
 
-  var version = new Version().initial();
+  var version = new Version();
+  version.initial();
+  
   version.file = editingFile;
   version.is_public = NEW_PACK.is_public;
   version.id = newPackTemp.versionId;

@@ -27,17 +27,17 @@ function Pack() {
   };
 
   this.save = function () {
-    var pack;
-    //set pack's all value
-    pack.name = this.name;
-    pack.description = this.description;
-    pack.create_time = this.create_time;
-    pack.tags = this.tags;
-    pack.is_public = this.is_public;
-    pack.creator_user_id = this.creator_user_id;
-    pack.cover_filename = this.cover_filename;
-    pack.version = this.version;
-    pack.creator_user_name = this.creator_user_name;
+    var pack = {
+      name: this.name,
+      description: this.description,
+      create_time: this.create_time,
+      tags: this.tags,
+      is_public: this.is_public,
+      creator_user_id: this.creator_user_id,
+      cover_filename: this.cover_filename,
+      creator_user_name: this.creator_user_name,
+      version: this.version,
+    };
 
     //save to local storage
     localStorage.setItem(this.id, JSON.stringify(pack));
@@ -54,7 +54,7 @@ function Pack() {
     var user = new User();
     this.creator_user_id = user.id;
     this.creator_user_name = user.name;
-    
+
     this.create_time = time;
     this.name = '';
     this.is_public = false;
@@ -78,24 +78,7 @@ function Version() {
   this.version;
   this.modified;
 
-  this.get = function () {
-    var version;
-
-    version.id;
-    version.content;
-    version.create_time;
-    version.is_public;
-    version.creator_user_id;
-    version.bookmark;
-    version.note;
-    version.file;
-    version.version;
-    version.modified;
-
-    return version;
-  };
-
-  this.initial() = function () {
+  this.initial = function () {
     //get current time
     var time = new Date().getTime();
     
@@ -103,16 +86,33 @@ function Version() {
     var user = new User();
     this.creator_user_id = user.id;
     this.creator_user_name = user.name;
-    
+
     this.id = "version" + time;
     this.content = '';
     this.create_time = time;
-    this.is_public = false;    
+    this.is_public = false;
     this.bookmark = [];
     this.note = [];
     this.file = [];
     this.version = 0;
     this.modified = false;
+  };
+
+  this.get = function () {
+    var newVersion = {
+      id: this.id,
+      content: this.content,
+      create_time: this.create_time,
+      is_public: this.is_public,
+      creator_user_id: this.creator_user_id,
+      creator_user_name: this.creator_user_name,
+      bookmark: this.bookmark,
+      note: this.note,
+      file: this.file,
+      version: this.version,
+      modified: this.modified,
+    };
+    return newVersion;
   };
 }
 
@@ -168,10 +168,11 @@ function User() {
   
   //save to local storage
   this.saveUser = function () {
-    var user;
-    user.id = this.id;
-    user.name = this.name;
-    user.setting = this.setting;
+    var user = {
+      id: this.id,
+      name: this.name,
+      setting: this.setting,
+    };
 
     localStorage.setItem('user', JSON.stringify(user));
   };

@@ -9,7 +9,7 @@ function login_check() {
       wifi_sync: true,
       mobile_network_sync: true,
       last_sync_time: 1419519614000,
-      last_version: -1,
+      last_version: 0,
       modified: false
     }
   };

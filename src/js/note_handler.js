@@ -96,7 +96,6 @@ function save_note_handler() {
 
   //write in localStorage
   localStorage.setItem(viewPackId, JSON.stringify(pack));
-  changeModifyStroageTime();
 }
 
 function note_next_handler() {
@@ -180,7 +179,6 @@ function comment_submit_handler() {
 
   //save to server
   postComment(currentNote.id, newComment);
-  changeModifyStroageTime();
 }
 
 function getNewerComment(currentNoteId, commentArray) {

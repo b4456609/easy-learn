@@ -89,29 +89,19 @@ $(document).on("pageshow", "#new_pack_edit", function () {
 
 $(document).on('pageinit', "#new_pack", function () {
   //check is user back from edit page
+  //initial form
   if (newPackTemp.id === '') {
-    //get current time
-    var time = new Date().getTime();
+    
+    NEW_PACK = new Pack().initial();
 
     //initail the pack setting
-    newPackTemp.id = 'pack' + time;
+    newPackTemp.id = NEW_PACK.id;
 
     //initial editor's setting
-    editingPackId = newPackTemp.id;
+    editingPackId = NEW_PACK.id;
 
     //set versin id
     newPackTemp.versionId = "version" + time;
-
-    NEW_PACK = {
-      "creator_user_id": JSON.parse(localStorage.user).id,
-      "create_time": time,
-      "name": '',
-      "is_public": false,
-      "description": '',
-      "tags": '',
-      "cover_filename": '',
-      "version": []
-    };
   } else { //set saved value
     $('#new_pack_title').val(NEW_PACK.name);
     $('#is_public').prop('checked', NEW_PACK.is_public).checkboxradio("refresh");
@@ -291,36 +281,20 @@ function savePackHandler() {
 
   content = content.replace('<div class="video-container" id="0"><br></div>', '');
 
-  //get current time
-  var time = new Date().getTime();
+  var version = new Version().initial();
+  version.file = editingFile;
+  version.is_public = NEW_PACK.is_public;
+  version.id = newPackTemp.versionId;
+  version.content = content;
 
-  //create this page's information add it in pack
-  NEW_PACK.version[NEW_PACK.version.length] = {
-    "creator_user_id": JSON.parse(localStorage.user).id,
-    "bookmark": [],
-    "note": [],
-    "file": editingFile,
-    "create_time": time,
-    "is_public": NEW_PACK.is_public,
-    "id": newPackTemp.versionId,
-    "content": content,
-  };
+  //create first version
+  NEW_PACK.version[0] = version.get();
+  
+  //save to local sotrage
+  NEW_PACK.save();
 
-  //set new pack in localStorage
-  localStorage.setItem(newPackTemp.id, JSON.stringify(NEW_PACK));
-
-  //add it in folder all
-  var folderArray = JSON.parse(localStorage.folder);
-
-  //find all folder in data
-  var j;
-  for (j in folderArray) {
-    if (folderArray[j].name == 'All') {
-      folderArray[j].pack[folderArray[j].pack.length] = newPackTemp.id;
-      break;
-    }
-  }
-  localStorage.setItem("folder", JSON.stringify(folderArray));
+  var folder = new Folder();
+  folder.addToAllFolder(NEW_PACK.id);
 
   //change page
   $(":mobile-pagecontainer").pagecontainer("change", "index.html");
@@ -333,7 +307,6 @@ function savePackHandler() {
     file: []
   };
 
-  changeModifyStroageTime();
   NEW_PACK = null;
   editingFile = [];
 }
@@ -573,7 +546,6 @@ function saveNewVersionHandler(pack) {
   viewPackVersion.index = new_index;
   editingFile = [];
 
-  changeModifyStroageTime();
 
   //change page
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");

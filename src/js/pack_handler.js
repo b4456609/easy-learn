@@ -91,7 +91,7 @@ $(document).on('pageinit', "#new_pack", function () {
   //check is user back from edit page
   //initial form
   if (newPackTemp.id === '') {
-    
+
     NEW_PACK = new Pack();
     NEW_PACK.initial();
 
@@ -285,7 +285,7 @@ function savePackHandler() {
 
   var version = new Version();
   version.initial();
-  
+
   version.file = editingFile;
   version.is_public = NEW_PACK.is_public;
   version.id = newPackTemp.versionId;
@@ -515,33 +515,24 @@ function editor_button_handler() {
 function saveNewVersionHandler(pack) {
 
   //get editor word and replace the img
-  content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
-  console.log(content);
+  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
 
-  //get current time
-  var time = new Date().getTime();
-  var versionId = 'version' + time;
-  var new_index = pack.version.length;
-
+  //get files and concate it to new one
   var files = pack.version[viewPackVersion.index].file;
+  editingFile.concat(files);
 
-  console.log(files);
+  //new version
+  var newVersion = new Version();
+  newVersion.initial();
+  newVersion.note = pack.version[viewPackVersion.index].note;
+  newVersion.file = editingFile;
+  newVersion.is_public = true;
+  newVersion.content = content;
 
-  for (var i in files) {
-    editingFile[editingFile.length] = files[i];
-  }
-
-  //create this page's information add it in pack
-  pack.version[new_index] = {
-    "creator_user_id": JSON.parse(localStorage.user).id,
-    "bookmark": [],
-    "note": pack.version[viewPackVersion.index].note,
-    "file": editingFile,
-    "create_time": time,
-    "is_public": true,
-    "id": versionId,
-    "content": content,
-  };
+  var new_index = pack.version.length;
+   
+  //add new version in pack
+  pack.version[pack.version.length] = newVersion.get();
 
   //set new pack in localStorage
   localStorage.setItem(viewPackId, JSON.stringify(pack));
@@ -549,8 +540,7 @@ function saveNewVersionHandler(pack) {
   //set view this version
   viewPackVersion.index = new_index;
   editingFile = [];
-
-
+  
   //change page
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }

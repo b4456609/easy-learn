@@ -81,15 +81,15 @@ function Version() {
   this.initial = function () {
     //get current time
     var time = new Date().getTime();
+    this.id = "version" + time;
+    this.create_time = time;
     
     //set user
     var user = new User();
     this.creator_user_id = user.id;
     this.creator_user_name = user.name;
 
-    this.id = "version" + time;
     this.content = '';
-    this.create_time = time;
     this.is_public = false;
     this.bookmark = [];
     this.note = [];

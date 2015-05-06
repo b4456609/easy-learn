@@ -193,6 +193,8 @@ function getComment(NoteId, lastestCreateTime) {
 }
 
 function sync() {
+  $('#sync').text('同步中...');
+
   var sendData = {
     user: JSON.parse(localStorage.user),
     folder: JSON.parse(localStorage.folder),
@@ -248,6 +250,7 @@ function sync() {
     else {
       //deal with sync fail
     }
+    $('#sync').text('同步');
   });
   
   //fail
@@ -255,6 +258,7 @@ function sync() {
     console.log(xhr.statusText);
     console.log(textStatus);
     console.log(error);
+    $('#sync').text('同步失敗');
   });
 }
 function saveToLocalStorage(data) {
@@ -276,8 +280,9 @@ function saveToLocalStorage(data) {
 function replace_data() {
   // modified setting to let server is old version not conflict
   var user = new User();
-  user.modified();
+  user.modifiedFalse();
   //do sync again should be normal
+  sync();
 }
 
 

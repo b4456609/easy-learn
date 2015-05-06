@@ -189,5 +189,10 @@ function User() {
     this.setting.modified = true;
     this.save();
   };
+  
+  this.modifiedFalse = function () {
+    this.setting.modified = false;
+    this.save();
+  };
 }
 

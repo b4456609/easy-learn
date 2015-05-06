@@ -170,7 +170,7 @@ function User() {
   this.setting = user.setting;
   
   //save to local storage
-  this.saveUser = function () {
+  this.save = function () {
     var user = {
       id: this.id,
       name: this.name,

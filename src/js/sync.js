@@ -216,14 +216,17 @@ function sync() {
 
   console.log(sendData);
 
-  $.ajax({
+  var sync = $.ajax({
     method: "POST",
     url: SERVER_URL + 'easylearn/sync',
     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
     data: {
       sync_data: JSON.stringify(sendData)
     },
-  }).done(function (data) {
+  });
+  
+  //success
+  sync.done(function (data) {
     console.log('success sync');
     console.log(data);
 
@@ -246,8 +249,14 @@ function sync() {
       //deal with sync fail
     }
   });
+  
+  //fail
+  sync.fail(function (xhr, textStatus, error) {
+    console.log(xhr.statusText);
+    console.log(textStatus);
+    console.log(error);
+  });
 }
-
 function saveToLocalStorage(data) {
   console.log('saveInLocalStroage');
   //get object's key

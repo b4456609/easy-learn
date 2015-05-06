@@ -9,8 +9,8 @@ function login_check() {
       wifi_sync: true,
       mobile_network_sync: true,
       last_sync_time: 1419519614000,
-      last_version: 0,
-      modified: false
+      version: 0,
+      modified: true
     }
   };
 
@@ -18,7 +18,7 @@ function login_check() {
     user.id = 'loko';
     user.name = '洛林';
     success(user);
-  } else if ((account === 'b4456609') && (password === 'b4456609')) {
+  } else if ((account === 'b') && (password === 'b')) {
     user.id = 'b4456609';
     user.name = 'Bernie';
     success(user);

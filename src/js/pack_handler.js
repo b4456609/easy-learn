@@ -13,9 +13,6 @@ var NEW_PACK = null;
 //for new version bug
 var packName;
 
-//for version edit use
-var version_content;
-
 //for editing img
 var editingPackId = null;
 var editingFile = [];
@@ -35,21 +32,20 @@ $(document).on("pageinit", "#co_pack", function () {
     $(this).width($(window).width());
   });
 
-  version_content = $('#veiw_pack_content').html();
 });
 
 $(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean edit !!
 
   //get pack from localStorage
   var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var content = pack.version[viewPackVersion.index].content;
+  content = replacePackImgPath(content);
 
   //set pack title
   $('#pack_title').html(pack.name);
 
-  //parseImgForEditor(content);
-
   // set edit content
-  $('#iframe1').contents().find('#edit').editable("insertHTML", version_content, true);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", content, true);
   editor_button_handler();
 
   //header button handler
@@ -493,11 +489,17 @@ function editor_button_handler() {
 function saveNewVersionHandler(pack) {
 
   //get editor word and replace the img
-  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
+  var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
 
+//replace file path
+  while (content.indexOf(FILE_STORAGE_PATH) != -1) {
+    content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
+  }
+  console.log(content);
+  
   //get files and concate it to new one
   var files = pack.version[viewPackVersion.index].file;
-  editingFile.concat(files);
+  editingFile = editingFile.concat(files);
 
   //new version
   var newVersion = new Version();

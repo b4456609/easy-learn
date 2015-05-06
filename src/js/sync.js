@@ -2,6 +2,8 @@ var uploadImgCount = 0;
 var uploadTotal = 0;
 var downloadCount = 0;
 var downloadTotal = 0;
+//var SERVER_URL = 'http://140.121.197.135:11116/';
+var SERVER_URL = 'http://192.168.1.121:8080/';
 
 function syncImg(files) {
 
@@ -83,7 +85,7 @@ function FileNotExistThenDownload(packId, filename) {
 
 
 function downloadImg(filename, packId) {
-  var url = 'http://140.121.197.135:11116/easylearn/download?pack_id=' +
+  var url = SERVER_URL + 'easylearn/download?pack_id=' +
     packId + '&filename=' + filename;
   console.log('downloadImgurl:' + url);
 
@@ -111,7 +113,7 @@ function uploadImg(filename, packId) {
         console.log(srcdata);
         $.ajax({
           type: "POST",
-          url: "http://140.121.197.135:11116/easylearn/upload",
+          url: SERVER_URL + "easylearn/upload",
           data: {
             file: srcdata,
             filename: filename,
@@ -148,7 +150,7 @@ function postComment(noteId, newComment) {
   var jsonObj = JSON.stringify(newComment);
   $.ajax({
     type: "POST",
-    url: 'http://140.121.197.135:11116/easylearn/comment',
+    url: SERVER_URL + 'easylearn/comment',
     data: {
       noteId: noteId,
       newComment: jsonObj
@@ -161,7 +163,7 @@ function postComment(noteId, newComment) {
 
 function getComment(NoteId, lastestCreateTime) {
   //set url for get comment
-  var url = 'http://140.121.197.135:11116/easylearn/comment?note_id=' +
+  var url = SERVER_URL + 'easylearn/comment?note_id=' +
     NoteId + '&lastest_create_time=' + lastestCreateTime;
   console.log(url);
   $.ajax({
@@ -216,7 +218,7 @@ function sync() {
 
   $.ajax({
     method: "POST",
-    url: 'http://140.121.197.135:11116/easylearn/sync',
+    url: SERVER_URL + 'easylearn/sync',
     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
     data: {
       sync_data: JSON.stringify(sendData)
@@ -225,27 +227,20 @@ function sync() {
     console.log('success sync');
     console.log(data);
 
-    if (data.sync.status !== 'fail') {
-      //success sync
-      if (!isConflict(data)) {
-        //save DB data to local storage
-        saveToLocalStorage(data);
+    if (data.sync.status === 'success') {
+      //save DB data to local storage
+      saveToLocalStorage(data);
         
-        //sync image
-        syncImg(data.sync.upload_file);
+      //sync image
+      syncImg(data.sync.upload_file);
 
-        //refresh home page
-        refreshPage();
-      }
-      else {
-        //decide To Replace
-        $("#sync_conflict_popup").popup("open", { history: false });
-        //the user will decide Replace or keep;
-        // onclick will handle
-        //save to local storage for replace use
-        
-        localStorage.setItem('sync', JSON.stringify(data));
-      }
+      //refresh home page
+      refreshPage();
+    } else if (data.sync.status === 'conflict') {
+      //decide To Replace
+      $("#sync_conflict_popup").popup("open", { history: false });
+      //the user will decide Replace or keep;
+      // onclick will handle
     }
     else {
       //deal with sync fail
@@ -259,7 +254,7 @@ function saveToLocalStorage(data) {
   var keys = Object.keys(data);
 
   for (var i in keys) {
-    if ((keys[i] === 'setting') && !isConflict) {
+    if (keys[i] === 'setting') {
       var user = JSON.parse(localStorage.user);
       user.setting = data[keys[i]];
       localStorage.setItem('user', JSON.stringify(user));
@@ -269,48 +264,13 @@ function saveToLocalStorage(data) {
   }
 }
 
-function isConflict(data) {
-  //get object's key
-  var keys = Object.keys(data);
-
-  //check if is sync conflict
-  for (var j in keys) {
-    if (keys[i] === 'setting') {
-      var DBsetting = data[keys[i]];
-      
-      //get local setting
-      var localSetting = new User().getSetting();
-      
-      // conflict happen
-      if ((DBsetting.last_version != localSetting.last_version) && localSetting.modified) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
 function replace_data() {
-  var data = JSON.parse(localStorage.getItem('sync'));
-  var user = new User().getUser();
-  
-  //clear local storage
-  localStorage.clear();
-  
-  //add to local storage for next function use
-  user.saveUser();
-  saveToLocalStorage(data);
-  
-  //sync image
-  syncImg(data.sync.upload_file);
-
-  //refresh home page
-  refreshPage();
+  // modified setting to let server is old version not conflict
+  var user = new User();
+  user.modified();
+  //do sync again should be normal
 }
 
-function cancel_sync() {
-  localStorage.removeItem('sync');
-}
 
 function refreshPage() {
   //refresh every visit home page

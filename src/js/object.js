@@ -156,6 +156,9 @@ function Folder() {
 
   this.save = function () {
     localStorage.setItem("folder", JSON.stringify(this.folderArray));
+    //setting modified
+    var user = new User();
+    user.modified();
   };
 }
 
@@ -179,8 +182,12 @@ function User() {
   
   //return setting
   this.getSetting = function () {
-    this.getUser();
     return this.setting;
+  };
+
+  this.modified = function () {
+    this.setting.modified = true;
+    this.save();
   };
 }
 

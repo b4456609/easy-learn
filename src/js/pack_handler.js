@@ -4,7 +4,6 @@ var noteText;
 var newPackTemp = {
   id: '',
   content: '', //new pack content
-  youtube: [],
   versionId: ''
 };
 
@@ -148,7 +147,10 @@ $(document).on('pageinit', "#view_pack", function () {
   console.log('view pack name:' + pack.name);
   packName = pack.name;
 
-  $('#veiw_pack_content').html(pack.version[viewPackVersion.index].content);
+  var content = pack.version[viewPackVersion.index].content;
+  content = replacePackImgPath(content);
+  console.log(content);
+  $('#veiw_pack_content').html(content);
 });
 
 $(document).on('pageshow', "#view_pack", function () {
@@ -160,18 +162,13 @@ $(document).on('pageshow', "#view_pack", function () {
 
   //click and show note hanlder
   $(".note").click(showNoteHandler);
-
-  showPackImg();
 });
 
-function showPackImg() {
-  var imgArray = $("div.ui-content img[imgname]");
-  var i;
-
-  $("div.ui-content img[imgname]").map(function () {
-    displayPackImg(viewPackId, $(this), $(this).attr('imgname'));
-  });
-
+function replacePackImgPath(content) {  
+  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
+    content = content.replace('FILE_STORAGE_PATH', FILE_STORAGE_PATH);
+  }
+  return content;
 }
 
 function show_comment() {
@@ -265,23 +262,14 @@ function displayCoverImg(packfileEntry) {
 }
 
 function savePackHandler() {
-
   //get editor word and replace the img
-  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false).replace(/src[^>]*"/g, "");
-  console.log(content);
-  console.log(newPackTemp.youtube);
-
-  var i;
-  for (i = 0; i < newPackTemp.youtube.length; i++) {
-    var index = content.indexOf('<div class="video-container" id="' + i + '">');
-    var endIndex = content.indexOf('</div>', index);
-    content = content.replace(content.substring(index, endIndex + 6), newPackTemp.youtube[i]);
-    console.log(i);
-    console.log(index);
-    console.log(content);
+  var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
+  
+  //replace file path
+  while (content.indexOf(FILE_STORAGE_PATH) != -1) {
+    content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
   }
-
-  content = content.replace('<div class="video-container" id="0"><br></div>', '');
+  console.log(content);
 
   var version = new Version();
   version.initial();
@@ -307,7 +295,6 @@ function savePackHandler() {
   newPackTemp = {
     id: '',
     content: '', //new pack content
-    youtube: [],
     file: []
   };
 
@@ -410,13 +397,10 @@ function youtube_submit_handler() {
   var videoId = youtube_parser(user_url);
 
   //set embed code
-  var embedCode = '<p><div class="video-container" id="' + newPackTemp.youtube.length + '">' +
+  var embedCode = '<p><div class="video-container">' +
     '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + videoId +
     '?controls=1&disablekb=1&modestbranding=1&showinfo=0&rel=0' + startPar + endPar + '" frameborder="0" allowfullscreen></iframe>' + '</div></p>';
-
-  //push to globle array
-  newPackTemp.youtube.push(embedCode);
-
+    
   //insert to html
   $('#iframe1').contents().find('#edit').editable("insertHTML", embedCode, true);
 }
@@ -469,16 +453,9 @@ function slideshare_submit_handler() {
 }
 
 function displayImgInEditor(fileEntry) {
-  fileEntry.file(function (file) {
-
-    var reader = new FileReader();
-    reader.onloadend = function () {
-      var img = "<img imgname='" + file.name + "' src='" + reader.result + "'>";
-      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
-    };
-
-    reader.readAsDataURL(file);
-  }, fail);
+  var img = "<img src='" + fileEntry.toURL() + "' width='100%' >";
+  console.log(img);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
 }
 
 function editor_button_handler() {

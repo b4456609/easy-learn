@@ -55,6 +55,7 @@ var viewPackVersion = {
 };
 
 var folderName = 'All';
+var FILE_STORAGE_PATH;
 
 
 // App Logic
@@ -76,7 +77,7 @@ function myAppLogic() {
   }
 
   $('#logout').click(logout);
-
+  FILE_STORAGE_PATH = cordova.file.externalDataDirectory;
 }
 
 $(document).on("pageshow", "#home", function () {

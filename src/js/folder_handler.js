@@ -8,7 +8,22 @@ $(document).on("pageinit", "#folder", function () {
 
 $(document).on("pageinit", "#folder_pack", function () {
   displayPackInFolder(MANERGE_FOLDER_ID);
+  preparePopup();
 });
+
+function preparePopup() {
+  $('#choose_folder_popup').listview();
+
+  var result = '<li data-role="list-divider">選擇資料夾</li>';
+  var folder = new Folder();
+
+  for (var i in folder.folderArray) {
+    var templete = '<li class="change_folder" folderid="'+folder.folderArray[i].id+'"><a href="#">' + folder.folderArray[i].name + '</a></li>';
+    result += templete;
+  }
+  
+  $('.change_folder').click();
+}
 
 function displayPackInFolder(folderId) {
   var folder = new Folder();
@@ -17,14 +32,19 @@ function displayPackInFolder(folderId) {
   for (var i in packInFolder) {
     var pack = new Pack();
     pack.getPack(packInFolder[i]);
-    var templete = '<li data-role="collapsible" data-iconpos="right" data-inset="false"><h2>' + pack.name + '</h2><ul data-role="listview" data-theme="b">' +
+    var templete = '<li class="pack_coll" data-role="collapsible" data-iconpos="right" data-inset="false"><h2>' + pack.name + '</h2><ul class="pack_listview" data-role="listview" data-theme="b">' +
       '<li packid="' + pack.id + '" onclick="select_pack()"><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>' +
-      '<li packid="' + pack.id + '" onclick="select_pack()"> <a href="#delte_pack" data- rel="popup" data- position - to="window" data- transition="pop" > 刪除此懶人包 < /a></li >' +
-      '</ul>< /li>';
+      '<li packid="' + pack.id + '" onclick="select_pack()"> <a href="#delte_pack" data- rel="popup" data- position - to="window" data- transition="pop" > 刪除此懶人包 </a></li>' +
+      '</ul></li>';
     result += templete;
   }
   $('#pack_in_folder').html(result);
+  $('.pack_coll').collapsible({
+    inset: false,
+    mini: false
+  });
   $('#pack_in_folder').listview("refresh");
+  $('.pack_listview').listview();
 }
 
 function select_pack() {
@@ -45,7 +65,7 @@ function displayFolder() {
   }
   $('#my_folder_divider').after(result);
   $("#my_folder").listview("refresh");
-  
+
   $("li[folderid]").click(select_folder);
 }
 

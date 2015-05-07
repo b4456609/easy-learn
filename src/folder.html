@@ -1,38 +1,32 @@
-<div data-role="page" id="bookmark">
-
+<div data-role="page" id="folder">
   <div data-role="header">
     <a href="#" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
     <h1>管理資料夾</h1>
   </div>
   <div data-role="main" class="ui-content">
-    <ul data-role="listview" data-split-icon="delete" data-inset="true">
-      <li data-role="list-divider">我的資料夾</li>
-
+    <ul id="my_folder" data-role="listview" data-split-icon="delete" data-inset="true">
+      <li id="my_folder_divider" data-role="list-divider">我的資料夾</li>
       <li>
-        <a href="folder_pack.html">有趣</a>
-        <a href="#delte_folder" data-rel="popup" data-position-to="window" data-transition="pop">Delte Folder</a>
-      </li>
-
-      <li>
-        <a href="#">學習</a>
-        <a href="#delte_folder" data-rel="popup" data-position-to="window" data-transition="pop">Delte Folder</a>
-      </li>
-
-      <li>
-        <a href="#">以後觀看</a>
-        <a href="#delte_folder" data-rel="popup" data-position-to="window" data-transition="pop">Delte Folder</a>
-      </li>
-
-      <li>
-        <a href="#">+ 新增資料夾</a>
+        <a href="#add_folder" data-rel="popup" data-position-to="window" data-transition="pop">+ 新增資料夾</a>
       </li>
     </ul>
-
-    <div data-role="popup" id="delte_folder" data-theme="a" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
+    <div data-role="popup" id="delete_folder" data-theme="a" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
       <h3>刪除資料夾?</h3>
       <p>資料夾裡懶人包將會歸類到All資料夾裡</p>
       <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">確定</a>
       <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-mini">取消</a>
+    </div>
+    <div data-role="popup" id="add_folder" data-theme="a" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
+      <form>
+        <div>
+          <h3>新增資料夾</h3>
+          <label for="fn" class="ui-hidden-accessible">資料夾名稱:</label>
+          <input type="text" name="fn" id="fn" value="" placeholder="資料夾名稱" data-theme="a">
+          <a data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check" onclick="add_folder_handler()">新增資料夾
+          </a>
+          <a data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
+        </div>
+      </form>
     </div>
   </div>
 </div>

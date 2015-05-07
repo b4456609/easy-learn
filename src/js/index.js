@@ -81,9 +81,6 @@ function myAppLogic() {
 }
 
 $(document).on("pageshow", "#home", function () {
-
-
-
   //if device not ready deferred exec
   //this will happened when user first open app
   if (gapReady.state() != "pending") {
@@ -179,7 +176,6 @@ function displayCoverImgAtHome(packId, img) {
 
 function folder_click_handler() {
   var folderArray = JSON.parse(localStorage.folder);
-
 
   var packArray;
   //find current folder in data

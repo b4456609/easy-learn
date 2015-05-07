@@ -160,6 +160,54 @@ function Folder() {
     var user = new User();
     user.modified();
   };
+  
+  //delete a pack from folder
+  this.deletePack = function (folderId, packId) {
+    //delete from folder
+    for (var i in this.folderArray) {
+      if (folderId === this.folderArray[i].id) {
+        delete this.folderArray[i].pack[packId];
+      }
+      else if (this.folderArray[i].name = 'All') {
+        delete this.folderArray[i].pack[packId];
+      }
+    }
+    
+    //delete pack from localStroage
+    localStorage.removeItem(packId);
+    
+    //delete files in cellphone
+    window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function (dirEntry) {
+      dirEntry.removeRecursively(function(){},function(){});
+    }, fail);
+    
+    this.save();
+  };
+  
+  this.deleteFolder = function (folderId) {
+    for (var i in this.folderArray) {
+      if (folderId === this.folderArray[i].id) {
+        delete this.folderArray[i];
+      }
+    }
+    
+    this.save();
+  };
+  
+  this.addFolder = function (name) {
+    //get current time
+    var time = new Date().getTime();
+    
+    //add new folder
+    this.folderArray[this.folderArray.length] = {
+      name: name,
+      id: 'folder' + time,
+      pack: []
+    };
+    
+    //save in local stroage
+    this.save();
+  };
 }
 
 
@@ -189,7 +237,7 @@ function User() {
     this.setting.modified = true;
     this.save();
   };
-  
+
   this.modifiedFalse = function () {
     this.setting.modified = false;
     this.save();

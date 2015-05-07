@@ -178,22 +178,22 @@ function Folder() {
     
     //delete files in cellphone
     window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function (dirEntry) {
-      dirEntry.removeRecursively(function(){},function(){});
+      dirEntry.removeRecursively(function () { }, function () { });
     }, fail);
-    
+
     this.save();
   };
-  
+
   this.deleteFolder = function (folderId) {
     for (var i in this.folderArray) {
       if (folderId === this.folderArray[i].id) {
         delete this.folderArray[i];
       }
     }
-    
+
     this.save();
   };
-  
+
   this.addFolder = function (name) {
     //get current time
     var time = new Date().getTime();
@@ -207,6 +207,16 @@ function Folder() {
     
     //save in local stroage
     this.save();
+  };
+
+  this.getPacks = function (folderId) {
+    console.log(folderId);
+    for (var i in this.folderArray) {
+      console.log(this.folderArray[i].id);
+      if (folderId === this.folderArray[i].id) {
+        return this.folderArray[i].pack;
+      }
+    }
   };
 }
 

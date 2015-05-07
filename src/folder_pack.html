@@ -5,7 +5,7 @@
     <h1>管理懶人包</h1>
   </div>
 
-  <ul data-role="listview" data-inset="false" data-shadow="false">
+  <ul id="pack_in_folder" data-role="listview" data-inset="false" data-shadow="false">
 
     <li data-role="collapsible" data-iconpos="right" data-inset="false">
       <h2>Chrome</h2>
@@ -29,12 +29,12 @@
   <div data-role="popup" id="delte_pack" data-theme="a" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
     <h3>刪除懶人包?</h3>
     <p>資料將被刪除，無法復原。</p>
-    <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini">確定</a>
+    <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini" onclick="delete_pack_in_folder()">確定</a>
     <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-mini">取消</a>
   </div>
 
   <div data-role="popup" id="move_pack" data-theme="b">
-    <ul data-role="listview" data-inset="true" style="min-width:210px;">
+    <ul id="choose_folder_popup" data-role="listview" data-inset="true" style="min-width:210px;">
       <li data-role="list-divider">選擇資料夾</li>
       <li><a href="#">All</a></li>
       <li><a href="#">有趣</a></li>

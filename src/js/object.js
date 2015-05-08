@@ -185,7 +185,7 @@ function Folder() {
   };
 
   this.deleteFolder = function (folderId) {
-    
+
     for (var i in this.folderArray) {
       if (folderId === this.folderArray[i].id) {
         this.folderArray.splice(i, 1);
@@ -216,6 +216,21 @@ function Folder() {
       console.log(this.folderArray[i].id);
       if (folderId === this.folderArray[i].id) {
         return this.folderArray[i].pack;
+      }
+    }
+  };
+
+  this.changePackTo = function (originFolderId, packid, destFolderId) {
+    for (var i in this.folderArray) {
+      //remove form origin folder
+      console.log(this.folderArray[i].id);
+      if (originFolderId === this.folderArray[i].id) {
+        var index = this.folderArray[i].pack.indexOf(packid);
+        this.folderArray[i].pack.splice(index, 1);
+      }
+      //add to dest folder
+      if (destFolderId === this.folderArray[i].id) {
+        this.folderArray[i].pack.push_back(packid);
       }
     }
   };

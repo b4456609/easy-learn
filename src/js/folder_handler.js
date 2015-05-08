@@ -9,6 +9,7 @@ $(document).on("pageinit", "#folder", function () {
 $(document).on("pageinit", "#folder_pack", function () {
   displayPackInFolder(MANERGE_FOLDER_ID);
   preparePopup();
+  displayFolderInPopup();
 });
 
 function preparePopup() {
@@ -32,23 +33,20 @@ function displayPackInFolder(folderId) {
   for (var i in packInFolder) {
     var pack = new Pack();
     pack.getPack(packInFolder[i]);
-    var templete = '<li class="pack_coll" data-role="collapsible" data-iconpos="right" data-inset="false"><h2>' + pack.name + '</h2><ul class="pack_listview" data-role="listview" data-theme="b">' +
-      '<li packid="' + pack.id + '" onclick="select_pack()"><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>' +
-      '<li packid="' + pack.id + '" onclick="select_pack()"> <a href="#delte_pack" data- rel="popup" data- position - to="window" data- transition="pop" > 刪除此懶人包 </a></li>' +
+    var templete = '<li onclick="select_pack(\''+pack.id+'\')" class="pack_coll" data-role="collapsible" data-iconpos="right"><h2>' + pack.name + '</h2><ul class="pack_listview" data-role="listview" data-theme="b"  data-inset="false">' +
+      '<li><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>' +
+      '<li> <a href="#delete_pack" data- rel="popup" data- position - to="window" data- transition="pop" > 刪除此懶人包 </a></li>' +
       '</ul></li>';
     result += templete;
   }
   $('#pack_in_folder').html(result);
-  $('.pack_coll').collapsible({
-    inset: false,
-    mini: false
-  });
-  $('#pack_in_folder').listview("refresh");
+  $('#pack_in_folder').collapsibleset("refresh");
+  $('.pack_coll').collapsible();
   $('.pack_listview').listview();
 }
 
-function select_pack() {
-  MANERGE_PACK_ID = $(this).attr('packid');
+function select_pack(packId) {
+  MANERGE_PACK_ID = packId;
 }
 
 function displayFolder() {
@@ -111,7 +109,7 @@ function displayFolderInPopup() {
   var result = '<li data-role="list-divider">選擇資料夾</li>';
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + ' class="folder"><a href="#">' + folderArray[i].name + '</a></li>';
+    var folder_templete = '<li folderid="' + folderArray[i].id + '" class="folder"><a href="#">' + folderArray[i].name + '</a></li>';
     result += folder_templete;
   }
 
@@ -120,5 +118,13 @@ function displayFolderInPopup() {
 
   //click event on folder
   //display the folder pack in home page
-  $('.folder').click(manage_folder);
+  $('.folder').click(change_pack_folder);
+}
+
+function change_pack_folder(){
+  var folderId = $(this).attr('folderid');
+  console.log('change_pack_folder' + folderId);
+  
+  var folder = new Folder();
+  folder.changePackTo(MANERGE_FOLDER_ID, MANERGE_PACK_ID, folderId);
 }

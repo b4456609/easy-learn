@@ -60,13 +60,25 @@ function displayFolder() {
   var result = "";
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a><a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop">Delte Folder</a></li>';
+    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a><a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\''+ folderArray[i].id +'\')">Delete Folder</a></li>';
     result += folder_templete;
   }
   $('#my_folder_divider').after(result);
   $("#my_folder").listview("refresh");
 
   $("li[folderid]").click(select_folder);
+}
+
+function select_delete(folderId){
+  MANERGE_FOLDER_ID = folderId;
+}
+
+function delete_folder(){
+  var folder = new Folder();
+  folder.deleteFolder(MANERGE_FOLDER_ID);
+  
+  //refresh view
+  displayFolder();
 }
 
 function deletePack(folderId, packId) {

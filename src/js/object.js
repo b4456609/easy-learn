@@ -185,9 +185,10 @@ function Folder() {
   };
 
   this.deleteFolder = function (folderId) {
+    
     for (var i in this.folderArray) {
       if (folderId === this.folderArray[i].id) {
-        delete this.folderArray[i];
+        this.folderArray.splice(i, 1);
       }
     }
 

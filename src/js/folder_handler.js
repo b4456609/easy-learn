@@ -37,7 +37,9 @@ function displayPackInFolder(folderId) {
   for (var i in packInFolder) {
     var pack = new Pack();
     pack.getPack(packInFolder[i]);
-    var templete = '<li onclick="select_pack(\'' + pack.id + '\')" class="pack_coll" data-role="collapsible" data-iconpos="right"><h2>' + pack.name + '</h2><ul class="pack_listview" data-role="listview" data-theme="b" data-inset="false">' +
+    var templete = '<li onclick="select_pack(\'' + pack.id + '\')" class="pack_coll" data-role="collapsible" data-iconpos="right">' +
+      '<h2>' + pack.name + '</h2>' +
+      '<ul class="pack_listview" data-role="listview" data-theme="b" data-inset="false">' +
       '<li><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>' +
       '<li><a href="#delete_pack" data-rel="popup" data-position-to="window" data-transition="pop">刪除此懶人包</a></li>' +
       '</ul></li>';

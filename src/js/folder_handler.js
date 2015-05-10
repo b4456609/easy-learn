@@ -59,14 +59,22 @@ function displayFolder() {
   
 	 //display folder
   var folderArray = JSON.parse(localStorage.folder);
-  var result = "";
+  var systemFolder = '<li data-role="list-divider">系統資料夾</li>';
+  var result = '<li data-role="list-divider">我的資料夾</li>';
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a>' +
-      '<a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\'' + folderArray[i].id + '\')">Delete Folder</a></li>';
-    result += folder_templete;
+    if (folderArray[i].name === 'All') {
+      var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a></li>';
+      systemFolder += folder_templete;
+    }
+    else {
+      var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a>' +
+        '<a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\'' + folderArray[i].id + '\')">Delete Folder</a></li>';
+      result += folder_templete;
+    }
   }
-  $('#my_folder_divider').after(result);
+  systemFolder += result;
+  $('#my_folder').html(systemFolder);
   $("#my_folder").listview("refresh");
 
   $("li[folderid]").click(select_folder);
@@ -146,11 +154,24 @@ function displayAllPack() {
       pack.getPack(key);
       var templete = '<input type="checkbox" name="' + pack.id + '" id="' + pack.id + '">' +
         '<label for="' + pack.id + '">' + pack.name + '</label>';
-      
+
       $("fieldset").controlgroup("container").append(templete);
     }
   }
 
   $('input[type=checkbox]').checkboxradio();
   $('fieldset').controlgroup('refresh');
+}
+
+function delete_pack_handler() {
+  var elements = document.querySelectorAll('input[type="checkbox"]:checked');
+  var checkedElements = Array.prototype.map.call(elements, function (el, i) {
+    return el.name;
+  });
+
+  var folder = new Folder();
+  for (var i in checkedElements) {
+    console.log('[delete_pack_handler] packId:' + checkedElements[i]);
+    folder.deleteAPack(checkedElements[i]);
+  }
 }

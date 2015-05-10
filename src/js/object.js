@@ -236,14 +236,37 @@ function Folder() {
     this.save();
   };
 
-  this.deletePack = function (folderId, packId) {
-    //remove form folder
+  //  this.deletePack = function (folderId, packId) {
+  //    //remove form folder
+  //    for (var i in this.folderArray) {
+  //      if (folderId === this.folderArray[i].id) {
+  //        var index = this.folderArray[i].pack.indexOf(packId);
+  //        this.folderArray[i].pack.splice(index, 1);
+  //      }
+  //    }
+  //    this.save();
+  //  };
+
+  //delete a pack from folder
+  this.deleteAPack = function (packId) {
+    //delete from folder
     for (var i in this.folderArray) {
-      if (folderId === this.folderArray[i].id) {
-        var index = this.folderArray[i].pack.indexOf(packId);
-        this.folderArray[i].pack.splice(index, 1);
+      for (var j in this.folderArray[i].pack) {
+        if (this.folderArray[i].pack[j] === packId) {
+          console.log('[deleteAPack] packId:' + packId);
+          this.folderArray[i].pack.splice(j, 1);
+        }
       }
     }
+    
+    //delete pack from localStroage
+    localStorage.removeItem(packId);
+    
+    //delete files in cellphone
+    window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function (dirEntry) {
+      dirEntry.removeRecursively(function () { }, function () { });
+    }, fail);
+
     this.save();
   };
 }

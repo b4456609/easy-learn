@@ -160,29 +160,6 @@ function Folder() {
     var user = new User();
     user.modified();
   };
-  
-  //delete a pack from folder
-  this.deletePack = function (folderId, packId) {
-    //delete from folder
-    for (var i in this.folderArray) {
-      for (var j in this.folderArray[i].pack) {
-        if (this.folderArray[i].pack[j] === packId) {
-          console.log('[deletePack] packId:' + packId);
-          this.folderArray[i].pack.splice(j, 1);
-        }
-      }
-    }
-    
-    //delete pack from localStroage
-    localStorage.removeItem(packId);
-    
-    //delete files in cellphone
-    window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function (dirEntry) {
-      dirEntry.removeRecursively(function () { }, function () { });
-    }, fail);
-
-    this.save();
-  };
 
   this.deleteFolder = function (folderId) {
 
@@ -221,31 +198,30 @@ function Folder() {
   };
 
   this.changePackTo = function (originFolderId, packid, destFolderId) {
-    for (var i in this.folderArray) {
-      //remove form origin folder
-      console.log(this.folderArray[i].id);
-      if (originFolderId === this.folderArray[i].id) {
-        var index = this.folderArray[i].pack.indexOf(packid);
-        this.folderArray[i].pack.splice(index, 1);
+    console.log('changePackTo' + originFolderId + ' ' + packid + ' ' + destFolderId);
+
+    if (originFolderId !== 'allPackId') {
+      for (var i in this.folderArray) {
+        //remove form origin folder
+        if (originFolderId === this.folderArray[i].id) {
+          var index = this.folderArray[i].pack.indexOf(packid);
+          this.folderArray[i].pack.splice(index, 1);
+        }
+        //add to dest folder
+        if (destFolderId === this.folderArray[i].id) {
+          this.folderArray[i].pack.push(packid);
+        }
       }
-      //add to dest folder
-      if (destFolderId === this.folderArray[i].id) {
-        this.folderArray[i].pack.push(packid);
+    }
+    else {//only add to dest. folder
+      for (var i in this.folderArray) {
+        if (destFolderId === this.folderArray[i].id) {
+          this.folderArray[i].pack.push(packid);
+        }
       }
     }
     this.save();
   };
-
-  //  this.deletePack = function (folderId, packId) {
-  //    //remove form folder
-  //    for (var i in this.folderArray) {
-  //      if (folderId === this.folderArray[i].id) {
-  //        var index = this.folderArray[i].pack.indexOf(packId);
-  //        this.folderArray[i].pack.splice(index, 1);
-  //      }
-  //    }
-  //    this.save();
-  //  };
 
   //delete a pack from folder
   this.deleteAPack = function (packId) {

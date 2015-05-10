@@ -33,7 +33,7 @@ function success(user) {
   localStorage.setItem('user', JSON.stringify(user));
   var folder = [{
     "name": "All",
-    "id": "folderId",
+    "id": "allPackId",
     "pack": []
   }, {
       "name": "我的最愛",

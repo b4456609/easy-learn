@@ -13,7 +13,7 @@ $(document).on("pageinit", "#folder", function () {
 $(document).on("pageinit", "#folder_pack", function () {
   displayPackInFolder(MANERGE_FOLDER_ID);
   preparePopup();
-  displayFolderInPopup();
+  displayFolderInPopup(MANERGE_FOLDER_ID);
 });
 
 function preparePopup() {
@@ -31,16 +31,23 @@ function preparePopup() {
 }
 
 function displayPackInFolder(folderId) {
+  console.log('displayPackInFolder ' + folderId)
   var folder = new Folder();
   var packInFolder = folder.getPacks(folderId);
   var result = '';
+
+  var copyOrMove = '<li><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>';
+  if (folderId === 'allPackId') {
+    copyOrMove = '<li><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">複製此懶人包</a></li>';
+  }
+
   for (var i in packInFolder) {
     var pack = new Pack();
     pack.getPack(packInFolder[i]);
     var templete = '<li onclick="select_pack(\'' + pack.id + '\')" class="pack_coll" data-role="collapsible" data-iconpos="right">' +
       '<h2>' + pack.name + '</h2>' +
       '<ul class="pack_listview" data-role="listview" data-theme="b" data-inset="false">' +
-      '<li><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>' +
+      copyOrMove +
       '<li><a href="#delete_pack" data-rel="popup" data-position-to="window" data-transition="pop">刪除此懶人包</a></li>' +
       '</ul></li>';
     result += templete;
@@ -76,6 +83,7 @@ function displayFolder() {
     }
   }
   systemFolder += result;
+  systemFolder += '<li><a href="#add_folder" data-rel="popup" data-position-to="window" data-transition="pop">+ 新增資料夾</a></li>';
   $('#my_folder').html(systemFolder);
   $("#my_folder").listview("refresh");
 
@@ -111,21 +119,29 @@ function add_folder_handler() {
 function delete_pack_in_folder() {
   var folder = new Folder();
   console.log('delete_pack_in_folder ' + MANERGE_FOLDER_ID + ' ' + MANERGE_PACK_ID);
-  folder.deletePack(MANERGE_FOLDER_ID, MANERGE_PACK_ID);
+  folder.deleteAPack(MANERGE_PACK_ID);
 
   displayPackInFolder(MANERGE_FOLDER_ID);
 }
 
-function displayFolderInPopup() {
+function displayFolderInPopup(folderId) {
 	 //display folder
+   
+   //get local storage 
   var folderArray = JSON.parse(localStorage.folder);
+  
+  //generate ui code
   var result = '<li data-role="list-divider">選擇資料夾</li>';
-  var i;
-  for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + '" class="folder"><a data-rel="back" href="#">' + folderArray[i].name + '</a></li>';
-    result += folder_templete;
+  for (var i in folderArray) {
+    //don't display all folder and current folder
+    if(folderArray[i].id === 'allPackId'){}
+    else if (folderId !== folderArray[i].id) {
+      var folder_templete = '<li folderid="' + folderArray[i].id + '" class="folder"><a data-rel="back" href="#">' + folderArray[i].name + '</a></li>';
+      result += folder_templete;
+    }
   }
-
+  
+  //refresh view
   $("#choose_folder_popup").html(result);
   $("#choose_folder_popup").listview("refresh");
 
@@ -142,7 +158,7 @@ function change_pack_folder() {
   folder.changePackTo(MANERGE_FOLDER_ID, MANERGE_PACK_ID, folderId);
 
 
-  displayPackInFolder(MANERGE_FOLDER_ID);;
+  displayPackInFolder(MANERGE_FOLDER_ID);
 }
 
 function displayAllPack() {

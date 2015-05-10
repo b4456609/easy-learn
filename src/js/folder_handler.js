@@ -1,6 +1,10 @@
 var MANERGE_FOLDER_ID;
 var MANERGE_PACK_ID;
 
+$(document).on("pageinit", "#delete_pack", function () {
+  displayAllPack();
+});
+
 $(document).on("pageinit", "#folder", function () {
   displayFolder();
 });
@@ -58,8 +62,8 @@ function displayFolder() {
   var result = "";
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a>' + 
-    '<a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\'' + folderArray[i].id + '\')">Delete Folder</a></li>';
+    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a>' +
+      '<a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\'' + folderArray[i].id + '\')">Delete Folder</a></li>';
     result += folder_templete;
   }
   $('#my_folder_divider').after(result);
@@ -98,7 +102,7 @@ function delete_pack_in_folder() {
   var folder = new Folder();
   console.log('delete_pack_in_folder ' + MANERGE_FOLDER_ID + ' ' + MANERGE_PACK_ID);
   folder.deletePack(MANERGE_FOLDER_ID, MANERGE_PACK_ID);
-    
+
   displayPackInFolder(MANERGE_FOLDER_ID);
 }
 
@@ -126,7 +130,27 @@ function change_pack_folder() {
 
   var folder = new Folder();
   folder.changePackTo(MANERGE_FOLDER_ID, MANERGE_PACK_ID, folderId);
-  
-  
+
+
   displayPackInFolder(MANERGE_FOLDER_ID);;
+}
+
+function displayAllPack() {
+  var result = '';
+
+  for (var key in localStorage) {
+    if (key === 'user') { }
+    else if (key === 'folder') { }
+    else {
+      var pack = new Pack();
+      pack.getPack(key);
+      var templete = '<input type="checkbox" name="' + pack.id + '" id="' + pack.id + '">' +
+        '<label for="' + pack.id + '">' + pack.name + '</label>';
+      
+      $("fieldset").controlgroup("container").append(templete);
+    }
+  }
+
+  $('input[type=checkbox]').checkboxradio();
+  $('fieldset').controlgroup('refresh');
 }

@@ -19,10 +19,10 @@ function preparePopup() {
   var folder = new Folder();
 
   for (var i in folder.folderArray) {
-    var templete = '<li class="change_folder" folderid="'+folder.folderArray[i].id+'"><a href="#">' + folder.folderArray[i].name + '</a></li>';
+    var templete = '<li class="change_folder" folderid="' + folder.folderArray[i].id + '"><a href="#">' + folder.folderArray[i].name + '</a></li>';
     result += templete;
   }
-  
+
   $('.change_folder').click();
 }
 
@@ -33,9 +33,9 @@ function displayPackInFolder(folderId) {
   for (var i in packInFolder) {
     var pack = new Pack();
     pack.getPack(packInFolder[i]);
-    var templete = '<li onclick="select_pack(\''+pack.id+'\')" class="pack_coll" data-role="collapsible" data-iconpos="right"><h2>' + pack.name + '</h2><ul class="pack_listview" data-role="listview" data-theme="b"  data-inset="false">' +
+    var templete = '<li onclick="select_pack(\'' + pack.id + '\')" class="pack_coll" data-role="collapsible" data-iconpos="right"><h2>' + pack.name + '</h2><ul class="pack_listview" data-role="listview" data-theme="b" data-inset="false">' +
       '<li><a href="#move_pack" data-rel="popup" data-position-to="window" data-transition="pop">移動此懶人包</a></li>' +
-      '<li> <a href="#delete_pack" data- rel="popup" data- position - to="window" data- transition="pop" > 刪除此懶人包 </a></li>' +
+      '<li><a href="#delete_pack" data-rel="popup" data-position-to="window" data-transition="pop">刪除此懶人包</a></li>' +
       '</ul></li>';
     result += templete;
   }
@@ -58,7 +58,8 @@ function displayFolder() {
   var result = "";
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a><a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\''+ folderArray[i].id +'\')">Delete Folder</a></li>';
+    var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a>' + 
+    '<a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\'' + folderArray[i].id + '\')">Delete Folder</a></li>';
     result += folder_templete;
   }
   $('#my_folder_divider').after(result);
@@ -67,21 +68,16 @@ function displayFolder() {
   $("li[folderid]").click(select_folder);
 }
 
-function select_delete(folderId){
+function select_delete(folderId) {
   MANERGE_FOLDER_ID = folderId;
 }
 
-function delete_folder(){
+function delete_folder() {
   var folder = new Folder();
   folder.deleteFolder(MANERGE_FOLDER_ID);
   
   //refresh view
   displayFolder();
-}
-
-function deletePack(folderId, packId) {
-  var folder = new Folder();
-  folder.deletePack(folderId, packId);
 }
 
 function select_folder() {
@@ -100,7 +96,10 @@ function add_folder_handler() {
 
 function delete_pack_in_folder() {
   var folder = new Folder();
+  console.log('delete_pack_in_folder ' + MANERGE_FOLDER_ID + ' ' + MANERGE_PACK_ID);
   folder.deletePack(MANERGE_FOLDER_ID, MANERGE_PACK_ID);
+    
+  displayPackInFolder(MANERGE_FOLDER_ID);
 }
 
 function displayFolderInPopup() {
@@ -109,7 +108,7 @@ function displayFolderInPopup() {
   var result = '<li data-role="list-divider">選擇資料夾</li>';
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li folderid="' + folderArray[i].id + '" class="folder"><a href="#">' + folderArray[i].name + '</a></li>';
+    var folder_templete = '<li folderid="' + folderArray[i].id + '" class="folder"><a data-rel="back" href="#">' + folderArray[i].name + '</a></li>';
     result += folder_templete;
   }
 
@@ -121,10 +120,13 @@ function displayFolderInPopup() {
   $('.folder').click(change_pack_folder);
 }
 
-function change_pack_folder(){
+function change_pack_folder() {
   var folderId = $(this).attr('folderid');
-  console.log('change_pack_folder' + folderId);
-  
+  console.log('change_pack_folder ' + MANERGE_PACK_ID + ' from ' + MANERGE_FOLDER_ID + ' to ' + folderId);
+
   var folder = new Folder();
   folder.changePackTo(MANERGE_FOLDER_ID, MANERGE_PACK_ID, folderId);
+  
+  
+  displayPackInFolder(MANERGE_FOLDER_ID);;
 }

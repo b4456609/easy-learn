@@ -230,9 +230,21 @@ function Folder() {
       }
       //add to dest folder
       if (destFolderId === this.folderArray[i].id) {
-        this.folderArray[i].pack.push_back(packid);
+        this.folderArray[i].pack.push(packid);
       }
     }
+    this.save();
+  };
+
+  this.deletePack = function (folderId, packId) {
+    //remove form folder
+    for (var i in this.folderArray) {
+      if (folderId === this.folderArray[i].id) {
+        var index = this.folderArray[i].pack.indexOf(packId);
+        this.folderArray[i].pack.splice(index, 1);
+      }
+    }
+    this.save();
   };
 }
 

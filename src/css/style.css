@@ -25,7 +25,8 @@
   float: right;
   width: 40%;
 }
-.ui-li-static.ui-collapsible > .ui-collapsible-heading {
+
+/*.ui-li-static.ui-collapsible > .ui-collapsible-heading {
   margin: 0;
 }
 .ui-li-static.ui-collapsible {
@@ -36,7 +37,7 @@
 }
 .ui-li-static.ui-collapsible > .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn, .ui-li-static.ui-collapsible > .ui-collapsible-content {
   border-bottom-width: 0;
-}
+}*/
 
 
 /*for youtube video responsive size*/

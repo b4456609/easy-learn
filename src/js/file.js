@@ -38,8 +38,6 @@ function getImgNode(packId, fileName, callback) {
   }, fail);
 }
 
-
-
 function downloadImgByUrl(url, packId, prefixOrName, callback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);

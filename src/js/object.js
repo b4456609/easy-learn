@@ -165,11 +165,11 @@ function Folder() {
   this.deletePack = function (folderId, packId) {
     //delete from folder
     for (var i in this.folderArray) {
-      if (folderId === this.folderArray[i].id) {
-        delete this.folderArray[i].pack[packId];
-      }
-      else if (this.folderArray[i].name = 'All') {
-        delete this.folderArray[i].pack[packId];
+      for (var j in this.folderArray[i].pack) {
+        if (this.folderArray[i].pack[j] === packId) {
+          console.log('[deletePack] packId:' + packId);
+          this.folderArray[i].pack.splice(j, 1);
+        }
       }
     }
     

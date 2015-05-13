@@ -199,3 +199,33 @@ function go_pack_handler() {
 
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
+
+function search_pack() {
+  var input = $('#search').val();
+  var result = '';
+
+  $.ajax({
+    type: "GET",
+    url: SERVER_URL + "easylearn/search",
+    data: {
+      search_text: input,
+    },
+    success: function (data) {
+      console.log('success search');
+      console.log(data);
+      for (var i in data) {
+        var templete = '<li>' +
+          '<a href="#">' +
+          '<img src="' + data[i].name + '">' +
+          '<h2>' + data[i].name + '</h2>' +
+          '<p>' + data[i].description + '</p>' +
+          '</a>' +
+          '</li>';
+        result += templete;
+      }
+      $('#saerch-result').html(result);
+
+      $('#saerch-result').listview('refresh');
+    }
+  });
+}

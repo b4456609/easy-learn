@@ -88,11 +88,22 @@
       <!-- /panel -->
       <div data-role="panel" id="search_panel" data-display="overlay" data-position="right">
         <!-- panel content goes here -->
-        <form method="post" action="">
-          <input type="search" name="search" id="search" placeholder="Search for content...">
+        <form>
+          <table style='width:100%'>
+            <tr>
+              <td>
+                <input type="search" name="search" data-inline="true" id="search" placeholder="搜尋懶人包...">
+              </td>
+              <td>
+                <input type="button" data-mini="true" data-inline="true" value="搜尋" onclick="search_pack()">
+              </td>
+            </tr>
+          </table>
+<!--          <input type="search" name="search" data-inline="true" id="search" placeholder="Search for content...">
+          <input type="button" data-inline="true" value="Input" onclick="search_pack()">-->
         </form>
         <div class="ui-field-contain"></div>
-        <ul data-role="listview" data-icon="false">
+        <ul id="saerch-result" data-role="listview" data-icon="false">
           <li>
             <a href="#">
             <img src="img/chrome.png">

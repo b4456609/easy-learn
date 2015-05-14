@@ -4,5 +4,13 @@
             "type": "registry",
             "id": "org.apache.cordova.file-transfer"
         }
+    },
+    "cordova-plugin-network-information": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-network-information"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

@@ -28,4 +28,7 @@
     <content src="index.html" />
     <access origin="*" />
     <preference name="AndroidPersistentFileLocation" value="Internal" />
+    <feature name="NetworkStatus">
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+    </feature>
 </widget>

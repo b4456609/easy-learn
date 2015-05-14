@@ -14,6 +14,9 @@
     <feature name="Notification">
         <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
     </feature>
+    <feature name="NetworkStatus">
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
+    </feature>
     <icon density="ldpi" src="res/ldpi.png" />
     <icon density="mdpi" src="res/mdpi.png" />
     <icon density="hdpi" src="res/hdpi.png" />
@@ -28,7 +31,4 @@
     <content src="index.html" />
     <access origin="*" />
     <preference name="AndroidPersistentFileLocation" value="Internal" />
-    <feature name="NetworkStatus">
-        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
-    </feature>
 </widget>

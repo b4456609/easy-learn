@@ -58,19 +58,29 @@ function logout() {
 
 
 function login() {
-//  $.mobile.changePage("login.html", {
-//    transition: "pop",
-//    reverse: false,
-//    changeHash: false
-//  });
+  //  $.mobile.changePage("login.html", {
+  //    transition: "pop",
+  //    reverse: false,
+  //    changeHash: false
+  //  });
 
   facebookConnectPlugin.login(["public_profile"],
     fbLoginSuccess,
-    function (error) { alert("" + error); }
+    function (error) { console.log(error); }
     );
 }
 
 function fbLoginSuccess(userData) {
-  alert("UserInfo: " + JSON.stringify(userData));
+  //alert("UserInfo: " + JSON.stringify(userData));
+  console.log(userData);
+
+  facebookConnectPlugin.api("/me", [],
+    function (result) {
+      alert("Result: " + JSON.stringify(result));
+      console.log(result);
+    },
+    function (error) {
+      alert(JSON.stringify(error));
+    });
 }
 

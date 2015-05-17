@@ -213,10 +213,13 @@ function search_pack() {
     success: function (data) {
       console.log('success search');
       console.log(data);
+
       for (var i in data) {
+        var url = SERVER_URL + 'easylearn/download?pack_id=' +
+          data[i].id + '&filename=' + data[i].cover_filename;
         var templete = '<li>' +
           '<a href="#">' +
-          '<img src="' + data[i].name + '">' +
+          '<img src="' + url + '">' +
           '<h2>' + data[i].name + '</h2>' +
           '<p>' + data[i].description + '</p>' +
           '</a>' +
@@ -224,7 +227,6 @@ function search_pack() {
         result += templete;
       }
       $('#saerch-result').html(result);
-
       $('#saerch-result').listview('refresh');
     }
   });

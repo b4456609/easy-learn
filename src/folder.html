@@ -4,22 +4,37 @@
     <h1>管理資料夾</h1>
   </div>
   <div data-role="main" class="ui-content">
-    <ul id="my_folder" data-role="listview" data-split-icon="delete" data-inset="true">
+    <ul id="my_folder" data-role="listview" data-split-icon="gear" data-inset="true">
       <li data-role="list-divider">我的資料夾</li>
       <li>
         <a href="#add_folder" data-rel="popup" data-position-to="window" data-transition="pop">+ 新增資料夾</a>
       </li>
     </ul>
-    <div data-role="popup" id="delete_folder" data-theme="a" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
-      <h3>刪除資料夾?</h3>
+    <!-- delete foler popup-->
+    <div data-role="popup" id="delete_folder" data-theme="a" data-overlay-theme="b" data-overlay-theme="b" class="ui-content"
+    style="max-width:340px;">
+      <h3 style="font-size:1.5em; padding-bottom: 10px;">刪除資料夾?</h3>
       <p>資料夾裡懶人包將會歸類到All資料夾裡</p>
-      <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-b ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini" onclick="delete_folder()">確定</a>
-      <a href="#" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-mini">取消</a>
+      <a href="#" data-rel="back" class=" ui-btn" onclick="delete_folder()">確定</a>
+      <a href="#" data-rel="back" class=" ui-btn">取消</a>
     </div>
-    <div data-role="popup" id="add_folder" data-theme="a" data-overlay-theme="b" class="ui-content" style="max-width:340px; padding-bottom:2em;">
+    <!-- choose folder's action popup-->
+    <div data-role="popup" data-overlay-theme="b" id="folder_action" class="ui-content">
+      <h3 style="font-size:1.5em; padding-bottom: 10px;">資料夾選擇</h3>
+      <button class=" ui-btn" id="rename_folder_btn">重新命名</button>
+      <button class=" ui-btn" id="delete_folder_btn">刪除</button>
+    </div>
+    <!-- rename folder popup-->
+    <div data-role="popup" data-overlay-theme="b" id="folder_rename" class="ui-content">
+      <h1 style="font-size:1.5em; padding-bottom: 10px;">重新命名資料夾</h1>
+      <input id="new_folder_name" type="text" placeholder="資料夾名稱">
+      <button class=" ui-btn" onclick="rename_btn()">重新命名</button>
+    </div>
+    <!-- new folder popup-->
+    <div data-role="popup" id="add_folder" data-overlay-theme="b" data-theme="a" data-overlay-theme="b" class="ui-content">
       <form>
         <div>
-          <h3>新增資料夾</h3>
+          <h3 style="font-size:1.5em; padding-bottom: 10px;">新增資料夾</h3>
           <label for="fn" class="ui-hidden-accessible">資料夾名稱:</label>
           <input type="text" name="fn" id="fn" value="" placeholder="資料夾名稱" data-theme="a">
           <a data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check" onclick="add_folder_handler()">新增資料夾

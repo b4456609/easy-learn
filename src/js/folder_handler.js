@@ -1,5 +1,6 @@
 var MANERGE_FOLDER_ID;
 var MANERGE_PACK_ID;
+var ACTION_SELECT = 0;
 
 $(document).on("pageinit", "#delete_pack", function () {
   displayAllPack();
@@ -7,6 +8,29 @@ $(document).on("pageinit", "#delete_pack", function () {
 
 $(document).on("pageinit", "#folder", function () {
   displayFolder();
+
+  $("#rename_folder_btn").click(function () {
+    ACTION_SELECT = 1;
+    $("#folder_action").popup('close');
+  });
+
+  $("#delete_folder_btn").click(function () {
+    ACTION_SELECT = 2;
+    $("#folder_action").popup('close');
+  });
+  
+  //user select action and open popup
+  $("#folder_action").on("popupafterclose", function () {
+    //any action you want like opening another popup
+    if (ACTION_SELECT === 1) {
+      $('#folder_rename').popup('open');
+    }
+    else if (ACTION_SELECT === 2) {
+      $('#delete_folder').popup('open');
+    }
+    ACTION_SELECT = 0;
+  });
+
 });
 
 
@@ -78,7 +102,7 @@ function displayFolder() {
     }
     else {
       var folder_templete = '<li folderid="' + folderArray[i].id + '"><a href="folder_pack.html">' + folderArray[i].name + '</a>' +
-        '<a href="#delete_folder" data-rel="popup" data-position-to="window" data-transition="pop" onclick"select_delete(\'' + folderArray[i].id + '\')">Delete Folder</a></li>';
+        '<a href="#folder_action" data-rel="popup" data-position-to="window" data-transition="pop"></a></li>';
       result += folder_templete;
     }
   }
@@ -127,14 +151,14 @@ function delete_pack_in_folder() {
 function displayFolderInPopup(folderId) {
 	 //display folder
    
-   //get local storage 
+  //get local storage 
   var folderArray = JSON.parse(localStorage.folder);
   
   //generate ui code
   var result = '<li data-role="list-divider">選擇資料夾</li>';
   for (var i in folderArray) {
     //don't display all folder and current folder
-    if(folderArray[i].id === 'allPackId'){}
+    if (folderArray[i].id === 'allPackId') { }
     else if (folderId !== folderArray[i].id) {
       var folder_templete = '<li folderid="' + folderArray[i].id + '" class="folder"><a data-rel="back" href="#">' + folderArray[i].name + '</a></li>';
       result += folder_templete;
@@ -192,4 +216,19 @@ function delete_pack_handler() {
     console.log('[delete_pack_handler] packId:' + checkedElements[i]);
     folder.deleteAPack(checkedElements[i]);
   }
+}
+
+function call_delete_folder_popup() {
+  $('#folder_action').popup("close");
+  $('#delete_folder').popup("open");
+}
+
+function rename_btn() {
+  var name = $("#new_folder_name").val();
+  var folder = new Folder();
+  folder.renameFolder(MANERGE_FOLDER_ID, name);
+  $("#folder_rename").popup('close');
+  
+  //refresh folder
+  displayFolder();
 }

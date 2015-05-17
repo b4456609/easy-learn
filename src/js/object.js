@@ -245,6 +245,18 @@ function Folder() {
 
     this.save();
   };
+  
+  //rename folder
+  this.renameFolder = function(folderId, name){
+    for (var j in this.folderArray) {
+      if (this.folderArray[j].id === folderId) {
+        this.folderArray[j].name = name;
+        break;
+      }
+    }
+    
+    this.save();
+  };
 }
 
 

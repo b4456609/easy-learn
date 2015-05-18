@@ -58,16 +58,16 @@ function logout() {
 
 
 function login() {
-  //  $.mobile.changePage("login.html", {
-  //    transition: "pop",
-  //    reverse: false,
-  //    changeHash: false
-  //  });
+    $.mobile.changePage("login.html", {
+      transition: "pop",
+      reverse: false,
+      changeHash: false
+    });
 
-  facebookConnectPlugin.login(["public_profile"],
-    fbLoginSuccess,
-    function (error) { console.log(error); }
-    );
+//  facebookConnectPlugin.login(["public_profile"],
+//    fbLoginSuccess,
+//    function (error) { console.log(error); }
+//    );
 }
 
 function fbLoginSuccess(userData) {

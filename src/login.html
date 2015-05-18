@@ -1,22 +1,19 @@
 <div data-role="page" id="login">
   <div data-role="header">
-    <!-- <a href="#index" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a> -->
+    <!-- <a href="#index" data-rel="back" id="edit_back" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left
+    ui-icon-carat-l">返回</a> -->
     <h1>登入</h1>
-
   </div>
-
   <div data-role="main" class="ui-content">
     <form action="first.php" method="POST">
-
       <label for="account">帳號:</label>
       <input type="text" name="account" id="account" value="">
-
       <label for="password">密碼:</label>
       <input type="password" name="password" id="password" value="" autocomplete="off">
-
       <input type="button" value="確定" align="left" onclick="login_check()">
     </form>
     <p id="msg"></p>
+    <a class='btn btn-primary disabled'><i class="fa fa-facebook" style="width:16px; height:20px"></i></a>
+    <a class='btn btn-primary ' href='' style="width:12em"> Sign in with Facebook</a>
   </div>
-
 </div>

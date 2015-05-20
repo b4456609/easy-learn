@@ -2,8 +2,8 @@ var uploadImgCount = 0;
 var uploadTotal = 0;
 var downloadCount = 0;
 var downloadTotal = 0;
-var SERVER_URL = 'http://140.121.197.135:11116/';
-//var SERVER_URL = 'http://192.168.1.121:8080/';
+//var SERVER_URL = 'http://140.121.197.135:11116/';
+var SERVER_URL = 'http://192.168.1.121:8080/';
 
 function syncImg(files) {
 

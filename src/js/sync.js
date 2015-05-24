@@ -5,6 +5,29 @@ var downloadTotal = 0;
 var SERVER_URL = 'http://140.121.197.135:11116/';
 //var SERVER_URL = 'http://192.168.1.121:8080/';
 
+function getPack(packId, callback) {
+  var user = new User();
+  var url = SERVER_URL + 'easylearn/pack';
+  
+  console.log(url);
+  
+  $.ajax({
+    type: "GET",
+    url: url,
+    data: {
+      user_id: user.id,
+      pack_id: packId
+    },
+    success: function (data) {
+      console.log('success get pack' + JSON.stringify(data));
+      if (data.length !== 0) {
+        localStorage.setItem(packId, JSON.stringify(data));
+        callback();
+      }
+    }
+  });
+}
+
 function syncImg(files) {
 
   //upload image

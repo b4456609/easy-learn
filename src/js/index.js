@@ -202,7 +202,6 @@ function go_pack_handler() {
 
 function search_pack() {
   var input = $('#search').val();
-  var result = '';
 
   $.ajax({
     type: "GET",
@@ -213,13 +212,18 @@ function search_pack() {
     success: function (data) {
       console.log('success search');
       console.log(data);
+      var result = '';
 
       for (var i in data) {
-        var url = SERVER_URL + 'easylearn/download?pack_id=' +
-          data[i].id + '&filename=' + data[i].cover_filename;
-        var templete = '<li>' +
-          '<a href="#">' +
-          '<img src="' + url + '">' +
+        //cover img
+        var img;
+        if (data[i].cover_filename !== '')
+          img = '<img src="' + SERVER_URL + 'easylearn/download?filename=' + data[i].cover_filename + '&pack_id=' + data[i].id + '">';
+        else
+          img = '<img src="img/light102.png">';
+
+        var templete = '<li onclick=\"checkout_pack(\'' + data[i].id + '\')\">' +
+          '<a href="#">' + img +
           '<h2>' + data[i].name + '</h2>' +
           '<p>' + data[i].description + '</p>' +
           '</a>' +
@@ -230,4 +234,14 @@ function search_pack() {
       $('#saerch-result').listview('refresh');
     }
   });
+}
+
+function checkout_pack(packId) {
+  var callback = function () {
+    viewPackId = packId;
+    $.mobile.changePage("view_pack.html", {
+      transition: "pop",
+    });
+  };
+  getPack(packId, callback);
 }

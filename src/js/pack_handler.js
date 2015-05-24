@@ -160,6 +160,47 @@ $(document).on('pageshow', "#view_pack", function () {
   $(".note").click(showNoteHandler);
 });
 
+$(document).on('pageinit', "#search_view_pack", function () {
+  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  //set look's version's index, check if index exits
+  if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
+    viewPackVersion.index = 0;
+  }
+  //set look version's id
+  viewPackVersion.id = pack.version[viewPackVersion.index].id;
+
+  console.log('view pack ID:' + viewPackId);
+  console.log('view pack name:' + pack.name);
+  packName = pack.name;
+
+  var content = pack.version[viewPackVersion.index].content;
+  //get image by server
+  content = replaceSearchPackImgPath(content);
+  console.log(content);
+  $('#veiw_pack_content').html(content);
+});
+
+
+$(document).on('pageshow', "#view_pack", function () {
+  //show pack's title
+  $('#pack_title').text(packName);
+  //note initail
+  $("#note-display").toolbar("option", "position", "fixed");
+  $("#note-display").toolbar("option", "tapToggle", false);
+
+  //click and show note hanlder
+  $(".note").click(showNoteHandler);
+});
+
+function replaceSearchPackImgPath(content) {
+  var url = SERVER_URL + 'easylearn/download?pack_id=' + viewPackId + '&filename=';
+  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
+    content = content.replace('FILE_STORAGE_PATH', url);
+  }
+  return content;
+}
+
 function replacePackImgPath(content) {  
   while (content.indexOf('FILE_STORAGE_PATH') != -1) {
     content = content.replace('FILE_STORAGE_PATH', FILE_STORAGE_PATH);
@@ -573,4 +614,9 @@ function display_version_info() {
   console.log(html);
   $('#version_pack_content').html(html);
   $('#version_pack_content').listview("refresh");
+}
+
+function save_to_folder(){
+  var folder = new Folder();
+  folder.addAPack(viewPackId);
 }

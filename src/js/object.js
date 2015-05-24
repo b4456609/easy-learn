@@ -222,6 +222,19 @@ function Folder() {
     }
     this.save();
   };
+  
+  //add a pack to all folder
+  this.addAPack = function (packId) {
+    
+    for (var i in this.folderArray) {
+        if (this.folderArray[i].id === 'allPackId') {
+          console.log('[addAPack] packId:' + packId);
+          this.folderArray[i].pack.push(packId);
+        }
+    }
+
+    this.save();
+  };
 
   //delete a pack from folder
   this.deleteAPack = function (packId) {

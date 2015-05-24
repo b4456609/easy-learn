@@ -239,7 +239,7 @@ function search_pack() {
 function checkout_pack(packId) {
   var callback = function () {
     viewPackId = packId;
-    $.mobile.changePage("view_pack.html", {
+    $.mobile.changePage("search_view_pack.html", {
       transition: "pop",
     });
   };

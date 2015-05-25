@@ -87,7 +87,7 @@
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<string name=\"fb_app_id\">444984235675708</string>",
+                            "xml": "<string name=\"fb_app_id\">937637919620079</string>",
                             "count": 1
                         },
                         {
@@ -116,7 +116,7 @@
             "PACKAGE_NAME": "ntou.cs.easylearn"
         },
         "com.phonegap.plugins.facebookconnect": {
-            "APP_ID": "444984235675708",
+            "APP_ID": "937637919620079",
             "APP_NAME": "easylearn",
             "PACKAGE_NAME": "ntou.cs.easylearn"
         },

@@ -67,13 +67,18 @@ function myAppLogic() {
   //localStorage.clear();
   //testLocalStorage();
   if (localStorage.getItem('user') === null) {
-    login();
+    $.mobile.changePage("login.html", {
+      transition: "pop",
+      reverse: false,
+      changeHash: false
+    });
   }
   else {
     $('#home_title').text(folderName);
     display_pack();
     display_folder();
     $('#user_name').text((JSON.parse(localStorage.user)).name);
+    navigator.splashscreen.hide();
   }
 
   $('#logout').click(logout);

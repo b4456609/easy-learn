@@ -1,3 +1,7 @@
+$(document).on("pageshow", "#login", function () {
+    navigator.splashscreen.hide();
+});
+
 function login_check() {
   var account = $('#account').val();
   var password = $('#password').val();
@@ -52,20 +56,9 @@ function successLogin(user) {
 
 function logout() {
   localStorage.clear();
-
   login();
 }
 
-
-function login() {
-  $.mobile.changePage("login.html", {
-    transition: "pop",
-    reverse: false,
-    changeHash: false
-  });
-
-
-}
 
 function fbLoginSuccess(userData) {
   //alert("UserInfo: " + JSON.stringify(userData));

@@ -59,6 +59,14 @@ function logout() {
   login();
 }
 
+function login() {
+  $.mobile.changePage("login.html", {
+      transition: "pop",
+      reverse: false,
+      changeHash: false
+    });
+}
+
 
 function fbLoginSuccess(userData) {
   //alert("UserInfo: " + JSON.stringify(userData));

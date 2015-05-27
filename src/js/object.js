@@ -225,16 +225,32 @@ function Folder() {
   
   //add a pack to all folder
   this.addAPack = function (packId) {
-    
+
     for (var i in this.folderArray) {
-        if (this.folderArray[i].id === 'allPackId') {
-          console.log('[addAPack] packId:' + packId);
+      if (this.folderArray[i].id === 'allPackId') {
+        console.log('[addAPack] packId:' + packId);
+        if (!this.hasPack(packId))
           this.folderArray[i].pack.push(packId);
-        }
+        break;
+      }
     }
 
     this.save();
   };
+
+  this.hasPack = function (packId) {
+    for (var i in this.folderArray) {
+      if (this.folderArray[i].id === 'allPackId') {
+        for (var j in this.folderArray[i].pack) {
+          if (this.folderArray[i].pack[j] === packId) {
+            return true;
+          }
+          break;
+        }
+      }
+    }
+    return false;
+  }
 
   //delete a pack from folder
   this.deleteAPack = function (packId) {
@@ -260,14 +276,14 @@ function Folder() {
   };
   
   //rename folder
-  this.renameFolder = function(folderId, name){
+  this.renameFolder = function (folderId, name) {
     for (var j in this.folderArray) {
       if (this.folderArray[j].id === folderId) {
         this.folderArray[j].name = name;
         break;
       }
     }
-    
+
     this.save();
   };
 }

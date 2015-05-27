@@ -197,6 +197,7 @@ function replaceSearchPackImgPath(content) {
   var url = SERVER_URL + 'easylearn/download?pack_id=' + viewPackId + '&filename=';
   while (content.indexOf('FILE_STORAGE_PATH') != -1) {
     content = content.replace('FILE_STORAGE_PATH', url);
+    content = content.replace(viewPackId, '');
   }
   return content;
 }

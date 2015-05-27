@@ -67,8 +67,13 @@
           </a>
           </li>
           <li>
-            <a href="#export_import_select_popup" data-rel="popup" data-position-to="window" data-transition="pop">
-            <h2>匯出/匯入</h2>
+            <a href="#" onclick="export_data()">
+            <h2>匯出</h2>
+          </a>
+          </li>
+          <li>
+            <a href="#"  onclick="import_data()">
+            <h2>匯入</h2>
           </a>
           </li>
           <li data-role="list-divider">
@@ -138,10 +143,17 @@
           <h3>匯出匯入</h3>
           <p>選擇要執行的動作</p>
           <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="export_data()">匯出</a>        
-          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="import_data()">匯入</a>
+          <a href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="import_data()">匯入</a>
         </div>
       </div>
       <!--end sync conflict popup-->
+      <!--choose zip popup-->      
+      <div data-role="popup" id="import_popup" data-theme="b">
+        <ul id="zip_listview" data-role="listview" data-inset="true" style="min-width:210px;">
+          <li data-role="list-divider" id="zip">Choose a zip file</li>
+        </ul>
+      </div>
+      <!--end choose zip popup-->
     </div>
   </body>
 

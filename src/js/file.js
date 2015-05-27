@@ -265,8 +265,142 @@ function export_data() {
 
 }
 
-function import_data() {
+function import_action(zipFilename) {
 
+  var path = cordova.file.externalRootDirectory + 'easylearn/' + zipFilename;
+  //zip file
+  var zip;
+
+  var count = 0;
+
+  var finish = function () {
+  
+    //resfresh home
+    $('#home_title').text(folderName);
+
+    console.log('Home:pageshow');
+    //refresh every visit home page
+    display_pack();
+    
+    //close popup
+    $('#import_popup').popup('close');
+  }
+
+  var writeAFile = function (packId, filename, data) {
+    window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function (fileEntry) {
+      //create dir
+      fileEntry.getDirectory(packId, {
+        create: true
+      }, function (destDirEntry) {
+          //create file
+          destDirEntry.getFile(filename, {
+            create: true
+          }, function (fileEntry) {
+              function win(writer) {
+                writer.onwrite = function (evt) {
+                  console.log("write success " + packId + "/" + filename);
+
+                  count--;
+                  if (count === 0) finish();
+                };
+                writer.write(data);
+              };
+              fileEntry.createWriter(win, fail);
+            }, fail);
+        }, fail);
+    }, fail);
+  };
+
+  var writeToLocalStorage = function (name, data) {
+    localStorage.setItem(name, data);
+    count--;
+    if (count === 0) finish();
+  };
+
+  var extractZip = function () {
+    var files = zip.files;
+
+    for (var i in files) {
+      if (i.indexOf('.jpg') != -1) {
+        count++;
+      }
+      else if (i.indexOf('.json') != -1) {
+        count++;
+      }
+    }
+
+    for (var i in files) {
+      if (i.indexOf('.jpg') != -1) {
+        var path = i;
+        var index = path.indexOf('/');
+        var folder = path.substr(0, index);
+        var filename = path.substr(index + 1);
+        
+        
+        //write in to externalDataDirectory
+        writeAFile(folder, filename, zip.file(i).asArrayBuffer());
+      }
+      else if (i.indexOf('.json') != -1) {        
+        //write in to externalDataDirectory
+        writeToLocalStorage(i.replace('.json', ''), zip.file(i).asText());
+      }
+    }
+
+  };
+
+  var callback = function (fileEntry) {
+    fileEntry.file(function (file) {
+      var reader = new FileReader();
+
+      reader.onloadend = function () {
+        console.log('success load ' + file.name);
+        //add to zip
+        zip = new JSZip(reader.result);
+        extractZip();
+      };
+      reader.readAsArrayBuffer(file);
+    }, fail);
+  };
+
+  window.resolveLocalFileSystemURL(path, callback, fail);
+
+}
+
+function import_data() {
+  $('#import_popup').popup('open');
+  var zipFileArray = [];
+
+
+  var display = function () {
+    var result = '<li data-role="list-divider" id="zip">Choose a zip file</li>';
+    for (var i in zipFileArray) {
+      if (zipFileArray[i].indexOf('.zip') != -1)
+        result += '<li><a href="#" onclick="import_action(\'' + zipFileArray[i] + '\')">' + zipFileArray[i] + '</a></li>';
+    }
+
+    $('#zip_listview').html(result);
+    $('#zip_listview').listview('refresh');
+
+  }
+
+  var getZipFileArray = function () {
+    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory + 'easylearn/', function (dirEntry) {
+      var success = function (entries) {
+        var i;
+        for (i = 0; i < entries.length; i++) {
+          zipFileArray.push(entries[i].name);
+        }        
+        //call back function
+        display();
+      };
+      var directoryReader = dirEntry.createReader();
+      // Get a list of all the entries in the directory
+      directoryReader.readEntries(success, fail);
+    }, fail);
+  };
+
+  
+  getZipFileArray();
 }
 
 

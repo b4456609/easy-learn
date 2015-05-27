@@ -98,3 +98,60 @@ function displayPackImg(viewPackId, imgNode, imgName) {
 function fail(error) {
   console.log('FileSystem Error:' + error.code);
 }
+
+function export_data() {
+  
+  //prepare zip file
+  var zip = new JSZip();
+
+  //generate localstroage data to zip file
+  for (var key in localStorage) {
+    zip.file(key, localStorage.getItem(key));
+  }
+  
+  //zip file name
+  var time = new Date().getTime();
+  
+  //write callback function after createFile 
+  var writefile = function (fileEntry) {
+    fileEntry.createWriter(function (writer) {
+      // Generate the binary Zip file
+      var content = zip.generate({ type: "blob", compression: "DEFLATE" });
+
+      writer.onwriteend = function (evt) {
+      };
+
+      // Persist the zip file to storage
+      writer.write(content);
+    }, fail);
+  };   
+
+  //write callback function after createDir 
+  var createFile = function (dirEntry, callback) {
+    dirEntry.getFile(time + '.zip', {
+      create: true
+    }, function (fileEntry) {
+        writefile(fileEntry);
+      }, fail);
+  };
+
+  //write callback function after external
+  var createDir = function (dirEntry) {
+    dirEntry.getDirectory('easylearn', {
+      create: true
+    }, function (destDirEntry) {
+        createFile(destDirEntry);
+      }, fail);
+  };
+  
+
+  window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (dirEntry) {
+    createDir(dirEntry);
+  }, fail);
+
+
+}
+
+function import_data() {
+
+}

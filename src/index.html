@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="lib/jquery.mobile-1.4.5.min.css">
     <!-- Include the cordova -->
     <script type="text/javascript" src="cordova.js"></script>
+    <!-- include zip js lib-->
+    <script type="text/javascript" src="lib/jszip.min.js"></script>
     <!-- Include the jQuery library -->
     <script src="lib/jquery-2.1.3.min.js"></script>
     <!-- app's javascript -->
@@ -62,6 +64,11 @@
           <li>
             <a href="setting.html" class="ui-btn ui-icon-gear ui-btn-icon-left ui-nodisc-icon ui-alt-icon ">
             <h2>設定</h2>
+          </a>
+          </li>
+          <li>
+            <a href="#export_import_select_popup" data-rel="popup" data-position-to="window" data-transition="pop">
+            <h2>匯出/匯入</h2>
           </a>
           </li>
           <li data-role="list-divider">
@@ -122,6 +129,16 @@
           <p>下載雲端資料捨棄目前手機上的資料</p>
           <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b">取消同步</a>        
           <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="replace_data()">捨棄手機資料</a>
+        </div>
+      </div>
+      <!--end sync conflict popup-->
+      <!--sync conflict popup-->
+      <div data-role="popup" id="export_import_select_popup" data-overlay-theme="b">
+        <div style="padding:10px 20px;">
+          <h3>匯出匯入</h3>
+          <p>選擇要執行的動作</p>
+          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="export_data()">匯出</a>        
+          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" onclick="import_data()">匯入</a>
         </div>
       </div>
       <!--end sync conflict popup-->

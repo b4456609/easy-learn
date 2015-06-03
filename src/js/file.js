@@ -299,7 +299,7 @@ function export_pack(packId) {
       writer.onwriteend = function (evt) {
         //start loading spinner
         navigator.notification.activityStop();
-        
+
         navigator.notification.alert(
           '檔案位置:\n/easylearn/' + filename,  // message
           null,         // callback
@@ -428,15 +428,12 @@ function import_action(zipFilename) {
   var zip;
   var count = 0;
 
-  var exitFunction = function () {
-    
-    
+  var exitFunction = function () {    
     //exit function        
     return;
   }
 
-  var finish = function () {
-  
+  var finish = function () {  
     //resfresh home
     refreshPage();
     
@@ -509,7 +506,7 @@ function import_action(zipFilename) {
         singlePack = false;
         var data = zip.file(i).asText();
         var user = new User();
-        console.log('[checkFile] '+ data + ' ' + user.id + ' function ' + data.indexOf(user.id));
+        console.log('[checkFile] ' + data + ' ' + user.id + ' function ' + data.indexOf(user.id));
         if (data.indexOf(user.id) == -1) {
           //stop spinner
           navigator.notification.activityStop();
@@ -540,19 +537,22 @@ function import_action(zipFilename) {
         count++;
         //if is only single pack in zip file add to folder
         if (singlePack) {
+          console.log("is singlePack");
           var folder = new Folder();
           var packId = i.replace('.json', '');
           
           //check if the pack exist
           if (!folder.hasPack(packId)) {
             folder.addAPack(packId);
+            extractZip();
           }
           else {//pack already in folder. ask user to overwrite or cancel
+            console.log("singlePack conflict");
             var pack = new Pack();
             pack.getPack(packId);
             //stop spinner
             navigator.notification.activityStop();
-            navigator.notification.confirm('是否要覆蓋已經擁有的懶人包\n懶人包名稱: ' + pack.name , confirmCallback, '衝突', ['覆蓋', '取消匯入']);
+            navigator.notification.confirm('是否要覆蓋已經擁有的懶人包\n懶人包名稱: ' + pack.name, confirmCallback, '衝突', ['覆蓋', '取消匯入']);
           }
         }
       }

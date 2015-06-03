@@ -29,7 +29,7 @@ $(document).on("pageinit", "#co_pack", function () {
   //set editor height
   $('#iframe1').load(function () {
     $(this).height($(window).height() - headerHeight - 8);
-    $(this).width($(window).width());
+    $(this).width('100%');
   });
 
 });
@@ -61,7 +61,7 @@ $(document).on("pageinit", "#new_pack_edit", function () {
   //set editor height
   $('#iframe1').load(function () {
     $(this).height($(window).height() - headerHeight - 8);
-    $(this).width($(window).width());
+    $(this).width('100%');
   });
 });
 

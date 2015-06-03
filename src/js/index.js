@@ -246,3 +246,23 @@ function checkout_pack(packId) {
   };
   getPack(packId, callback);
 }
+
+function export_popup() {
+  //prepare popup
+  var result = '<li data-role="list-divider" id="zip">選擇輸出的項目</li>';
+  result += '<li><a href="#" onclick="export_data()">輸出全部</a></li>';
+
+  //prepare item
+  for (var key in localStorage) {
+    if (key.indexOf('pack') != -1) {
+      var pack = new Pack();
+      pack.getPack(key);
+      var templete = '<li><a href="#" onclick="export_pack(\'' + key + '\')">' + pack.name + '</a></li>';
+      result += templete;
+    }
+  }
+
+  //resfresh result listview
+  $('#export_listview').html(result).listview('refresh');
+  $('#export_popup').popup('open');
+}

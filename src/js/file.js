@@ -100,6 +100,9 @@ function fail(error) {
 }
 
 function export_data() {
+  //start loading spinner
+  navigator.notification.activityStart('', '輸出中');
+  $('#export_popup').popup('close');
   
   //prepare zip file
   var zip = new JSZip();
@@ -126,6 +129,8 @@ function export_data() {
       var content = zip.generate({ type: "arraybuffer" });
 
       writer.onwriteend = function (evt) {
+        //start loading spinner
+        navigator.notification.activityStop();
         navigator.notification.alert(
           '檔案位置: /easylearn/' + filename,  // message
           null,         // callback
@@ -265,25 +270,178 @@ function export_data() {
 
 }
 
+function export_pack(packId) {
+  //start loading spinner
+  navigator.notification.activityStart('', '輸出中');
+  $('#export_popup').popup('close');
+  
+  //prepare zip file
+  var zip = new JSZip();
+  //get pack json data
+  zip.file(packId + '.json', localStorage.getItem(packId));
+  
+  //get image into zip file
+  var executeTimes;
+  var dirArray = [];
+  var dirFullArray = [];
+
+  
+  //zip file name
+  var time = new Date();
+  var filename = formatDate(time.toString(), "yyyyMMdd_HHmmss") + '.zip';
+  
+  //write callback function after createFile 
+  var writefile = function (fileEntry) {
+    fileEntry.createWriter(function (writer) {
+      // Generate the binary Zip file
+      var content = zip.generate({ type: "arraybuffer" });
+
+      writer.onwriteend = function (evt) {
+        //start loading spinner
+        navigator.notification.activityStop();
+        
+        navigator.notification.alert(
+          '檔案位置:\n/easylearn/' + filename,  // message
+          null,         // callback
+          '成功輸出',            // title
+          '完成'                  // buttonName
+          );
+        console.log("zip create success");
+      };
+
+      // Persist the zip file to storage
+      writer.write(content);
+    }, fail);
+  };   
+
+  //write callback function after createDir 
+  var createFile = function (dirEntry, callback) {
+    dirEntry.getFile(filename, {
+      create: true
+    }, function (fileEntry) {
+        writefile(fileEntry);
+      }, fail);
+  };
+
+  //write callback function after external
+  var createDir = function (dirEntry) {
+    dirEntry.getDirectory('easylearn', {
+      create: true
+    }, function (destDirEntry) {
+        createFile(destDirEntry);
+      }, fail);
+  };
+
+  var getExternalDir = function () {
+    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (dirEntry) {
+      createDir(dirEntry);
+    }, fail);
+  };
+
+  var putImgToZip = function () {
+    //run this callbak times to ready to get next phase
+    executeTimes = 0;
+    for (var i in dirFullArray) {
+      executeTimes += dirFullArray[i].length - 1;
+    }
+    console.log('total IMG: ' + executeTimes);
+    
+    //call back function for next
+    var callback = function (fileEntry) {
+      //remeber pack folder name
+      var folderName = fileEntry.fullPath;
+      folderName = folderName.replace(cordova.file.externalDataDirectory, '');
+      var index = folderName.lastIndexOf("/");
+      folderName = folderName.substr(1, index - 1);
+
+      fileEntry.file(function (file) {
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+          //add to zip
+          zip.folder(folderName).file(file.name, reader.result, { binary: true });
+          console.log('success add ' + folderName + '/' + file.name);
+          //check if end
+          executeTimes--;
+          if (executeTimes == 0) {
+            console.log('success add all image to zip');
+            getExternalDir();
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      }, fail);
+    };
+    
+    //for loop for all pic
+    for (var i in dirFullArray) {
+      var j;
+      for (j = 1; j < dirFullArray[i].length; j++) {
+        window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + dirFullArray[i][0] + '/' + dirFullArray[i][j], callback, fail);
+      }
+    }
+  }
+  
+  //get pack's image array
+  var getPicArray = function () {
+    //success callback
+    var callback = function (dirEntry) {
+      var success = function (entries) {
+        //first is dir name and rest is img name
+        var dirContent = [];
+        dirContent.push(dirEntry.name);
+
+        var i;
+        for (i = 0; i < entries.length; i++) {
+          dirContent.push(entries[i].name);
+        }
+        //push to final array
+        dirFullArray.push(dirContent);
+
+        console.log("success getPicArray");
+        putImgToZip();
+      };
+      var directoryReader = dirEntry.createReader();
+      // Get a list of all the entries in the directory
+      directoryReader.readEntries(success, fail);
+    };
+
+    window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory + packId, callback, function () {
+      //no image's pack generate zip file
+      getExternalDir();
+    });
+
+  };
+
+  getPicArray();
+}
+
 function import_action(zipFilename) {
+  
+  //start loading spinner
+  navigator.notification.activityStart('', '匯入中'); 
+
+  //close popup
+  $('#import_popup').popup('close');
 
   var path = cordova.file.externalRootDirectory + 'easylearn/' + zipFilename;
   //zip file
   var zip;
-
   var count = 0;
+
+  var exitFunction = function () {
+    
+    
+    //exit function        
+    return;
+  }
 
   var finish = function () {
   
     //resfresh home
-    $('#home_title').text(folderName);
-
-    console.log('Home:pageshow');
-    //refresh every visit home page
-    display_pack();
+    refreshPage();
     
-    //close popup
-    $('#import_popup').popup('close');
+    //stop spinner
+    navigator.notification.activityStop();
   }
 
   var writeAFile = function (packId, filename, data) {
@@ -317,18 +475,11 @@ function import_action(zipFilename) {
     if (count === 0) finish();
   };
 
-  var extractZip = function () {
+  var extractZip = function () {    
+    //start loading spinner
+    navigator.notification.activityStart('', '匯入中');
+
     var files = zip.files;
-
-    for (var i in files) {
-      if (i.indexOf('.jpg') != -1) {
-        count++;
-      }
-      else if (i.indexOf('.json') != -1) {
-        count++;
-      }
-    }
-
     for (var i in files) {
       if (i.indexOf('.jpg') != -1) {
         var path = i;
@@ -341,11 +492,72 @@ function import_action(zipFilename) {
         writeAFile(folder, filename, zip.file(i).asArrayBuffer());
       }
       else if (i.indexOf('.json') != -1) {        
-        //write in to externalDataDirectory
+        //write in to localstorage
         writeToLocalStorage(i.replace('.json', ''), zip.file(i).asText());
       }
     }
 
+  };
+
+  var checkFile = function () {
+    var files = zip.files;
+    var singlePack = true;
+    
+    //check if the same user
+    for (var i in files) {
+      if (i == 'user.json') {
+        singlePack = false;
+        var data = zip.file(i).asText();
+        var user = new User();
+        if (data.indexOf(user.id) != -1) {
+          //stop spinner
+          navigator.notification.activityStop();
+          navigator.notification.alert('這個不是您的匯出檔案', null, '錯誤', '確定');
+          return;
+        }
+        break;
+      }
+    }    
+    
+
+    // add count for determine if action finished because there are all async function
+    var confirmCallback = function (buttonIndex) {
+      console.log('click button index: ' + buttonIndex);
+      if (buttonIndex == 1) {// overwirte
+        extractZip();
+      }
+      else if (buttonIndex == 0) {//user cancel the import
+        exitFunction();
+      }
+    };
+
+    for (var i in files) {
+      if (i.indexOf('.jpg') != -1) {
+        count++;
+      }
+      else if (i.indexOf('.json') != -1) {
+        count++;
+        //if is only single pack in zip file add to folder
+        if (singlePack) {
+          var folder = new Folder();
+          var packId = i.replace('.json', '');
+          
+          //check if the pack exist
+          if (!folder.hasPack(packId)) {
+            folder.addAPack(packId);
+          }
+          else {//pack already in folder. ask user to overwrite or cancel
+            var pack = new Pack();
+            pack.getPack(packId);
+            //stop spinner
+            navigator.notification.activityStop();
+            navigator.notification.confirm('是否要覆蓋已經擁有的懶人包\n懶人包名稱: ' + pack.name + , confirmCallback, '衝突', ['覆蓋', '取消匯入']);
+          }
+        }
+      }
+    }
+    //if single pack confirmCallback will execute extractZip()
+    if (!singlePack) extractZip();
   };
 
   var callback = function (fileEntry) {
@@ -356,7 +568,9 @@ function import_action(zipFilename) {
         console.log('success load ' + file.name);
         //add to zip
         zip = new JSZip(reader.result);
-        extractZip();
+        
+        //next step check file
+        checkFile();
       };
       reader.readAsArrayBuffer(file);
     }, fail);
@@ -372,7 +586,7 @@ function import_data() {
 
 
   var display = function () {
-    var result = '<li data-role="list-divider" id="zip">Choose a zip file</li>';
+    var result = '<li data-role="list-divider" id="zip">選擇一個ZIP檔案</li>';
     for (var i in zipFileArray) {
       if (zipFileArray[i].indexOf('.zip') != -1)
         result += '<li><a href="#" onclick="import_action(\'' + zipFileArray[i] + '\')">' + zipFileArray[i] + '</a></li>';
@@ -399,7 +613,7 @@ function import_data() {
     }, fail);
   };
 
-  
+
   getZipFileArray();
 }
 

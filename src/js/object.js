@@ -253,7 +253,7 @@ function Folder() {
   }
 
   //delete a pack from folder
-  this.deleteAPack = function (packId, callback) {
+  this.deleteAPack = function (packId) {
     //delete from folder
     for (var i in this.folderArray) {
       for (var j in this.folderArray[i].pack) {
@@ -273,8 +273,6 @@ function Folder() {
     }, fail);
 
     this.save();
-    
-    callback();
   };
   
   //rename folder

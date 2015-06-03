@@ -202,7 +202,7 @@ function replaceSearchPackImgPath(content) {
   return content;
 }
 
-function replacePackImgPath(content) {  
+function replacePackImgPath(content) {
   while (content.indexOf('FILE_STORAGE_PATH') != -1) {
     content = content.replace('FILE_STORAGE_PATH', FILE_STORAGE_PATH);
   }
@@ -533,7 +533,7 @@ function saveNewVersionHandler(pack) {
   //get editor word and replace the img
   var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
 
-//replace file path
+  //replace file path
   while (content.indexOf(FILE_STORAGE_PATH) != -1) {
     content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
   }
@@ -585,39 +585,44 @@ function display_version_info() {
     console.log(i);
     // get version's create time
     var time = new Date(version[i].create_time);
-
+    var timeString = time.toLocaleString(navigator.language, { hour: '2-digit', minute: 'numeric', day: "numeric", month: "numeric", year: 'numeric' });
     var userName = version[i].creator_user_name;
-    //if (version[i].creator_user_id === 'b4456609') userName = "Bernie";
-    //if (version[i].creator_user_id === 'loko') userName = '洛林';
+    var text = getVersionInfo(version[i]);
 
     if (i === viewPackVersion.index) {
-      html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
-      time.toLocaleString(navigator.language, {
-        hour: '2-digit',
-        minute: 'numeric',
-        day: "numeric",
-        month: "numeric",
-        year: 'numeric'
-      }) +
-      '   ' + userName + ' </li>';
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>目前版本  ' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     } else {
-      html += '  <li version_index="' + i + '"><a href="#">' +
-      time.toLocaleString(navigator.language, {
-        hour: '2-digit',
-        minute: 'numeric',
-        day: "numeric",
-        month: "numeric",
-        year: 'numeric'
-      }) +
-      '   ' + userName + '</a></li>';
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     }
   }
   console.log(html);
   $('#version_pack_content').html(html);
-  $('#version_pack_content').listview("refresh");
+  $('.version_col').collapsible();
+  $('#version_pack_content').collapsibleset("refresh");
 }
 
-function save_to_folder(){
+function getVersionInfo(version) {
+  var charCount = version.content.length;
+  var pic = version.content.match(/jpg/g);
+  var youtube = version.content.match(/youtube/g);
+  var slideShare = version.content.match(/slideshare/g);
+  
+  var picCount = 0; 
+  var youtubeCount = 0; 
+  var slideShareCount = 0; 
+  
+  if(pic != null)
+    picCount = pic.length;
+  if(youtube != null)
+    youtubeCount = youtube.length;
+  if(slideShare != null)
+    slideShareCount = slideShare.length;
+
+  var result = '字數: ' + charCount + '<br>圖片數量: ' + picCount + '<br>影片數量: ' + youtubeCount + '<br>投影片: ' + slideShareCount;
+  return result;
+}
+
+function save_to_folder() {
   var folder = new Folder();
   folder.addAPack(viewPackId);
 }

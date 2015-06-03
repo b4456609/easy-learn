@@ -582,9 +582,7 @@ function import_action(zipFilename) {
 }
 
 function import_data() {
-  $('#import_popup').popup('open');
   var zipFileArray = [];
-
 
   var display = function () {
     var result = '<li data-role="list-divider" id="zip">選擇一個ZIP檔案</li>';
@@ -595,7 +593,7 @@ function import_data() {
 
     $('#zip_listview').html(result);
     $('#zip_listview').listview('refresh');
-
+    $('#import_popup').popup('open');
   }
 
   var getZipFileArray = function () {

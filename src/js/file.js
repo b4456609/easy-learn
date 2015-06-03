@@ -509,7 +509,8 @@ function import_action(zipFilename) {
         singlePack = false;
         var data = zip.file(i).asText();
         var user = new User();
-        if (data.indexOf(user.id) != -1) {
+        console.log('[checkFile] '+ data + ' ' + user.id + ' function ' + data.indexOf(user.id));
+        if (data.indexOf(user.id) == -1) {
           //stop spinner
           navigator.notification.activityStop();
           navigator.notification.alert('這個不是您的匯出檔案', null, '錯誤', '確定');
@@ -551,7 +552,7 @@ function import_action(zipFilename) {
             pack.getPack(packId);
             //stop spinner
             navigator.notification.activityStop();
-            navigator.notification.confirm('是否要覆蓋已經擁有的懶人包\n懶人包名稱: ' + pack.name + , confirmCallback, '衝突', ['覆蓋', '取消匯入']);
+            navigator.notification.confirm('是否要覆蓋已經擁有的懶人包\n懶人包名稱: ' + pack.name , confirmCallback, '衝突', ['覆蓋', '取消匯入']);
           }
         }
       }

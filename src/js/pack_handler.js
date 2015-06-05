@@ -195,10 +195,10 @@ $(document).on('pageshow', "#view_pack", function () {
 
 function replaceSearchPackImgPath(content) {
   var url = SERVER_URL + 'easylearn/download?pack_id=' + viewPackId + '&filename=';
-  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
-    content = content.replace('FILE_STORAGE_PATH', url);
-    content = content.replace(viewPackId, '');
-  }
+  var find = 'FILE_STORAGE_PATH' + viewPackId +'/';
+  var re = new RegExp(find, 'g');
+
+  content = content.replace(re, url);
   return content;
 }
 

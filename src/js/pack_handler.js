@@ -182,8 +182,11 @@ $(document).on('pageinit', "#search_view_pack", function () {
   var content = pack.version[viewPackVersion.index].content;
   //get image by server
   content = replaceSearchPackImgPath(content);
-  console.log(content);
   $('#veiw_pack_content').html(content);
+  
+  // $('#view_pack_content').onselect(function(){
+  //   console.log('selected');
+  // })
 });
 
 

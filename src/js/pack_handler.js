@@ -557,7 +557,8 @@ function saveNewVersionHandler(pack, isPublic) {
   newVersion.file = editingFile;
   newVersion.is_public = isPublic;
   newVersion.content = content;
-  
+
+  console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
   //remain one not public
   if (!originVersion.is_public && !isPublic) {
     // modify origin to second one
@@ -586,9 +587,15 @@ function saveNewVersionHandler(pack, isPublic) {
     
     //remove the other backup
     re = new RegExp(originVersion.id, 'i');
-    for (var index in pack.version) {
-      if (pack.version[index].id.search(re) != -1) {
-        pack.version.splice(index, 1);
+    console.log('originVersion.id:' + originVersion.id);
+    var i = 0;
+    for (; i < pack.version.length; i++) {
+      console.log('for:' + pack.version[i].id);
+      if (pack.version[i].id.search(re) != -1) {
+        console.log('delete:' + pack.version[i].id);
+        pack.version.splice(i, 1);
+        //because delete one i
+        i--;
       }
     }
   }
@@ -657,13 +664,13 @@ function getVersionInfo(version) {
     youtubeCount = youtube.length;
   if (slideShare != null)
     slideShareCount = slideShare.length;
-    
+
   var status = "不公開";
   if (version.is_public) {
     status = "公開";
   }
-  
-  
+
+
   var result = '懶人包狀態: ' + status + '<br>字數: ' + charCount + '<br>圖片數量: ' + picCount + '<br>影片數量: ' + youtubeCount + '<br>投影片: ' + slideShareCount;
   return result;
 }

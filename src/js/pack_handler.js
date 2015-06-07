@@ -51,7 +51,12 @@ $(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean 
   //header button handler
   //$('#pack_comple').click(savePackHandler_edit);
   $('#pack_branch').click(function () {
-    saveNewVersionHandler(pack);
+    saveNewVersionHandler(pack, true);
+  });
+
+
+  $('#save_draft').click(function () {
+    saveNewVersionHandler(pack, false);
   });
 
   editingPackId = viewPackId;
@@ -177,8 +182,11 @@ $(document).on('pageinit', "#search_view_pack", function () {
   var content = pack.version[viewPackVersion.index].content;
   //get image by server
   content = replaceSearchPackImgPath(content);
-  console.log(content);
   $('#veiw_pack_content').html(content);
+  
+  // $('#view_pack_content').onselect(function(){
+  //   console.log('selected');
+  // })
 });
 
 
@@ -195,18 +203,17 @@ $(document).on('pageshow', "#view_pack", function () {
 
 function replaceSearchPackImgPath(content) {
   var url = SERVER_URL + 'easylearn/download?pack_id=' + viewPackId + '&filename=';
-  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
-    content = content.replace('FILE_STORAGE_PATH', url);
-    content = content.replace(viewPackId, '');
-  }
+  var find = 'FILE_STORAGE_PATH' + viewPackId + '/';
+  var re = new RegExp(find, 'g');
+
+  content = content.replace(re, url);
   return content;
 }
 
 function replacePackImgPath(content) {
-  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
-    content = content.replace('FILE_STORAGE_PATH', FILE_STORAGE_PATH);
-  }
-  return content;
+  var find = 'FILE_STORAGE_PATH';
+  var re = new RegExp(find, 'g');
+  return content.replace(re, FILE_STORAGE_PATH);
 }
 
 function show_comment() {
@@ -528,7 +535,7 @@ function editor_button_handler() {
   });
 }
 
-function saveNewVersionHandler(pack) {
+function saveNewVersionHandler(pack, isPublic) {
 
   //get editor word and replace the img
   var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
@@ -548,7 +555,7 @@ function saveNewVersionHandler(pack) {
   newVersion.initial();
   newVersion.note = pack.version[viewPackVersion.index].note;
   newVersion.file = editingFile;
-  newVersion.is_public = true;
+  newVersion.is_public = isPublic;
   newVersion.content = content;
 
   var new_index = pack.version.length;
@@ -606,16 +613,16 @@ function getVersionInfo(version) {
   var pic = version.content.match(/jpg/g);
   var youtube = version.content.match(/youtube/g);
   var slideShare = version.content.match(/slideshare/g);
-  
-  var picCount = 0; 
-  var youtubeCount = 0; 
-  var slideShareCount = 0; 
-  
-  if(pic != null)
+
+  var picCount = 0;
+  var youtubeCount = 0;
+  var slideShareCount = 0;
+
+  if (pic != null)
     picCount = pic.length;
-  if(youtube != null)
+  if (youtube != null)
     youtubeCount = youtube.length;
-  if(slideShare != null)
+  if (slideShare != null)
     slideShareCount = slideShare.length;
 
   var result = '字數: ' + charCount + '<br>圖片數量: ' + picCount + '<br>影片數量: ' + youtubeCount + '<br>投影片: ' + slideShareCount;

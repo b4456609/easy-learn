@@ -34,10 +34,11 @@ $(document).on("pageinit", "#co_pack", function () {
 
 });
 
-$(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean edit !!
-
+$(document).on('pageshow', "#co_pack", function () {
   //get pack from localStorage
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = new Pack();
+  pack.getPack(viewPackId);
+
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
 
@@ -49,7 +50,6 @@ $(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean 
   editor_button_handler();
 
   //header button handler
-  //$('#pack_comple').click(savePackHandler_edit);
   $('#pack_branch').click(function () {
     saveNewVersionHandler(pack, true);
   });
@@ -541,31 +541,66 @@ function saveNewVersionHandler(pack, isPublic) {
   var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
 
   //replace file path
-  while (content.indexOf(FILE_STORAGE_PATH) != -1) {
-    content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
-  }
-  console.log(content);
+  var re = new RegExp(FILE_STORAGE_PATH, 'g');
+  content = content.replace(re, 'FILE_STORAGE_PATH');
+
+  var originVersion = pack.version[viewPackVersion.index];
   
   //get files and concate it to new one
-  var files = pack.version[viewPackVersion.index].file;
+  var files = originVersion.file;
   editingFile = editingFile.concat(files);
-
+  
   //new version
   var newVersion = new Version();
   newVersion.initial();
-  newVersion.note = pack.version[viewPackVersion.index].note;
+  newVersion.note = originVersion.note;
   newVersion.file = editingFile;
   newVersion.is_public = isPublic;
   newVersion.content = content;
+  
+  //remain one not public
+  if (!originVersion.is_public && !isPublic) {
+    // modify origin to second one
+    originVersion.id = originVersion.id.replace(/_./i, '');
+    newVersion.id = originVersion.id;
+    
+    //remove the other backup
+    re = new RegExp(originVersion.id, 'i');
+    for (var index in pack.version) {
+      if (index == viewPackVersion.index) { }//do nothing
+      else if (pack.version[index].id.search(re) != -1) {
+        pack.version.splice(index, 1);
+        break;
+        //should be only one
+      }
+    }
+    
+    //mark as old
+    originVersion.id = originVersion.id + "_1";
+  }
+  //remove all old
+  else if (!originVersion.is_public && isPublic) {
+    // modify origin to second one
+    originVersion.id = originVersion.id.replace(/_./i, '');
+    newVersion.id = originVersion.id;
+    
+    //remove the other backup
+    re = new RegExp(originVersion.id, 'i');
+    for (var index in pack.version) {
+      if (pack.version[index].id.search(re) != -1) {
+        pack.version.splice(index, 1);
+      }
+    }
+  }
 
   var new_index = pack.version.length;
    
   //add new version in pack
-  pack.version[pack.version.length] = newVersion.get();
+  pack.version[new_index] = newVersion.get();
 
   //set new pack in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
-
+  pack.save();
+  
   //set view this version
   viewPackVersion.index = new_index;
   editingFile = [];
@@ -589,7 +624,6 @@ function display_version_info() {
   var html = '';
   var i = 0;
   for (i = 0; i < version.length; i++) {
-    console.log(i);
     // get version's create time
     var time = new Date(version[i].create_time);
     var timeString = time.toLocaleString(navigator.language, { hour: '2-digit', minute: 'numeric', day: "numeric", month: "numeric", year: 'numeric' });
@@ -602,7 +636,6 @@ function display_version_info() {
       html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     }
   }
-  console.log(html);
   $('#version_pack_content').html(html);
   $('.version_col').collapsible();
   $('#version_pack_content').collapsibleset("refresh");
@@ -624,8 +657,14 @@ function getVersionInfo(version) {
     youtubeCount = youtube.length;
   if (slideShare != null)
     slideShareCount = slideShare.length;
-
-  var result = '字數: ' + charCount + '<br>圖片數量: ' + picCount + '<br>影片數量: ' + youtubeCount + '<br>投影片: ' + slideShareCount;
+    
+  var status = "不公開";
+  if (version.is_public) {
+    status = "公開";
+  }
+  
+  
+  var result = '懶人包狀態: ' + status + '<br>字數: ' + charCount + '<br>圖片數量: ' + picCount + '<br>影片數量: ' + youtubeCount + '<br>投影片: ' + slideShareCount;
   return result;
 }
 

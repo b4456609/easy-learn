@@ -97,6 +97,7 @@ function Version() {
     this.version = 0;
     this.modified = false;
   };
+  
 
   this.get = function () {
     var newVersion = {

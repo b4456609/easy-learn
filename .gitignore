@@ -15,3 +15,8 @@ easylearn/platforms/android/CordovaLib/bin
 easylearn/platforms/android/CordovaLib/gen
 easylearn/platforms/android/CordovaLib/local.properties
 easylearn/www
+
+#build
+easylearn/easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/bin
+easylearn/easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/ant-build
+easylearn/easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/ant-gen

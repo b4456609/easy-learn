@@ -139,7 +139,7 @@ $(document).on('pageinit', "#view_pack", function () {
 
   //set look's version's index, check if index exits
   if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
-    viewPackVersion.index = 0;
+    viewPackVersion.index = pack.version.length;
   }
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
@@ -579,7 +579,7 @@ function saveNewVersionHandler(pack, isPublic) {
     //mark as old
     originVersion.id = originVersion.id + "_1";
   }
-  //remove all old
+  //public version, remove all old version
   else if (!originVersion.is_public && isPublic) {
     // modify origin to second one
     originVersion.id = originVersion.id.replace(/_./i, '');
@@ -598,6 +598,8 @@ function saveNewVersionHandler(pack, isPublic) {
         i--;
       }
     }
+    //version is public the pack will be public
+    pack.is_public = true;
   }
 
   var new_index = pack.version.length;

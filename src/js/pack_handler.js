@@ -16,6 +16,7 @@ var packName;
 //for editing img
 var editingPackId = null;
 var editingFile = [];
+var EDIT_REF = new Reference();
 
 $(document).on("pageinit", "#version_pack", function () {
   display_version_info();
@@ -307,14 +308,17 @@ function displayCoverImg(packfileEntry) {
 }
 
 function savePackHandler() {
+  //start loading spinner
+  navigator.notification.activityStart('新增懶人包', '儲存中'); 
+  
   //get editor word and replace the img
   var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
-  
-  //replace file path
-  while (content.indexOf(FILE_STORAGE_PATH) != -1) {
-    content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
-  }
-  console.log(content);
+  //add refrence
+  content += EDIT_REF.toString();
+
+  var find = FILE_STORAGE_PATH;
+  var re = new RegExp(find, 'g');
+  content = content.replace(re, 'FILE_STORAGE_PATH');
 
   var version = new Version();
   version.initial();
@@ -333,6 +337,9 @@ function savePackHandler() {
   var folder = new Folder();
   folder.addToAllFolder(NEW_PACK.id);
 
+  //stop spinner
+  navigator.notification.activityStop();
+  
   //change page
   $(":mobile-pagecontainer").pagecontainer("change", "index.html");
 
@@ -415,6 +422,9 @@ function image_submit_handler() {
   $('#popup_image').popup("close");
   //download img and display in editor
   downloadImgByUrl(imgUrl, editingPackId, 'user', displayImgInEditor);
+  
+  //add to refrence
+  EDIT_REF.addImg(imgUrl);
 }
 
 function youtube_submit_handler() {
@@ -448,6 +458,9 @@ function youtube_submit_handler() {
     
   //insert to html
   $('#iframe1').contents().find('#edit').editable("insertHTML", embedCode, true);
+  
+  //add to refrence  
+  EDIT_REF.addYoutube('http://www.youtube.com/watch?v=' + videoId);
 }
 
 //parse youtube url to id
@@ -487,13 +500,14 @@ function slideshare_submit_handler() {
       }
 
       console.log(start + '  ' + end);
-
       //download img to localStorage
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         console.log(http);
-        downloadImgByUrl(http, editingPackId, 'slideshare', displayImgInEditor);
+        downloadImgByUrl(http, editingPackId, 'slideshare', displayImgInEditor);        
       }
+      
+      EDIT_REF.addSlideshare(user_url);
     });
 }
 

@@ -97,7 +97,7 @@ function Version() {
     this.version = 0;
     this.modified = false;
   };
-  
+
 
   this.get = function () {
     var newVersion = {
@@ -323,3 +323,72 @@ function User() {
   };
 }
 
+function Reference() {
+  this.image = [];
+  this.youtube = [];
+  this.slideshare = [];
+  
+  //initial refrence
+  this.initial = function () {
+    this.image = [];
+    this.youtube = [];
+    this.slideshare = [];
+  }
+  
+  //add image
+  this.addImg = function (str) {
+    this.image.push(str);
+  }
+  
+  //add image
+  this.addYoutube = function (str) {
+    this.youtube.push(str);
+  }
+  
+  //add slideshare
+  this.addSlideshare = function (str) {
+    this.slideshare.push(str);
+  }
+  
+  //output html string
+  this.toString = function () {
+    var imgLength = this.image.length;
+    var youtubeLength = this.youtube.length;
+    var slideShareLength = this.slideshare.length;
+    var result = '';
+    if (imgLength + youtubeLength + slideShareLength > 0) {
+      result = '<div id="pack_refrence">';
+      result +='<h1>引用資料</h1>';
+
+      if (imgLength > 0) {
+        result += '<h2>圖片</h2>';
+        result += '<ol>';
+        for (var i in this.image) {
+          result += '<li><p>' + this.image[i] + '</li></p>';
+        }
+        result += '</ol>';
+      }
+
+      if (imgLength > 0) {
+        result += '<h2>影片</h2>';
+        result += '<ol>';
+        for (var i in this.youtube) {
+          result += '<li><p>' + this.youtube[i] + '</li></p>';
+        }
+        result += '</ol>';
+      }
+
+      if (imgLength > 0) {
+        result += '<h2>Slideshare</h2>';
+        result += '<ol>';
+        for (var i in this.slideshare) {
+          result += '<li><p>' + this.slideshare[i] + '</li></p>';
+        }
+        result += '</ol>';      
+        result += '</div>';
+      }
+    }
+
+    return result;
+  }
+}

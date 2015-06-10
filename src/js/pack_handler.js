@@ -38,6 +38,10 @@ $(document).on('pageshow', "#co_pack", function () {
 
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
+  
+  //get Reference
+  EDIT_REF.initial();
+  content = EDIT_REF.getExistRefrence(content);
 
   //set pack title
   $('#pack_title').html(pack.name);
@@ -133,8 +137,8 @@ $(document).on('pageshow', "#new_pack", function () {
 
 $(document).on('pageinit', "#view_pack", function () {
   //stop spinner notification
-  navigator.notification.activityStart('觀看懶人包', '載入中'); 
-  
+  navigator.notification.activityStart('觀看懶人包', '載入中');
+
   var pack = new Pack();
   pack.getPack(viewPackId);
 
@@ -155,7 +159,7 @@ $(document).on('pageinit', "#view_pack", function () {
 
   //prepare content
   var content = pack.version[viewPackVersion.index].content;
-  content = replacePackImgPath(content);  
+  content = replacePackImgPath(content);
   $('#veiw_pack_content').html(content);
 });
 
@@ -511,9 +515,9 @@ function slideshare_submit_handler() {
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         console.log(http);
-        downloadImgByUrl(http, editingPackId, 'slideshare', displayImgInEditor);        
+        downloadImgByUrl(http, editingPackId, 'slideshare', displayImgInEditor);
       }
-      
+
       EDIT_REF.addSlideshare(user_url);
     });
 }
@@ -560,6 +564,7 @@ function saveNewVersionHandler(pack, isPublic) {
 
   //get editor word and replace the img
   var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
+  content += EDIT_REF.toString();
 
   //replace file path
   var re = new RegExp(FILE_STORAGE_PATH, 'g');
@@ -659,14 +664,14 @@ function display_version_info() {
     var timeString = time.toLocaleString(navigator.language, { hour: '2-digit', minute: 'numeric', day: "numeric", month: "numeric", year: 'numeric' });
     var userName = version[i].creator_user_name;
     var text = getVersionInfo(version[i]);
-  console.log(viewPackVersion.index);
-    
+    console.log(viewPackVersion.index);
+
     console.log(i);
 
     if (i == viewPackVersion.index) {
       html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>目前版本  ' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     } else {
-      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\''+ i +'\')">觀看此版本</a></li>';
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\'' + i + '\')">觀看此版本</a></li>';
     }
   }
   $('#version_pack_content').html(html);
@@ -696,7 +701,7 @@ function getVersionInfo(version) {
   if (version.is_public) {
     status = "公開";
   }
-  
+
   var result = '懶人包狀態: ' + status + '<br>';
   result += '字數: ' + charCount + '<br>';
   result += '圖片數量: ' + picCount + '<br>';

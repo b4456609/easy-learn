@@ -357,6 +357,7 @@ function Reference() {
   
   //output html string
   this.toString = function () {
+    console.log('[Reference]toString');
     var imgLength = this.image.length;
     var youtubeLength = this.youtube.length;
     var slideShareLength = this.slideshare.length;
@@ -393,7 +394,45 @@ function Reference() {
         result += '</div>';
       }
     }
+    console.log(result);
 
     return result;
+  };
+  
+  //get the refrence from exsit version
+  this.getExistRefrence = function (content) {
+    console.log("getExistRefrence");
+    var index = content.indexOf('<div id="pack_refrence">');
+
+    var refStr = content.substr(olIndex);
+    
+    for (var i = 0; i < 3; i++) {
+      var olIndex = refStr.lastIndexOf('<ol>');
+      var dealStr = refStr.substr(olIndex);
+      refStr = refStr.substring(0, olIndex);
+
+      var startIndex = dealStr.indexOf('<li>');
+      while (startIndex != -1) {
+        var endIndex = dealStr.indexOf('</li>');
+        if (i == 0){
+          console.log('pushSlideshare ' + dealStr.substring(startIndex+7, endIndex));
+          this.slideshare.push(dealStr.substring(startIndex+7, endIndex));
+        }
+        else if (i == 1){
+          console.log('pushYoutube ' + dealStr.substring(startIndex+7, endIndex));
+          this.youtube.push(dealStr.substring(startIndex+7, endIndex));
+        }
+        else{
+          console.log('pushImg ' + dealStr.substring(startIndex+7, endIndex));
+          this.image.push(dealStr.substring(startIndex+7, endIndex));
+        }
+      
+        //for next
+        startIndex = dealStr.indexOf('<li>',endIndex);
+      }
+    }
+
+
+    return content.substring(0, index);
   }
 }

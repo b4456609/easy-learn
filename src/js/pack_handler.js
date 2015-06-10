@@ -22,10 +22,6 @@ $(document).on("pageinit", "#version_pack", function () {
   display_version_info();
 });
 
-$(document).on("pageshow", "#version_pack", function () {
-  $("li[version_index]").click(go_version_handler);
-});
-
 $(document).on("pageinit", "#co_pack", function () {
   //set editor height
   $('#iframe1').load(function () {
@@ -136,7 +132,11 @@ $(document).on('pageshow', "#new_pack", function () {
 });
 
 $(document).on('pageinit', "#view_pack", function () {
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  //stop spinner notification
+  navigator.notification.activityStart('觀看懶人包', '載入中'); 
+  
+  var pack = new Pack();
+  pack.getPack(viewPackId);
 
   //set look's version's index, check if index exits
   if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
@@ -148,10 +148,14 @@ $(document).on('pageinit', "#view_pack", function () {
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
   packName = pack.name;
+  
+  //add version view count
+  pack.version[viewPackVersion.index].user_view_count++;
+  pack.save();
 
+  //prepare content
   var content = pack.version[viewPackVersion.index].content;
-  content = replacePackImgPath(content);
-  console.log(content);
+  content = replacePackImgPath(content);  
   $('#veiw_pack_content').html(content);
 });
 
@@ -164,6 +168,9 @@ $(document).on('pageshow', "#view_pack", function () {
 
   //click and show note hanlder
   $(".note").click(showNoteHandler);
+  
+  //stop spinner notification
+  navigator.notification.activityStop();
 });
 
 $(document).on('pageinit', "#search_view_pack", function () {
@@ -632,15 +639,15 @@ function saveNewVersionHandler(pack, isPublic) {
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
-function go_version_handler() {
-  viewPackVersion.index = parseInt($(this).attr('version_index'));
+function go_version_handler(index) {
+  viewPackVersion.index = index;
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
 function display_version_info() {
   //get pack from localStorage
   var version = JSON.parse(localStorage.getItem(viewPackId)).version;
-  console.log(version);
+  //console.log(version);
   console.log(viewPackVersion.index);
 
   //generate display code
@@ -652,11 +659,14 @@ function display_version_info() {
     var timeString = time.toLocaleString(navigator.language, { hour: '2-digit', minute: 'numeric', day: "numeric", month: "numeric", year: 'numeric' });
     var userName = version[i].creator_user_name;
     var text = getVersionInfo(version[i]);
+  console.log(viewPackVersion.index);
+    
+    console.log(i);
 
-    if (i === viewPackVersion.index) {
+    if (i == viewPackVersion.index) {
       html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>目前版本  ' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     } else {
-      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\''+ i +'\')">觀看此版本</a></li>';
     }
   }
   $('#version_pack_content').html(html);
@@ -666,6 +676,7 @@ function display_version_info() {
 
 function getVersionInfo(version) {
   var charCount = version.content.length;
+  var viewCount = version.user_view_count + version.view_count;
   var pic = version.content.match(/jpg/g);
   var youtube = version.content.match(/youtube/g);
   var slideShare = version.content.match(/slideshare/g);
@@ -685,9 +696,13 @@ function getVersionInfo(version) {
   if (version.is_public) {
     status = "公開";
   }
-
-
-  var result = '懶人包狀態: ' + status + '<br>字數: ' + charCount + '<br>圖片數量: ' + picCount + '<br>影片數量: ' + youtubeCount + '<br>投影片: ' + slideShareCount;
+  
+  var result = '懶人包狀態: ' + status + '<br>';
+  result += '字數: ' + charCount + '<br>';
+  result += '圖片數量: ' + picCount + '<br>';
+  result += '影片數量: ' + youtubeCount + '<br>';
+  result += '投影片: ' + slideShareCount + '<br>';
+  result += '瀏覽次數: ' + viewCount;
   return result;
 }
 

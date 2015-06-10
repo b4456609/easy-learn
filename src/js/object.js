@@ -77,6 +77,8 @@ function Version() {
   this.file;
   this.version;
   this.modified;
+  this.view_count;
+  this.user_view_count;
 
   this.initial = function () {
     //get current time
@@ -96,8 +98,9 @@ function Version() {
     this.file = [];
     this.version = 0;
     this.modified = false;
+    this.view_count = 0;
+    this.user_view_count = 0;
   };
-
 
   this.get = function () {
     var newVersion = {
@@ -112,6 +115,8 @@ function Version() {
       file: this.file,
       version: this.version,
       modified: this.modified,
+      view_count: this.view_count,
+      user_view_count: this.user_view_count,
     };
     return newVersion;
   };
@@ -358,7 +363,7 @@ function Reference() {
     var result = '';
     if (imgLength + youtubeLength + slideShareLength > 0) {
       result = '<div id="pack_refrence">';
-      result +='<h1>引用資料</h1>';
+      result += '<h1>引用資料</h1>';
 
       if (imgLength > 0) {
         result += '<h2>圖片</h2>';
@@ -384,7 +389,7 @@ function Reference() {
         for (var i in this.slideshare) {
           result += '<li><p>' + this.slideshare[i] + '</li></p>';
         }
-        result += '</ol>';      
+        result += '</ol>';
         result += '</div>';
       }
     }

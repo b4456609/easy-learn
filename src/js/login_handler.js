@@ -84,6 +84,17 @@ function fbLoginSuccess(userData) {
     }
   };
 
+facebookConnectPlugin.api(
+    "/me/friends",
+    function (response) {
+      if (response && !response.error) {
+          console.log(response);
+        /* handle the result */
+      }
+    }
+); 
+    
+    
   facebookConnectPlugin.api("/me", [],
     function (result) {
       console.log(result);
@@ -96,10 +107,13 @@ function fbLoginSuccess(userData) {
       console.log(error);
     });
 
+    
+    
+
 }
 
 function facebook_login() {
-  facebookConnectPlugin.login(["public_profile"],
+  facebookConnectPlugin.login(["public_profile","user_birthday","user_friends"],
     fbLoginSuccess,
     function (error) { console.log(error); }
     );

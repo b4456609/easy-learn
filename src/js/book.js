@@ -7,19 +7,23 @@ var book_temp = {
 
 var real_position=0;
 var height1;
+var bookmark_top=0;
 
 $(document).on('pageshow', "#view_pack", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
   var MarkArray = pack.version[viewPackVersion.index].bookmark;
   var real_width = $(document).width();
+  height1=$(document).height();
   if(MarkArray==""){}
   else {
        for (i in MarkArray) {
-        $("#veiw_pack_content").append("<img src='img/mark.jpg' alt='Smiley face' width='100' height='70' style='position:absolute;top:"+(MarkArray[i].position*height1)+"px;left:"+(real_width-70)+"px;opacity:0.5;'/>");
+        $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:"+(MarkArray[i].position*height1)+"px;left:"+(real_width-70)+"px;opacity:0.5;'/>");
       
     }
   }
+  $("#new_mark").click(Remind);
 });
+
 
 
 
@@ -28,16 +32,45 @@ $(document).on('pageshow', "#view_pack", function() {
     height1=$(document).height();
 
     $.mobile.silentScroll((real_position*height1));
- $("#test").submit(function()
-        {
-         alert('Form is submitting');
-         return true;
-        });
- $('#submit').click(MarkThePosition);
 
-  //$('#submit').click(MarkThePosition);
+
+$('#submit').click(MarkThePosition);
+
+console.log(bookmark_top);
+$( "#view_pack" ).on( "panelbeforeclose", function() { $(".remind_img").remove();} );
+    
+$(document).on("scrollstart",function () {
+	$("#drag").draggable({
+		start: function () {
+			//$("#drag p").html("<p>用滑鼠拖曳</p>拖曳已開始!");
+		},
+		drag: function () {
+			//$("#info").html("拖曳事件已觸發了 " + count + " 次");
+		},
+		stop: function () {
+			console.log($(document).scrollTop());
+            var offset = $(this).offset();
+            var yPos = offset.top;
+            console.log(yPos);
+            bookmark_top=yPos
+
+		}
+	   });
+
+    });
 });
 
+
+
+
+
+function Remind(){
+    var real_width = $(document).width();
+	var hight = ($(document).scrollTop())+real_width/2; 
+	 $("#veiw_pack_content").append("<div  style='position: fixed;z-index:10000000;top:100px;'><img id='drag'; class ='remind_img' src='img/mark_remind.png' alt='Smiley face' width='"+real_width+"' height='70' style='position:absolute;top:"+hight+"px;opacity:0.5;'/></div>");
+    
+
+}
 
 
 
@@ -45,12 +78,12 @@ $(document).on('pageshow', "#view_pack", function() {
 function MarkThePosition(){
     var real_height = $(document).height();
     var real_width = $(document).width();
-    height1=real_height;
     console.log(real_height);
     console.log(real_width);
-    var hight = $(document).scrollTop();     //取得目前卷軸畫面的Y座標
+    var hight = ($(document).scrollTop())+(real_width/2)+250;     //取得目前卷軸畫面的Y座標
     console.log(hight);
-    $("#veiw_pack_content").append("<img src='img/mark.jpg' alt='Smiley face' width='100' height='70' style='position:absolute;top:"+hight+"px;left:"+(real_width-70)+"px;opacity:0.5;'/>");
+	
+    $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:"+bookmark_top+"px;left:"+(real_width-70)+"px;opacity:0.5;'/>");
     
     var relative_position = hight/real_height;
     console.log(hight/real_height);
@@ -151,7 +184,7 @@ function display_bookmark() {
 
 function save_book_mark_handler(relative_position) {
   var real_height = $(document).height();
-  var hight = $(document).scrollTop();     
+  var hight = bookmark_top;     
   var relative_position = hight/real_height;
   //save in localStorage
   var pack = JSON.parse(localStorage.getItem(viewPackId));

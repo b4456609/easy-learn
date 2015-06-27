@@ -28,6 +28,7 @@ $(document).on('pageinit', "#comment", function() {
 
 });
 
+
 $(document).on('pageshow', "#comment", function() {
   //comment submit button
   $('#comment_submit').click(comment_submit_handler);

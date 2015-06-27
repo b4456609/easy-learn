@@ -127,3 +127,8 @@ table {
     cursor: pointer;
 
 }
+
+/*refrence area*/
+#pack_refrence{
+  word-wrap: break-word;
+}

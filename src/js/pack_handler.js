@@ -16,30 +16,32 @@ var packName;
 //for editing img
 var editingPackId = null;
 var editingFile = [];
+var EDIT_REF = new Reference();
 
 $(document).on("pageinit", "#version_pack", function () {
   display_version_info();
-});
-
-$(document).on("pageshow", "#version_pack", function () {
-  $("li[version_index]").click(go_version_handler);
 });
 
 $(document).on("pageinit", "#co_pack", function () {
   //set editor height
   $('#iframe1').load(function () {
     $(this).height($(window).height() - headerHeight - 8);
-    $(this).width($(window).width());
+    $(this).width('100%');
   });
 
 });
 
-$(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean edit !!
-
+$(document).on('pageshow', "#co_pack", function () {
   //get pack from localStorage
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = new Pack();
+  pack.getPack(viewPackId);
+
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
+  
+  //get Reference
+  EDIT_REF.initial();
+  content = EDIT_REF.getExistRefrence(content);
 
   //set pack title
   $('#pack_title').html(pack.name);
@@ -49,9 +51,13 @@ $(document).on('pageshow', "#co_pack", function () { //  Test co work  the mean 
   editor_button_handler();
 
   //header button handler
-  //$('#pack_comple').click(savePackHandler_edit);
   $('#pack_branch').click(function () {
-    saveNewVersionHandler(pack);
+    saveNewVersionHandler(pack, true);
+  });
+
+
+  $('#save_draft').click(function () {
+    saveNewVersionHandler(pack, false);
   });
 
   editingPackId = viewPackId;
@@ -61,7 +67,7 @@ $(document).on("pageinit", "#new_pack_edit", function () {
   //set editor height
   $('#iframe1').load(function () {
     $(this).height($(window).height() - headerHeight - 8);
-    $(this).width($(window).width());
+    $(this).width('100%');
   });
 });
 
@@ -130,11 +136,15 @@ $(document).on('pageshow', "#new_pack", function () {
 });
 
 $(document).on('pageinit', "#view_pack", function () {
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  //stop spinner notification
+  navigator.notification.activityStart('觀看懶人包', '載入中');
+
+  var pack = new Pack();
+  pack.getPack(viewPackId);
 
   //set look's version's index, check if index exits
   if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
-    viewPackVersion.index = 0;
+    viewPackVersion.index = pack.version.length;
   }
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
@@ -142,10 +152,14 @@ $(document).on('pageinit', "#view_pack", function () {
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
   packName = pack.name;
+  
+  //add version view count
+  pack.version[viewPackVersion.index].user_view_count++;
+  pack.save();
 
+  //prepare content
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
-  console.log(content);
   $('#veiw_pack_content').html(content);
 });
 
@@ -158,6 +172,9 @@ $(document).on('pageshow', "#view_pack", function () {
 
   //click and show note hanlder
   $(".note").click(showNoteHandler);
+  
+  //stop spinner notification
+  navigator.notification.activityStop();
 });
 
 $(document).on('pageinit', "#search_view_pack", function () {
@@ -177,8 +194,11 @@ $(document).on('pageinit', "#search_view_pack", function () {
   var content = pack.version[viewPackVersion.index].content;
   //get image by server
   content = replaceSearchPackImgPath(content);
-  console.log(content);
   $('#veiw_pack_content').html(content);
+  
+  // $('#view_pack_content').onselect(function(){
+  //   console.log('selected');
+  // })
 });
 
 
@@ -195,18 +215,17 @@ $(document).on('pageshow', "#view_pack", function () {
 
 function replaceSearchPackImgPath(content) {
   var url = SERVER_URL + 'easylearn/download?pack_id=' + viewPackId + '&filename=';
-  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
-    content = content.replace('FILE_STORAGE_PATH', url);
-    content = content.replace(viewPackId, '');
-  }
+  var find = 'FILE_STORAGE_PATH' + viewPackId + '/';
+  var re = new RegExp(find, 'g');
+
+  content = content.replace(re, url);
   return content;
 }
 
-function replacePackImgPath(content) {  
-  while (content.indexOf('FILE_STORAGE_PATH') != -1) {
-    content = content.replace('FILE_STORAGE_PATH', FILE_STORAGE_PATH);
-  }
-  return content;
+function replacePackImgPath(content) {
+  var find = 'FILE_STORAGE_PATH';
+  var re = new RegExp(find, 'g');
+  return content.replace(re, FILE_STORAGE_PATH);
 }
 
 function show_comment() {
@@ -300,14 +319,17 @@ function displayCoverImg(packfileEntry) {
 }
 
 function savePackHandler() {
+  //start loading spinner
+  navigator.notification.activityStart('新增懶人包', '儲存中'); 
+  
   //get editor word and replace the img
   var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
-  
-  //replace file path
-  while (content.indexOf(FILE_STORAGE_PATH) != -1) {
-    content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
-  }
-  console.log(content);
+  //add refrence
+  content += EDIT_REF.toString();
+
+  var find = FILE_STORAGE_PATH;
+  var re = new RegExp(find, 'g');
+  content = content.replace(re, 'FILE_STORAGE_PATH');
 
   var version = new Version();
   version.initial();
@@ -326,6 +348,9 @@ function savePackHandler() {
   var folder = new Folder();
   folder.addToAllFolder(NEW_PACK.id);
 
+  //stop spinner
+  navigator.notification.activityStop();
+  
   //change page
   $(":mobile-pagecontainer").pagecontainer("change", "index.html");
 
@@ -408,6 +433,9 @@ function image_submit_handler() {
   $('#popup_image').popup("close");
   //download img and display in editor
   downloadImgByUrl(imgUrl, editingPackId, 'user', displayImgInEditor);
+  
+  //add to refrence
+  EDIT_REF.addImg(imgUrl);
 }
 
 function youtube_submit_handler() {
@@ -441,6 +469,9 @@ function youtube_submit_handler() {
     
   //insert to html
   $('#iframe1').contents().find('#edit').editable("insertHTML", embedCode, true);
+  
+  //add to refrence  
+  EDIT_REF.addYoutube('http://www.youtube.com/watch?v=' + videoId);
 }
 
 //parse youtube url to id
@@ -480,13 +511,14 @@ function slideshare_submit_handler() {
       }
 
       console.log(start + '  ' + end);
-
       //download img to localStorage
       for (; start <= end; start++) {
         var http = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         console.log(http);
         downloadImgByUrl(http, editingPackId, 'slideshare', displayImgInEditor);
       }
+
+      EDIT_REF.addSlideshare(user_url);
     });
 }
 
@@ -528,37 +560,82 @@ function editor_button_handler() {
   });
 }
 
-function saveNewVersionHandler(pack) {
+function saveNewVersionHandler(pack, isPublic) {
 
   //get editor word and replace the img
   var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
+  content += EDIT_REF.toString();
 
-//replace file path
-  while (content.indexOf(FILE_STORAGE_PATH) != -1) {
-    content = content.replace(FILE_STORAGE_PATH, 'FILE_STORAGE_PATH');
-  }
-  console.log(content);
+  //replace file path
+  var re = new RegExp(FILE_STORAGE_PATH, 'g');
+  content = content.replace(re, 'FILE_STORAGE_PATH');
+
+  var originVersion = pack.version[viewPackVersion.index];
   
   //get files and concate it to new one
-  var files = pack.version[viewPackVersion.index].file;
+  var files = originVersion.file;
   editingFile = editingFile.concat(files);
-
+  
   //new version
   var newVersion = new Version();
   newVersion.initial();
-  newVersion.note = pack.version[viewPackVersion.index].note;
+  newVersion.note = originVersion.note;
   newVersion.file = editingFile;
-  newVersion.is_public = true;
+  newVersion.is_public = isPublic;
   newVersion.content = content;
+
+  console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
+  //remain one not public
+  if (!originVersion.is_public && !isPublic) {
+    // modify origin to second one
+    originVersion.id = originVersion.id.replace(/_./i, '');
+    newVersion.id = originVersion.id;
+    
+    //remove the other backup
+    re = new RegExp(originVersion.id, 'i');
+    for (var index in pack.version) {
+      if (index == viewPackVersion.index) { }//do nothing
+      else if (pack.version[index].id.search(re) != -1) {
+        pack.version.splice(index, 1);
+        break;
+        //should be only one
+      }
+    }
+    
+    //mark as old
+    originVersion.id = originVersion.id + "_1";
+  }
+  //public version, remove all old version
+  else if (!originVersion.is_public && isPublic) {
+    // modify origin to second one
+    originVersion.id = originVersion.id.replace(/_./i, '');
+    newVersion.id = originVersion.id;
+    
+    //remove the other backup
+    re = new RegExp(originVersion.id, 'i');
+    console.log('originVersion.id:' + originVersion.id);
+    var i = 0;
+    for (; i < pack.version.length; i++) {
+      console.log('for:' + pack.version[i].id);
+      if (pack.version[i].id.search(re) != -1) {
+        console.log('delete:' + pack.version[i].id);
+        pack.version.splice(i, 1);
+        //because delete one i
+        i--;
+      }
+    }
+    //version is public the pack will be public
+    pack.is_public = true;
+  }
 
   var new_index = pack.version.length;
    
   //add new version in pack
-  pack.version[pack.version.length] = newVersion.get();
+  pack.version[new_index] = newVersion.get();
 
   //set new pack in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
-
+  pack.save();
+  
   //set view this version
   viewPackVersion.index = new_index;
   editingFile = [];
@@ -567,57 +644,74 @@ function saveNewVersionHandler(pack) {
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
-function go_version_handler() {
-  viewPackVersion.index = parseInt($(this).attr('version_index'));
+function go_version_handler(index) {
+  viewPackVersion.index = index;
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
 function display_version_info() {
   //get pack from localStorage
   var version = JSON.parse(localStorage.getItem(viewPackId)).version;
-  console.log(version);
+  //console.log(version);
   console.log(viewPackVersion.index);
 
   //generate display code
   var html = '';
   var i = 0;
   for (i = 0; i < version.length; i++) {
-    console.log(i);
     // get version's create time
     var time = new Date(version[i].create_time);
-
+    var timeString = time.toLocaleString(navigator.language, { hour: '2-digit', minute: 'numeric', day: "numeric", month: "numeric", year: 'numeric' });
     var userName = version[i].creator_user_name;
-    //if (version[i].creator_user_id === 'b4456609') userName = "Bernie";
-    //if (version[i].creator_user_id === 'loko') userName = '洛林';
+    var text = getVersionInfo(version[i]);
+    console.log(viewPackVersion.index);
 
-    if (i === viewPackVersion.index) {
-      html += '<li data-role="list-divider" version_index="' + i + '">目前版本  ' +
-      time.toLocaleString(navigator.language, {
-        hour: '2-digit',
-        minute: 'numeric',
-        day: "numeric",
-        month: "numeric",
-        year: 'numeric'
-      }) +
-      '   ' + userName + ' </li>';
+    console.log(i);
+
+    if (i == viewPackVersion.index) {
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>目前版本  ' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     } else {
-      html += '  <li version_index="' + i + '"><a href="#">' +
-      time.toLocaleString(navigator.language, {
-        hour: '2-digit',
-        minute: 'numeric',
-        day: "numeric",
-        month: "numeric",
-        year: 'numeric'
-      }) +
-      '   ' + userName + '</a></li>';
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\'' + i + '\')">觀看此版本</a></li>';
     }
   }
-  console.log(html);
   $('#version_pack_content').html(html);
-  $('#version_pack_content').listview("refresh");
+  $('.version_col').collapsible();
+  $('#version_pack_content').collapsibleset("refresh");
 }
 
-function save_to_folder(){
+function getVersionInfo(version) {
+  var charCount = version.content.length;
+  var viewCount = version.user_view_count + version.view_count;
+  var pic = version.content.match(/jpg/g);
+  var youtube = version.content.match(/youtube/g);
+  var slideShare = version.content.match(/slideshare/g);
+
+  var picCount = 0;
+  var youtubeCount = 0;
+  var slideShareCount = 0;
+
+  if (pic != null)
+    picCount = pic.length;
+  if (youtube != null)
+    youtubeCount = youtube.length;
+  if (slideShare != null)
+    slideShareCount = slideShare.length;
+
+  var status = "不公開";
+  if (version.is_public) {
+    status = "公開";
+  }
+
+  var result = '懶人包狀態: ' + status + '<br>';
+  result += '字數: ' + charCount + '<br>';
+  result += '圖片數量: ' + picCount + '<br>';
+  result += '影片數量: ' + youtubeCount + '<br>';
+  result += '投影片: ' + slideShareCount + '<br>';
+  result += '瀏覽次數: ' + viewCount;
+  return result;
+}
+
+function save_to_folder() {
   var folder = new Folder();
   folder.addAPack(viewPackId);
 }

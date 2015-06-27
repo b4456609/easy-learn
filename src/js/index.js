@@ -60,12 +60,13 @@ var FILE_STORAGE_PATH;
 
 // App Logic
 function myAppLogic() {
+  
+  FILE_STORAGE_PATH = cordova.file.externalDataDirectory;
   headerHeight = $(".ui-header").outerHeight();
   console.log(cordova.file);
   console.log(FileTransfer);
 
-  //localStorage.clear();
-  //testLocalStorage();
+
   if (localStorage.getItem('user') === null) {
     login();
   }
@@ -78,7 +79,6 @@ function myAppLogic() {
   }
 
   $('#logout').click(logout);
-  FILE_STORAGE_PATH = cordova.file.externalDataDirectory;
 }
 
 $(document).on("pageshow", "#home", function () {
@@ -144,20 +144,16 @@ function display_pack_content(packArray) {
   var pack_templete = "";
   var j;
 
-
   for (j in packArray) {
     //get pack from localStorage
-    var pack = JSON.parse(localStorage.getItem(packArray[j]));
-
-    //get pack's id
-    var packId = packArray[j];
+    var pack = new Pack();
+    pack.getPack(packArray[j]);
 
     if (pack.cover_filename !== "") {
-      //display cover image while its finished
-      getImgNode(packId, pack.cover_filename, displayCoverImgAtHome);
-      pack_templete = '<li packid= "' + packId + '"><a href="#"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
+      pack_templete = '<li packid= "' + pack.id + '"><a href="#"><img src="' + FILE_STORAGE_PATH + pack.id + '/' + pack.cover_filename+'"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     } else {
-      pack_templete = '<li packid= "' + packId + '"><a href="#"><img src="img/light102.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
+      //default img
+      pack_templete = '<li packid= "' + pack.id + '"><a href="#"><img src="img/light102.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     }
     result += pack_templete;
   }
@@ -168,11 +164,6 @@ function display_pack_content(packArray) {
 
   //register click handler
   $("li[packid]").click(go_pack_handler);
-}
-
-function displayCoverImgAtHome(packId, img) {
-  $('li[packid=' + packId + ']').prepend(img);
-  $("#pack_display_area").listview("refresh");
 }
 
 function folder_click_handler() {
@@ -191,7 +182,6 @@ function folder_click_handler() {
   }
 
   display_pack_content(packArray);
-
   $("#menu_panel").panel("close");
 }
 
@@ -245,4 +235,24 @@ function checkout_pack(packId) {
     });
   };
   getPack(packId, callback);
+}
+
+function export_popup() {
+  //prepare popup
+  var result = '<li data-role="list-divider" id="zip">選擇輸出的項目</li>';
+  result += '<li><a href="#" onclick="export_data()">輸出全部</a></li>';
+
+  //prepare item
+  for (var key in localStorage) {
+    if (key.indexOf('pack') != -1) {
+      var pack = new Pack();
+      pack.getPack(key);
+      var templete = '<li><a href="#" onclick="export_pack(\'' + key + '\')">' + pack.name + '</a></li>';
+      result += templete;
+    }
+  }
+
+  //resfresh result listview
+  $('#export_listview').html(result).listview('refresh');
+  $('#export_popup').popup('open');
 }

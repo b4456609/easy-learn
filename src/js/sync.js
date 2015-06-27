@@ -8,9 +8,9 @@ var SERVER_URL = 'http://140.121.197.135:11116/';
 function getPack(packId, callback) {
   var user = new User();
   var url = SERVER_URL + 'easylearn/pack';
-  
+
   console.log(url);
-  
+
   $.ajax({
     type: "GET",
     url: url,
@@ -214,8 +214,31 @@ function getComment(NoteId, lastestCreateTime) {
     }
   });
 }
+// check if the situation can sync
+function canSync() {
+  //check setting and compare to network state
+  var networkState = navigator.connection.type;
+  var user = new User();
+  var wifi = user.setting.wifi_sync;
+  var mobile_network = user.setting.mobile_network_sync;
+
+  if (wifi == false && Connection.WIFI === networkState) {
+    return false;
+  }
+  else if (mobile_network == false && Connection.CELL === networkState) {
+    return false;
+  }
+
+  return true;
+}
 
 function sync() {
+  
+  if(!canSync()){
+    $('#sync').text(navigator.connection.type + '狀態下不同步');
+    return;
+  }
+  
   $('#sync').text('同步中...');
 
   var sendData = {

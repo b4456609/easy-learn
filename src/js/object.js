@@ -77,6 +77,8 @@ function Version() {
   this.file;
   this.version;
   this.modified;
+  this.view_count;
+  this.user_view_count;
 
   this.initial = function () {
     //get current time
@@ -96,6 +98,8 @@ function Version() {
     this.file = [];
     this.version = 0;
     this.modified = false;
+    this.view_count = 0;
+    this.user_view_count = 0;
   };
 
   this.get = function () {
@@ -111,6 +115,8 @@ function Version() {
       file: this.file,
       version: this.version,
       modified: this.modified,
+      view_count: this.view_count,
+      user_view_count: this.user_view_count,
     };
     return newVersion;
   };
@@ -322,3 +328,111 @@ function User() {
   };
 }
 
+function Reference() {
+  this.image = [];
+  this.youtube = [];
+  this.slideshare = [];
+  
+  //initial refrence
+  this.initial = function () {
+    this.image = [];
+    this.youtube = [];
+    this.slideshare = [];
+  }
+  
+  //add image
+  this.addImg = function (str) {
+    this.image.push(str);
+  }
+  
+  //add image
+  this.addYoutube = function (str) {
+    this.youtube.push(str);
+  }
+  
+  //add slideshare
+  this.addSlideshare = function (str) {
+    this.slideshare.push(str);
+  }
+  
+  //output html string
+  this.toString = function () {
+    console.log('[Reference]toString');
+    var imgLength = this.image.length;
+    var youtubeLength = this.youtube.length;
+    var slideShareLength = this.slideshare.length;
+    var result = '';
+    if (imgLength + youtubeLength + slideShareLength > 0) {
+      result = '<div id="pack_refrence">';
+      result += '<h1>引用資料</h1>';
+
+      if (imgLength > 0) {
+        result += '<h2>圖片</h2>';
+        result += '<ol>';
+        for (var i in this.image) {
+          result += '<li><p>' + this.image[i] + '</li></p>';
+        }
+        result += '</ol>';
+      }
+
+      if (imgLength > 0) {
+        result += '<h2>影片</h2>';
+        result += '<ol>';
+        for (var i in this.youtube) {
+          result += '<li><p>' + this.youtube[i] + '</li></p>';
+        }
+        result += '</ol>';
+      }
+
+      if (imgLength > 0) {
+        result += '<h2>Slideshare</h2>';
+        result += '<ol>';
+        for (var i in this.slideshare) {
+          result += '<li><p>' + this.slideshare[i] + '</li></p>';
+        }
+        result += '</ol>';
+        result += '</div>';
+      }
+    }
+    console.log(result);
+
+    return result;
+  };
+  
+  //get the refrence from exsit version
+  this.getExistRefrence = function (content) {
+    console.log("getExistRefrence");
+    var index = content.indexOf('<div id="pack_refrence">');
+
+    var refStr = content.substr(olIndex);
+    
+    for (var i = 0; i < 3; i++) {
+      var olIndex = refStr.lastIndexOf('<ol>');
+      var dealStr = refStr.substr(olIndex);
+      refStr = refStr.substring(0, olIndex);
+
+      var startIndex = dealStr.indexOf('<li>');
+      while (startIndex != -1) {
+        var endIndex = dealStr.indexOf('</li>');
+        if (i == 0){
+          console.log('pushSlideshare ' + dealStr.substring(startIndex+7, endIndex));
+          this.slideshare.push(dealStr.substring(startIndex+7, endIndex));
+        }
+        else if (i == 1){
+          console.log('pushYoutube ' + dealStr.substring(startIndex+7, endIndex));
+          this.youtube.push(dealStr.substring(startIndex+7, endIndex));
+        }
+        else{
+          console.log('pushImg ' + dealStr.substring(startIndex+7, endIndex));
+          this.image.push(dealStr.substring(startIndex+7, endIndex));
+        }
+      
+        //for next
+        startIndex = dealStr.indexOf('<li>',endIndex);
+      }
+    }
+
+
+    return content.substring(0, index);
+  }
+}

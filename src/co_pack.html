@@ -1,13 +1,11 @@
 <div data-role="page" id="co_pack">
-
-
   <div data-role="header">
     <a href="view_pack.html" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">返回</a>
     <h1 id="pack_title"></h1>
     <!-- <a id="pack_comple" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-carat-r">修改完成</a> -->
-    <a id="pack_branch" class=" ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-carat-">發布版本</a>
+    <a href="#popupMenu" data-rel="popup" data-role="button" data-icon="bullets" data-direction="reverse" data-corners="true"
+    data-shadow="false" data-iconshadow="false" data-wrapperels="span" title="tag">選單</a>
   </div>
-
   <!-- Include JS files. -->
   <script src="lib/froala-editor/js/froala_editor.min.js"></script>
   <script src="lib/froala-editor/js/plugins/video.min.js"></script>
@@ -18,56 +16,52 @@
   <!-- <script src="lib/froala-editor/js/plugins/urls.min.js"></script>-->
   <script src="lib/froala-editor/js/plugins/font_size.min.js"></script>
   <script src="lib/froala-editor/js/plugins/font_family.min.js"></script>
-
   <div data-role="popup" id="popup_slideshare" data-theme="a" class="ui-corner-all">
     <div style="padding:10px 20px;">
-
       <label for="slideshare_url">輸入slideshare網址:</label>
-      <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011" data-theme="a">
-
+      <input type="text" name="slideshare_url" id="slideshare_url" value="http://www.slideshare.net/haraldf/business-quotes-for-2011"
+      data-theme="a">
       <label for="slideshare_start_page">起始頁數:</label>
       <input type="number" name="slideshare_start_page" pattern="[0-9]*" id="slideshare_start_page" value="0">
-
       <label for="slideshare_end_page">結束頁數:</label>
       <input type="number" name="slideshare_end_page" pattern="[0-9]*" id="slideshare_end_page" value="0">
-
       <a id="slideshare_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
-
       <button id="slideshare_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
     </div>
   </div>
   <div data-role="popup" id="popup_youtube" data-theme="a" class="ui-corner-all">
     <div style="padding:10px 20px;">
-
       <label for="youtube_url">輸入Youtube網址:</label>
-      <input type="text" name="youtube_url" id="youtube_url" value="https://www.youtube.com/watch?v=w1cqaTttINg" data-theme="a">
-
+      <input type="text" name="youtube_url" id="youtube_url" value="https://www.youtube.com/watch?v=w1cqaTttINg"
+      data-theme="a">
       <label for="youtube_start_time">開始秒數:</label>
       <input type="number" name="youtube_start_time" pattern="[0-9]*" id="youtube_start_time" value="0">
-
       <label for="youtube_end_time">結束秒數:</label>
       <input type="number" name="youtube_end_time" pattern="[0-9]*" id="youtube_end_time" value="0">
-
       <a id="youtube_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
-
       <button id="youtube_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
     </div>
   </div>
   <div data-role="popup" id="popup_image" data-theme="a" class="ui-corner-all">
     <div style="padding:10px 20px;">
-
       <label for="image_url">輸入圖片網址:</label>
-      <input type="text" name="image_url" id="image_url" value="http://www.sportsdestinations.com/files/sports_destination_management/nodes/2015/8968/IMG.jpg" data-theme="a">
-
+      <input type="text" name="image_url" id="image_url" value="http://www.sportsdestinations.com/files/sports_destination_management/nodes/2015/8968/IMG.jpg"
+      data-theme="a">
       <a id="image_choose" class="ui-btn ui-corner-all ui-shadow ui-btn-b">選擇圖片</a>
-
       <a id="image_cancel" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">取消</a>
-
       <button id="image_submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">完成</button>
     </div>
   </div>
-
   <iframe src="new_pack_editor.html" id="iframe1" onload="load_editor()"></iframe>
-  <div data-role="footer" id="note-display">
+  <!--popup menu-->
+  <div data-role="popup" id="popupMenu" data-shadow="false" data-corners="false" data-history="false">
+    <ul data-role="listview" data-inset="true" style="min-width:150px;" data-icon="false">
+      <li>
+        <a href="view_pack.html" id="pack_branch">發布版本</a>
+      </li>
+      <li>
+        <a href="view_pack.html" id="save_draft">儲存草稿</a>
+      </li>
+    </ul>
   </div>
 </div>

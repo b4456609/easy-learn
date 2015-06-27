@@ -1,5 +1,5 @@
 $(document).on("pageshow", "#login", function () {
-    navigator.splashscreen.hide();
+  navigator.splashscreen.hide();
 });
 
 function login_check() {
@@ -55,16 +55,38 @@ function successLogin(user) {
 }
 
 function logout() {
+  var folder = new Folder();
+  var count =0;
+
+  var callback = function () {
+    count--;
+    if(count === 0){
+    localStorage.clear();
+    login();
+    }
+  };
+
+  for (var key in localStorage) {
+    if (key.indexOf('pack') != -1)
+      count++;
+  }
+
+  for (var key1 in localStorage) {
+    console.log(key1);
+    if (key1.indexOf('pack') != -1)
+      folder.deleteAPack(key1, callback);
+  }
+
   localStorage.clear();
   login();
 }
 
 function login() {
   $.mobile.changePage("login.html", {
-      transition: "pop",
-      reverse: false,
-      changeHash: false
-    });
+    transition: "pop",
+    reverse: false,
+    changeHash: false
+  });
 }
 
 

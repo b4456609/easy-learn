@@ -24,5 +24,13 @@
             "APP_ID": "937637919620079",
             "APP_NAME": "easylearn"
         }
+    },
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-whitelist"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

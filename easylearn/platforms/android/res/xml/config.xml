@@ -29,6 +29,10 @@
         <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="Whitelist">
+        <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
+        <param name="onload" value="true" />
+    </feature>
     <icon density="ldpi" src="res/ldpi.png" />
     <icon density="mdpi" src="res/mdpi.png" />
     <icon density="hdpi" src="res/hdpi.png" />
@@ -43,7 +47,7 @@
     <splash density="port-xhdpi" src="res/splash/res-long-port-xhdpi/default.png" />
     <name>EasyLearn</name>
     <description>A sample Apache Cordova application that responds to the deviceready event.</description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">Apache Cordova Team</author>
+    <author email="b4456609@gmail.com" href="http://github.com/b4456609/easy-learn">Jailbreak Team</author>
     <content src="index.html" />
     <access origin="*" />
     <preference name="AndroidPersistentFileLocation" value="Internal" />

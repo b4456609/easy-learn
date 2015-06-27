@@ -2,7 +2,7 @@
 <widget id="ntou.cs.easylearn" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>EasyLearn</name>
   <description>A sample Apache Cordova application that responds to the deviceready event.</description>
-  <author email="dev@cordova.apache.org" href="http://cordova.io">Apache Cordova Team</author>
+  <author email="b4456609@gmail.com" href="http://github.com/b4456609/easy-learn">Jailbreak Team</author>
   <content src="index.html" />
   <access origin="*" />
   <preference name="AndroidPersistentFileLocation" value="Internal" />
@@ -24,7 +24,7 @@
     <splash src="res/splash/res-long-port-mdpi/default.png" density="port-mdpi" />
     <splash src="res/splash/res-long-port-xhdpi/default.png" density="port-xhdpi" />
   </platform>
-  
+
   <preference name="SplashScreenDelay" value="10000" />
   <preference name="SplashMaintainAspectRatio" value="true" />
   <preference name="SplashScreen" value="screen"/>

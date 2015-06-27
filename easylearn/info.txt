@@ -1,0 +1,88 @@
+Node version: v0.10.36
+
+Cordova version: 5.1.1
+
+Config.xml file: 
+
+<?xml version='1.0' encoding='utf-8' ?>
+<widget id="ntou.cs.easylearn" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>EasyLearn</name>
+  <description>A sample Apache Cordova application that responds to the deviceready event.</description>
+  <author email="b4456609@gmail.com" href="http://github.com/b4456609/easy-learn">Jailbreak Team</author>
+  <content src="index.html" />
+  <access origin="*" />
+  <preference name="AndroidPersistentFileLocation" value="Internal" />
+  <feature name="Camera">
+    <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
+  </feature>
+  <platform name="android">
+    <icon src="res/ldpi.png" density="ldpi" />
+    <icon src="res/mdpi.png" density="mdpi" />
+    <icon src="res/hdpi.png" density="hdpi" />
+    <icon src="res/xhdpi.png" density="xhdpi" />
+    <!-- you can use any density that exists in the Android project -->
+    <splash src="res/splash/res-long-land-hdpi/default.png" density="land-hdpi" />
+    <splash src="res/splash/res-long-land-ldpi/default.png" density="land-ldpi" />
+    <splash src="res/splash/res-long-land-mdpi/default.png" density="land-mdpi" />
+    <splash src="res/splash/res-long-land-xhdpi/default.png" density="land-xhdpi" />
+    <splash src="res/splash/res-long-port-hdpi/default.png" density="port-hdpi" />
+    <splash src="res/splash/res-long-port-ldpi/default.png" density="port-ldpi" />
+    <splash src="res/splash/res-long-port-mdpi/default.png" density="port-mdpi" />
+    <splash src="res/splash/res-long-port-xhdpi/default.png" density="port-xhdpi" />
+  </platform>
+
+  <preference name="SplashScreenDelay" value="10000" />
+  <preference name="SplashMaintainAspectRatio" value="true" />
+  <preference name="SplashScreen" value="screen"/>
+</widget>
+
+
+Plugins: 
+
+com.phonegap.plugins.facebookconnect,cordova-plugin-network-information,cordova-plugin-splashscreen,cordova-plugin-whitelist,org.apache.cordova.camera,org.apache.cordova.dialogs,org.apache.cordova.file,org.apache.cordova.file-transfer
+
+Android platform:
+
+Available Android targets:
+----------
+id: 1 or "android-19"
+     Name: Android 4.4.2
+     Type: Platform
+     API level: 19
+     Revision: 4
+     Skins: HVGA, QVGA, WQVGA400, WQVGA432, WSVGA, WVGA800 (default), WVGA854, WXGA720, WXGA800, WXGA800-7in
+ Tag/ABIs : no ABIs.
+----------
+id: 2 or "android-21"
+     Name: Android 5.0.1
+     Type: Platform
+     API level: 21
+     Revision: 2
+     Skins: HVGA, QVGA, WQVGA400, WQVGA432, WSVGA, WVGA800 (default), WVGA854, WXGA720, WXGA800, WXGA800-7in
+ Tag/ABIs : no ABIs.
+----------
+id: 3 or "android-22"
+     Name: Android 5.1.1
+     Type: Platform
+     API level: 22
+     Revision: 2
+     Skins: HVGA, QVGA, WQVGA400, WQVGA432, WSVGA, WVGA800 (default), WVGA854, WXGA720, WXGA800, WXGA800-7in
+ Tag/ABIs : no ABIs.
+----------
+id: 4 or "Google Inc.:Google APIs:21"
+     Name: Google APIs
+     Type: Add-On
+     Vendor: Google Inc.
+     Revision: 1
+     Description: Android + Google APIs
+     Based on Android 5.0.1 (API level 21)
+     Libraries:
+      * com.android.future.usb.accessory (usb.jar)
+          API for USB Accessories
+      * com.google.android.media.effects (effects.jar)
+          Collection of video effects
+      * com.google.android.maps (maps.jar)
+          API for Google Maps
+     Skins: HVGA, QVGA, WQVGA400, WQVGA432, WSVGA, WVGA800 (default), WVGA854, WXGA720, WXGA800, WXGA800-7in
+ Tag/ABIs : no ABIs.
+

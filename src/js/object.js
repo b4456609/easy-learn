@@ -365,8 +365,8 @@ function Reference() {
       if (imgLength > 0) {
         result += '<h2>Slideshare</h2>';
         result += '<ol>';
-        for (var index in this.slideshare) {
-          result += '<li><p>' + this.slideshare[index] + '</li></p>';
+        for (var slide_index in this.slideshare) {
+          result += '<li><p>' + this.slideshare[slide_index] + '</li></p>';
         }
         result += '</ol>';
         result += '</div>';
@@ -412,5 +412,5 @@ function Reference() {
 
 
     return content.substring(0, index);
-  }
+  };
 }

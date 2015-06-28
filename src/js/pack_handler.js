@@ -92,6 +92,7 @@ $(document).on('pageinit', "#view_pack", function () {
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
   $('#veiw_pack_content').html(content);
+
 });
 
 $(document).on('pageshow', "#view_pack", function () {

@@ -20,3 +20,5 @@ easylearn/www
 easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/bin/**
 easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/ant-build/**
 easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/ant-gen/**
+easylearn/platforms/android/com.phonegap.plugins.facebookconnect/easylearn-FacebookLib/build/**
+easylearn/platforms/android/CordovaLib/build/**

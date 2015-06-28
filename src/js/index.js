@@ -14,20 +14,21 @@ document.addEventListener("deviceReady", deviceReady, false);
 //Resolve gapReady in reponse to deviceReady event
 function deviceReady() {
   gapReady.resolve();
-  
+
   //disable back button
   document.addEventListener("backbutton", onBackKeyDown, false);
+
   function onBackKeyDown(e) {
     e.preventDefault();
-    navigator.notification.confirm("Are you sure you want to exit ?", onConfirm, "Confirmation", "Yes,No"); 
+    navigator.notification.confirm("Are you sure you want to exit ?", onConfirm, "Confirmation", "Yes,No");
     // Prompt the user with the choice
   }
 
   function onConfirm(button) {
-    if (button == 2) {//If User selected No, then we just do nothing
+    if (button == 2) { //If User selected No, then we just do nothing
       return;
     } else {
-      navigator.app.exitApp();// Otherwise we quit the app.
+      navigator.app.exitApp(); // Otherwise we quit the app.
     }
   }
 }
@@ -36,7 +37,7 @@ function deviceReady() {
  * Catch "mobileinit" event which is fired when a jQueryMobile is loaded.
  * Ensure that we respond to this event only once.
  */
-$(document).one("mobileinit", function () {
+$(document).one("mobileinit", function() {
   jqmReady.resolve();
 });
 
@@ -60,7 +61,7 @@ var FILE_STORAGE_PATH;
 
 // App Logic
 function myAppLogic() {
-  
+
   FILE_STORAGE_PATH = cordova.file.externalDataDirectory;
   headerHeight = $(".ui-header").outerHeight();
   console.log(cordova.file);
@@ -69,8 +70,7 @@ function myAppLogic() {
 
   if (localStorage.getItem('user') === null) {
     login();
-  }
-  else {
+  } else {
     $('#home_title').text(folderName);
     display_pack();
     display_folder();
@@ -81,7 +81,7 @@ function myAppLogic() {
   $('#logout').click(logout);
 }
 
-$(document).on("pageshow", "#home", function () {
+$(document).on("pageshow", "#home", function() {
   //if device not ready deferred exec
   //this will happened when user first open app
   if (gapReady.state() != "pending") {
@@ -101,16 +101,19 @@ $(document).on("pageshow", "#home", function () {
 
 //display folder in left panel
 function display_folder() {
-  $("li:has([folderid])").remove();
+  $("[class~='sidebar-folder-listview']").remove();
 
   //display folder
   var folderArray = JSON.parse(localStorage.folder);
   var result = "";
   var i;
   for (i in folderArray) {
-    var folder_templete = '<li><a href="#" class="folder ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r" folderid="' +
-      folderArray[i].id + '"><h2>' + folderArray[i].name + '</h2><span class="ui-li-count ui-body-inherit">' +
-      folderArray[i].pack.length + '</span></a></li>';
+    var folder_templete = '<li class="sidebar-folder-listview">' +
+      '<a href="#" class=" ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r" onclick="folder_click_handler(\'' + folderArray[i].id + '\')">' +
+      '<h2>' + folderArray[i].name + '</h2>' +
+      '<span class="ui-li-count ui-body-inherit">' + folderArray[i].pack.length + '</span>' +
+      '</a></li>';
+
     result += folder_templete;
   }
   $(result).insertAfter('#folder_display');
@@ -150,10 +153,10 @@ function display_pack_content(packArray) {
     pack.getPack(packArray[j]);
 
     if (pack.cover_filename !== "") {
-      pack_templete = '<li packid= "' + pack.id + '"><a href="#"><img src="' + FILE_STORAGE_PATH + pack.id + '/' + pack.cover_filename+'"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
+      pack_templete = '<li onclick= "go_pack_handler(\'' + pack.id + '\')"><a href="#"><img src="' + FILE_STORAGE_PATH + pack.id + '/' + pack.cover_filename + '"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     } else {
       //default img
-      pack_templete = '<li packid= "' + pack.id + '"><a href="#"><img src="img/light102.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
+      pack_templete = '<li onclick= "go_pack_handler(\'' + pack.id + '\')"><a href="#"><img src="img/light102.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
     }
     result += pack_templete;
   }
@@ -161,19 +164,16 @@ function display_pack_content(packArray) {
   //display pack
   $('#pack_display_area').html(result);
   $("#pack_display_area").listview("refresh");
-
-  //register click handler
-  $("li[packid]").click(go_pack_handler);
 }
 
-function folder_click_handler() {
+function folder_click_handler(folderId) {
   var folderArray = JSON.parse(localStorage.folder);
 
   var packArray;
   //find current folder in data
   var i;
   for (i in folderArray) {
-    if (folderArray[i].id == $(this).attr('folderid')) {
+    if (folderArray[i].id == folderId) {
       folderName = folderArray[i].name;
       packArray = folderArray[i].pack;
       $('#home_title').text(folderName);
@@ -185,8 +185,8 @@ function folder_click_handler() {
   $("#menu_panel").panel("close");
 }
 
-function go_pack_handler() {
-  viewPackId = $(this).attr('packid');
+function go_pack_handler(packid) {
+  viewPackId = packid;
 
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
@@ -200,7 +200,7 @@ function search_pack() {
     data: {
       search_text: input,
     },
-    success: function (data) {
+    success: function(data) {
       console.log('success search');
       console.log(data);
       var result = '';
@@ -228,7 +228,7 @@ function search_pack() {
 }
 
 function checkout_pack(packId) {
-  var callback = function () {
+  var callback = function() {
     viewPackId = packId;
     $.mobile.changePage("search_view_pack.html", {
       transition: "pop",

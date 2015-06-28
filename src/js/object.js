@@ -1,14 +1,14 @@
 function Pack() {
-  this.id;
-  this.name;
-  this.description;
-  this.create_time;
-  this.tags;
-  this.is_public;
-  this.creator_user_id;
-  this.cover_filename;
-  this.creator_user_name;
-  this.version;
+  this.id = '';
+  this.name = '';
+  this.description = '';
+  this.create_time = '';
+  this.tags = '';
+  this.is_public = '';
+  this.creator_user_id = '';
+  this.cover_filename = '';
+  this.creator_user_name = '';
+  this.version = '';
 
   this.getPack = function (packId) {
     var pack = JSON.parse(localStorage.getItem(packId));
@@ -46,10 +46,10 @@ function Pack() {
   this.initial = function () {
     //get current time
     var time = new Date().getTime();
-    
+
     //set id
     this.id = 'pack' + time;
-    
+
     //set user
     var user = new User();
     this.creator_user_id = user.id;
@@ -66,26 +66,26 @@ function Pack() {
 }
 
 function Version() {
-  this.id;
-  this.content;
-  this.create_time;
-  this.is_public;
-  this.creator_user_id;
-  this.creator_user_name;
-  this.bookmark;
-  this.note;
-  this.file;
-  this.version;
-  this.modified;
-  this.view_count;
-  this.user_view_count;
+  this.id='';
+  this.content='';
+  this.create_time='';
+  this.is_public='';
+  this.creator_user_id='';
+  this.creator_user_name='';
+  this.bookmark='';
+  this.note='';
+  this.file='';
+  this.version='';
+  this.modified='';
+  this.view_count='';
+  this.user_view_count='';
 
   this.initial = function () {
     //get current time
     var time = new Date().getTime();
     this.id = "version" + time;
     this.create_time = time;
-    
+
     //set user
     var user = new User();
     this.creator_user_id = user.id;
@@ -122,28 +122,6 @@ function Version() {
   };
 }
 
-function Bookmark() {
-  this.id;
-  this.name;
-  this.position;
-}
-
-function Note() {
-  this.id;
-  this.content;
-  this.create_time;
-  this.user_id;
-  this.user_name;
-  this.comment;
-}
-
-function Comment() {
-  this.id;
-  this.content;
-  this.create_time;
-  this.user_id;
-  this.user_name;
-}
 
 function Folder() {
   this.folderArray = JSON.parse(localStorage.getItem('folder'));
@@ -181,14 +159,14 @@ function Folder() {
   this.addFolder = function (name) {
     //get current time
     var time = new Date().getTime();
-    
+
     //add new folder
     this.folderArray[this.folderArray.length] = {
       name: name,
       id: 'folder' + time,
       pack: []
     };
-    
+
     //save in local stroage
     this.save();
   };
@@ -220,15 +198,15 @@ function Folder() {
       }
     }
     else {//only add to dest. folder
-      for (var i in this.folderArray) {
-        if (destFolderId === this.folderArray[i].id) {
-          this.folderArray[i].pack.push(packid);
+      for (var folderIndex in this.folderArray) {
+        if (destFolderId === this.folderArray[folderIndex].id) {
+          this.folderArray[folderIndex].pack.push(packid);
         }
       }
     }
     this.save();
   };
-  
+
   //add a pack to all folder
   this.addAPack = function (packId) {
 
@@ -256,7 +234,7 @@ function Folder() {
       }
     }
     return false;
-  }
+  };
 
   //delete a pack from folder
   this.deleteAPack = function (packId) {
@@ -269,10 +247,10 @@ function Folder() {
         }
       }
     }
-    
+
     //delete pack from localStroage
     localStorage.removeItem(packId);
-    
+
     //delete files in cellphone
     window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function (dirEntry) {
       dirEntry.removeRecursively(function () { }, function () { });
@@ -280,7 +258,7 @@ function Folder() {
 
     this.save();
   };
-  
+
   //rename folder
   this.renameFolder = function (folderId, name) {
     for (var j in this.folderArray) {
@@ -300,7 +278,7 @@ function User() {
   this.id = user.id;
   this.name = user.name;
   this.setting = user.setting;
-  
+
   //save to local storage
   this.save = function () {
     var user = {
@@ -311,7 +289,7 @@ function User() {
 
     localStorage.setItem('user', JSON.stringify(user));
   };
-  
+
   //return setting
   this.getSetting = function () {
     return this.setting;
@@ -332,29 +310,29 @@ function Reference() {
   this.image = [];
   this.youtube = [];
   this.slideshare = [];
-  
+
   //initial refrence
   this.initial = function () {
     this.image = [];
     this.youtube = [];
     this.slideshare = [];
-  }
-  
+  };
+
   //add image
   this.addImg = function (str) {
     this.image.push(str);
-  }
-  
+  };
+
   //add image
   this.addYoutube = function (str) {
     this.youtube.push(str);
-  }
-  
+  };
+
   //add slideshare
   this.addSlideshare = function (str) {
     this.slideshare.push(str);
-  }
-  
+  };
+
   //output html string
   this.toString = function () {
     console.log('[Reference]toString');
@@ -378,8 +356,8 @@ function Reference() {
       if (imgLength > 0) {
         result += '<h2>影片</h2>';
         result += '<ol>';
-        for (var i in this.youtube) {
-          result += '<li><p>' + this.youtube[i] + '</li></p>';
+        for (var index in this.youtube) {
+          result += '<li><p>' + this.youtube[index] + '</li></p>';
         }
         result += '</ol>';
       }
@@ -387,8 +365,8 @@ function Reference() {
       if (imgLength > 0) {
         result += '<h2>Slideshare</h2>';
         result += '<ol>';
-        for (var i in this.slideshare) {
-          result += '<li><p>' + this.slideshare[i] + '</li></p>';
+        for (var index in this.slideshare) {
+          result += '<li><p>' + this.slideshare[index] + '</li></p>';
         }
         result += '</ol>';
         result += '</div>';
@@ -398,14 +376,14 @@ function Reference() {
 
     return result;
   };
-  
+
   //get the refrence from exsit version
   this.getExistRefrence = function (content) {
     console.log("getExistRefrence");
     var index = content.indexOf('<div id="pack_refrence">');
 
     var refStr = content.substr(olIndex);
-    
+
     for (var i = 0; i < 3; i++) {
       var olIndex = refStr.lastIndexOf('<ol>');
       var dealStr = refStr.substr(olIndex);
@@ -414,11 +392,11 @@ function Reference() {
       var startIndex = dealStr.indexOf('<li>');
       while (startIndex != -1) {
         var endIndex = dealStr.indexOf('</li>');
-        if (i == 0){
+        if (i === 0){
           console.log('pushSlideshare ' + dealStr.substring(startIndex+7, endIndex));
           this.slideshare.push(dealStr.substring(startIndex+7, endIndex));
         }
-        else if (i == 1){
+        else if (i === 1){
           console.log('pushYoutube ' + dealStr.substring(startIndex+7, endIndex));
           this.youtube.push(dealStr.substring(startIndex+7, endIndex));
         }
@@ -426,7 +404,7 @@ function Reference() {
           console.log('pushImg ' + dealStr.substring(startIndex+7, endIndex));
           this.image.push(dealStr.substring(startIndex+7, endIndex));
         }
-      
+
         //for next
         startIndex = dealStr.indexOf('<li>',endIndex);
       }

@@ -10,7 +10,7 @@ function Pack() {
   this.creator_user_name = '';
   this.version = '';
 
-  this.getPack = function (packId) {
+  this.getPack = function(packId) {
     var pack = JSON.parse(localStorage.getItem(packId));
 
     //set all value
@@ -26,7 +26,7 @@ function Pack() {
     this.creator_user_name = pack.creator_user_name;
   };
 
-  this.save = function () {
+  this.save = function() {
     var pack = {
       name: this.name,
       description: this.description,
@@ -43,7 +43,7 @@ function Pack() {
     localStorage.setItem(this.id, JSON.stringify(pack));
   };
 
-  this.initial = function () {
+  this.initial = function() {
     //get current time
     var time = new Date().getTime();
 
@@ -66,21 +66,21 @@ function Pack() {
 }
 
 function Version() {
-  this.id='';
-  this.content='';
-  this.create_time='';
-  this.is_public='';
-  this.creator_user_id='';
-  this.creator_user_name='';
-  this.bookmark='';
-  this.note='';
-  this.file='';
-  this.version='';
-  this.modified='';
-  this.view_count='';
-  this.user_view_count='';
+  this.id = '';
+  this.content = '';
+  this.create_time = '';
+  this.is_public = '';
+  this.creator_user_id = '';
+  this.creator_user_name = '';
+  this.bookmark = '';
+  this.note = '';
+  this.file = '';
+  this.version = '';
+  this.modified = '';
+  this.view_count = '';
+  this.user_view_count = '';
 
-  this.initial = function () {
+  this.initial = function() {
     //get current time
     var time = new Date().getTime();
     this.id = "version" + time;
@@ -102,7 +102,7 @@ function Version() {
     this.user_view_count = 0;
   };
 
-  this.get = function () {
+  this.get = function() {
     var newVersion = {
       id: this.id,
       content: this.content,
@@ -127,7 +127,7 @@ function Folder() {
   this.folderArray = JSON.parse(localStorage.getItem('folder'));
 
   //add a pack id to all folder
-  this.addToAllFolder = function (packId) {
+  this.addToAllFolder = function(packId) {
     var j;
     for (j in this.folderArray) {
       if (this.folderArray[j].name == 'All') {
@@ -138,14 +138,14 @@ function Folder() {
     this.save();
   };
 
-  this.save = function () {
+  this.save = function() {
     localStorage.setItem("folder", JSON.stringify(this.folderArray));
     //setting modified
     var user = new User();
     user.modified();
   };
 
-  this.deleteFolder = function (folderId) {
+  this.deleteFolder = function(folderId) {
 
     for (var i in this.folderArray) {
       if (folderId === this.folderArray[i].id) {
@@ -156,7 +156,7 @@ function Folder() {
     this.save();
   };
 
-  this.addFolder = function (name) {
+  this.addFolder = function(name) {
     //get current time
     var time = new Date().getTime();
 
@@ -171,7 +171,7 @@ function Folder() {
     this.save();
   };
 
-  this.getPacks = function (folderId) {
+  this.getPacks = function(folderId) {
     console.log(folderId);
     for (var i in this.folderArray) {
       console.log(this.folderArray[i].id);
@@ -181,7 +181,7 @@ function Folder() {
     }
   };
 
-  this.changePackTo = function (originFolderId, packid, destFolderId) {
+  this.changePackTo = function(originFolderId, packid, destFolderId) {
     console.log('changePackTo' + originFolderId + ' ' + packid + ' ' + destFolderId);
 
     if (originFolderId !== 'allPackId') {
@@ -196,8 +196,7 @@ function Folder() {
           this.folderArray[i].pack.push(packid);
         }
       }
-    }
-    else {//only add to dest. folder
+    } else { //only add to dest. folder
       for (var folderIndex in this.folderArray) {
         if (destFolderId === this.folderArray[folderIndex].id) {
           this.folderArray[folderIndex].pack.push(packid);
@@ -208,7 +207,7 @@ function Folder() {
   };
 
   //add a pack to all folder
-  this.addAPack = function (packId) {
+  this.addAPack = function(packId) {
 
     for (var i in this.folderArray) {
       if (this.folderArray[i].id === 'allPackId') {
@@ -222,7 +221,7 @@ function Folder() {
     this.save();
   };
 
-  this.hasPack = function (packId) {
+  this.hasPack = function(packId) {
     for (var i in this.folderArray) {
       if (this.folderArray[i].id === 'allPackId') {
         for (var j in this.folderArray[i].pack) {
@@ -237,7 +236,7 @@ function Folder() {
   };
 
   //delete a pack from folder
-  this.deleteAPack = function (packId) {
+  this.deleteAPack = function(packId) {
     //delete from folder
     for (var i in this.folderArray) {
       for (var j in this.folderArray[i].pack) {
@@ -252,15 +251,15 @@ function Folder() {
     localStorage.removeItem(packId);
 
     //delete files in cellphone
-    window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function (dirEntry) {
-      dirEntry.removeRecursively(function () { }, function () { });
+    window.resolveLocalFileSystemURL(FILE_STORAGE_PATH + packId, function(dirEntry) {
+      dirEntry.removeRecursively(function() {}, function() {});
     }, fail);
 
     this.save();
   };
 
   //rename folder
-  this.renameFolder = function (folderId, name) {
+  this.renameFolder = function(folderId, name) {
     for (var j in this.folderArray) {
       if (this.folderArray[j].id === folderId) {
         this.folderArray[j].name = name;
@@ -280,7 +279,7 @@ function User() {
   this.setting = user.setting;
 
   //save to local storage
-  this.save = function () {
+  this.save = function() {
     var user = {
       id: this.id,
       name: this.name,
@@ -291,59 +290,133 @@ function User() {
   };
 
   //return setting
-  this.getSetting = function () {
+  this.getSetting = function() {
     return this.setting;
   };
 
-  this.modified = function () {
+  this.modified = function() {
     this.setting.modified = true;
     this.save();
   };
 
-  this.modifiedFalse = function () {
+  this.modifiedFalse = function() {
     this.setting.modified = false;
     this.save();
   };
 }
 
 function Reference() {
-  this.youtube = [];
-  this.slideshare = [];
-  
+  var youtube = [];
+  var slideshare = [];
+  var youtubeResult = [];
+  var slideshareResult = [];
+  var count = 0;
+  var deferred;
+
   //add image
-  this.addYoutube = function (str) {
-    this.youtube.push(str);
+  this.addYoutube = function(str) {
+    youtube.push(str);
+    count++;
   };
 
   //add slideshare
-  this.addSlideshare = function (str) {
-    this.slideshare.push(str);
+  this.addSlideshare = function(str) {
+    for (var i in slideshare) {
+      if (slideshare[i] == str) {
+        return;
+      }
+    }
+    slideshare.push(str);
+    count++;
+  };
+
+  this.getInfo = function(content) {
+    //parse content
+    this.getExistRefrence(content);
+    
+    deferred = $.Deferred();
+    //get slide share info
+    var slideshareUrl = 'http://www.slideshare.net/';
+    var slideshareAjaxUrlPrefix = "http://www.slideshare.net/api/oembed/2?url=http://www.slideshare.net/";
+    var i;
+    for (i in slideshare) {
+      this.slideshareAjax(slideshareAjaxUrlPrefix + slideshare[i], slideshareUrl + slideshare[i]);
+    }
+
+    //get youtube info
+    for(i in youtube){
+      this.youtubeAjax(youtube[i]);
+    }
+
+    return deferred.promise();
+  };
+
+  this.youtubeAjax = function(id) {
+    console.log('[youtubeAjax]'+id);
+    var self = this;
+    var url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + id + '&key=AIzaSyBaRuuH-H3TCyW4ek-_J-XR9BCOBjfbP5s';
+    var result;
+    //ajax slideshare info and put into array
+    $.get(url,
+      function(data) {
+        var video = data.items[0].snippet;
+        result = '<li><a href="http://www.youtube.com/watch?v=' + id + '">' + video.title + '</a></li>';
+        youtubeResult.push(result);
+        self.isFinish();
+      });
+  };
+
+  this.slideshareAjax = function(url, slideshareUrl) {
+    console.log('[slideshareAjax]'+url);
+    var self = this;
+    var result;
+    //ajax slideshare info and put into array
+    $.get(url,
+      function(data) {
+        result = '<li><a href="' + slideshareUrl + '">' + data.title + ' - ' + data.author_name + '</a></li>';
+        slideshareResult.push(result);
+        self.isFinish();
+      });
+  };
+
+  //check is all complete
+  this.isFinish = function() {
+    //check is all finished
+    count--;
+    console.log(count);
+    if (count === 0) {
+      console.log(slideshare);
+      console.log(slideshareResult);
+      console.log(youtube);
+      console.log(youtubeResult);
+      deferred.resolve();
+    }
   };
 
   //output html string
-  this.toString = function () {
+  this.get = function() {
     console.log('[Reference]toString');
-    var youtubeLength = this.youtube.length;
-    var slideShareLength = this.slideshare.length;
+    var youtubeLength = youtubeResult.length;
+    var slideShareLength = slideshareResult.length;
     var result = '';
-    if (imgLength + youtubeLength + slideShareLength > 0) {
+    if (youtubeLength + slideShareLength > 0) {
       result = '<div id="pack_refrence">';
       result += '<h1>引用資料</h1>';
 
-      if (imgLength > 0) {
-        result += '<h2>影片</h2>';
+      if (youtubeLength > 0) {
+        result += '<h2>Youtube</h2>';
         result += '<ol>';
-        for (var index in this.youtube) {
-          result += '<li><p>' + this.youtube[index] + '</li></p>';
+        for (var i in youtubeResult) {
+          result += youtubeResult[i];
         }
         result += '</ol>';
       }
 
-      if (imgLength > 0) {
+      if (slideShareLength > 0) {
         result += '<h2>Slideshare</h2>';
         result += '<ol>';
-        for (var slide_index in this.slideshare) {
-          result += '<li><p>' + this.slideshare[slide_index] + '</li></p>';
+        for (var j in slideshareResult) {
+          result += slideshareResult[j];
         }
         result += '</ol>';
         result += '</div>';
@@ -355,27 +428,27 @@ function Reference() {
   };
 
   //get the refrence from exsit version
-  this.getExistRefrence = function (content) {
+  this.getExistRefrence = function(content) {
     console.log("[Reference]getExistRefrence");
 
     //add youtube id to youtube array
     var index = 0;
     var endIndex;
     index = content.indexOf('http://www.youtube.com/embed/');
-    while(index !== -1){
-      console.log('youtube '+index);
-      endIndex = content.indexOf('?', index+29);
-      this.addYoutube(content.substring(index+29, endIndex));
-      index = content.indexOf('http://www.youtube.com/embed/', index+1);
+    while (index !== -1) {
+      console.log('youtube ' + index);
+      endIndex = content.indexOf('?', index + 29);
+      this.addYoutube(content.substring(index + 29, endIndex));
+      index = content.indexOf('http://www.youtube.com/embed/', index + 1);
     }
 
     index = 0;
     index = content.indexOf('slideshare-img ');
     while (index !== -1) {
-      console.log('slide '+index);
-      endIndex = content.indexOf(' ', index+15);
-      this.addSlideshare(content.substring(index+15, endIndex));
-      index = content.indexOf('slideshare-img ', index+1);
+      console.log('slide ' + index);
+      endIndex = content.indexOf(' ', index + 15);
+      this.addSlideshare(content.substring(index + 15, endIndex).replace('_', '/'));
+      index = content.indexOf('slideshare-img ', index + 1);
     }
   };
 }

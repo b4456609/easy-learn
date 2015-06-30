@@ -192,7 +192,10 @@ function go_pack_handler(packid) {
 }
 
 function search_pack() {
-  var input = $('#search').val();
+  var input = $('#search').val().trim();
+
+  //if no input do nothing
+  if(input === "") return;
 
   $.ajax({
     type: "GET",

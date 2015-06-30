@@ -93,6 +93,11 @@ $(document).on('pageinit', "#view_pack", function () {
   content = replacePackImgPath(content);
   $('#veiw_pack_content').html(content);
 
+  // var r = new Reference();
+  // var deffer = r.getInfo(content);
+  // $.when(deffer).then(function(){
+  //   console.log(r.get());
+  // });
 });
 
 $(document).on('pageshow', "#view_pack", function () {

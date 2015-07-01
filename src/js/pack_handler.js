@@ -101,6 +101,27 @@ $(document).on('pageshow', "#view_pack", function() {
   $("#note-display").toolbar("option", "position", "fixed");
   $("#note-display").toolbar("option", "tapToggle", false);
 
+  //note hold handler
+  $('#veiw_pack_content').on("taphold", function() {
+    console.log('hold content');
+    var sel = window.getSelection();
+    console.log(sel.isCollapsed);
+
+    var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check">下一步</a>';
+    $('.ui-btn-right').html(next);
+  });
+
+  //note hold handler
+  $('#veiw_pack_content').on("tap", function() {
+    console.log('tap content');
+    var sel = window.getSelection();
+    console.log(sel.isCollapsed);
+
+    var menu = '<a href="#popupMenu" data-rel="popup" data-role="button" data-icon="bullets" data-direction="reverse" data-corners="true" data-shadow="false" data-iconshadow="false" data-wrapperels="span" title="tag">選單</a>';
+    $('.ui-btn-right').html(menu);
+
+  });
+
   //click and show note hanlder
   $(".note").click(showNoteHandler);
 

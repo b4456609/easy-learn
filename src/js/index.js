@@ -195,7 +195,10 @@ function search_pack() {
   var input = $('#search').val().trim();
 
   //if no input do nothing
-  if(input === "") return;
+  if (input === "") {
+    $('#saerch-result').html("請輸入關鍵字查詢");
+    return;
+  }
 
   $.ajax({
     type: "GET",

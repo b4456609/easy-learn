@@ -108,7 +108,7 @@ $(document).on('pageshow', "#view_pack", function() {
     console.log('[viewPack]isCollapsed'+sel.isCollapsed);
 
     if(!sel.isCollapsed){
-      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check" onclick="note_next_handler()">新增便利貼</a>';
+      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all" onclick="note_next_handler()">新增便利貼</a>';
       $('.ui-btn-right').html(next);
       $('#note_choose_next').button();
     }

@@ -103,22 +103,24 @@ $(document).on('pageshow', "#view_pack", function() {
 
   //note hold handler
   $('#veiw_pack_content').on("taphold", function() {
-    console.log('hold content');
+    console.log('[viewPack]hold content');
     var sel = window.getSelection();
-    console.log(sel.isCollapsed);
+    console.log('[viewPack]isCollapsed'+sel.isCollapsed);
 
-    var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check">下一步</a>';
-    $('.ui-btn-right').html(next);
+    if(!sel.isCollapsed){
+      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-check" onclick="note_next_handler()">新增便利貼</a>';
+      $('.ui-btn-right').html(next);
+      $('#note_choose_next').button();
+    }
   });
 
   //note hold handler
   $('#veiw_pack_content').on("tap", function() {
-    console.log('tap content');
-    var sel = window.getSelection();
-    console.log(sel.isCollapsed);
+    console.log('[viewPack]tap content');
 
-    var menu = '<a href="#popupMenu" data-rel="popup" data-role="button" data-icon="bullets" data-direction="reverse" data-corners="true" data-shadow="false" data-iconshadow="false" data-wrapperels="span" title="tag">選單</a>';
+    var menu = '<a href="#popupMenu" id="app-bar-menu-btn" class="ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bullets" data-rel="popup">選單</a>';
     $('.ui-btn-right').html(menu);
+    $('#app-bar-menu-btn').button();
 
   });
 

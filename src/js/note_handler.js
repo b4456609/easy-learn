@@ -53,9 +53,6 @@ $(document).on('pageshow', "#new_note", function() {
 
 
 $(document).on('pageinit', "#new_note_choose", function() {
-  $("#color_choose").checkboxradio({
-    defaults: true
-  });
   //show choose content
   var pack = JSON.parse(localStorage.getItem(viewPackId));
   //prepare content
@@ -121,7 +118,7 @@ function note_next_handler() {
   paintNote(selection, noteId);
 
   //get new version's code save into temp variable
-  note_selection.new_version_content = $('#choose_pack_content').html();
+  note_selection.new_version_content = $('#veiw_pack_content').html();
 
 }
 

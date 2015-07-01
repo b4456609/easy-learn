@@ -1,4 +1,3 @@
-
 //for editing img
 var editingPackId = null;
 var editingFile = [];
@@ -89,42 +88,51 @@ function savePackHandler() {
   //get editor word and replace the img
   var content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
 
+  //replace file path
   var find = FILE_STORAGE_PATH;
   var re = new RegExp(find, 'g');
   content = content.replace(re, 'FILE_STORAGE_PATH');
 
-  var version = new Version();
-  version.initial();
+  //add reference information
+  var r = new Reference();
+  var deffer = r.getInfo(content);
+  $.when(deffer).then(function(){
+    content += r.get();
 
-  version.file = editingFile;
-  version.is_public = NEW_PACK.is_public;
-  version.id = newPackTemp.versionId;
-  version.content = content;
+    //add new version
+    var version = new Version();
+    version.initial();
 
-  //create first version
-  NEW_PACK.version[0] = version.get();
+    version.file = editingFile;
+    version.is_public = NEW_PACK.is_public;
+    version.id = newPackTemp.versionId;
+    version.content = content;
 
-  //save to local sotrage
-  NEW_PACK.save();
+    //create first version
+    NEW_PACK.version[0] = version.get();
 
-  var folder = new Folder();
-  folder.addToAllFolder(NEW_PACK.id);
+    //save to local sotrage
+    NEW_PACK.save();
 
-  //stop spinner
-  navigator.notification.activityStop();
+    var folder = new Folder();
+    folder.addToAllFolder(NEW_PACK.id);
 
-  //change page
-  $(":mobile-pagecontainer").pagecontainer("change", "index.html");
+    //stop spinner
+    navigator.notification.activityStop();
 
-  // reset parameter
-  newPackTemp = {
-    id: '',
-    content: '', //new pack content
-    file: []
-  };
+    //change page
+    $(":mobile-pagecontainer").pagecontainer("change", "index.html");
 
-  NEW_PACK = null;
-  editingFile = [];
+    // reset parameter
+    newPackTemp = {
+      id: '',
+      content: '', //new pack content
+      file: []
+    };
+
+    NEW_PACK = null;
+    editingFile = [];
+  });
 }
 
 function load_editor() {

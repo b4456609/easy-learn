@@ -332,20 +332,23 @@ function Reference() {
 
   this.getInfo = function(content) {
     //parse content
-    this.getExistRefrence(content);
-    
+    this.setRef(content);
+
     deferred = $.Deferred();
     //get slide share info
-    var slideshareUrl = 'http://www.slideshare.net/';
-    var slideshareAjaxUrlPrefix = "http://www.slideshare.net/api/oembed/2?url=http://www.slideshare.net/";
     var i;
     for (i in slideshare) {
-      this.slideshareAjax(slideshareAjaxUrlPrefix + slideshare[i], slideshareUrl + slideshare[i]);
+      this.slideshareAjax(slideshare[i]);
     }
 
     //get youtube info
     for(i in youtube){
       this.youtubeAjax(youtube[i]);
+    }
+
+    //no info can be produce
+    if(slideshare.length + youtube.length === 0){
+      deferred.resolve();
     }
 
     return deferred.promise();
@@ -360,20 +363,23 @@ function Reference() {
     $.get(url,
       function(data) {
         var video = data.items[0].snippet;
-        result = '<li><a href="http://www.youtube.com/watch?v=' + id + '">' + video.title + '</a></li>';
+        //use exteranl broswer
+        result = '<li><a href="#" onclick="window.open(\'http://www.youtube.com/watch?v=' + id + '\', \'_system\');">' + video.title + '</a></li>';
         youtubeResult.push(result);
         self.isFinish();
       });
   };
 
-  this.slideshareAjax = function(url, slideshareUrl) {
-    console.log('[slideshareAjax]'+url);
+  this.slideshareAjax = function(slidesharePath) {
+    var slideshareUrl = 'http://www.slideshare.net/' + slidesharePath;
+    var ajaxUrl = "http://www.slideshare.net/api/oembed/2?url=http://www.slideshare.net/" + slidesharePath;
+
     var self = this;
     var result;
     //ajax slideshare info and put into array
-    $.get(url,
+    $.get(ajaxUrl,
       function(data) {
-        result = '<li><a href="' + slideshareUrl + '">' + data.title + ' - ' + data.author_name + '</a></li>';
+        result = '<li><a href="#" onclick="window.open(\'' + slideshareUrl + '\', \'_system\');">' + data.title + ' - ' + data.author_name + '</a></li>';
         slideshareResult.push(result);
         self.isFinish();
       });
@@ -428,7 +434,7 @@ function Reference() {
   };
 
   //get the refrence from exsit version
-  this.getExistRefrence = function(content) {
+  this.setRef = function(content) {
     console.log("[Reference]getExistRefrence");
 
     //add youtube id to youtube array

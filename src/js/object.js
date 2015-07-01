@@ -8,7 +8,7 @@ function Pack() {
   this.creator_user_id = '';
   this.cover_filename = '';
   this.creator_user_name = '';
-  this.version = '';
+  this.version = [];
 
   this.getPack = function(packId) {
     var pack = JSON.parse(localStorage.getItem(packId));
@@ -75,7 +75,7 @@ function Version() {
   this.bookmark = '';
   this.note = '';
   this.file = '';
-  this.version = '';
+  this.version = 0;
   this.modified = '';
   this.view_count = '';
   this.user_view_count = '';

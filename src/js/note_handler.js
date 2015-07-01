@@ -58,7 +58,10 @@ $(document).on('pageinit', "#new_note_choose", function() {
   });
   //show choose content
   var pack = JSON.parse(localStorage.getItem(viewPackId));
-  $('#choose_pack_content').html(pack.version[viewPackVersion.index].content);
+  //prepare content
+  var content = pack.version[viewPackVersion.index].content;
+  content = replacePackImgPath(content);
+  $('#choose_pack_content').html(content);
 });
 
 $(document).on('pageshow', "#new_note_choose", function() {

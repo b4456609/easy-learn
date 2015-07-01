@@ -365,33 +365,30 @@ function saveNewVersionHandler(pack, isPublic) {
     newVersion.file = editingFile;
     newVersion.is_public = isPublic;
     newVersion.content = content;
+    newVersion.version = originVersion.version;
 
     console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
     //remain one not public
     if (!originVersion.is_public && !isPublic) {
       // modify origin to second one
-      originVersion.id = originVersion.id.replace(/_./i, '');
       newVersion.id = originVersion.id;
+      newVersion.version++;
 
       //remove the other backup
-      re = new RegExp(originVersion.id, 'i');
       for (var index in pack.version) {
         if (index == viewPackVersion.index) {} //do nothing
-        else if (pack.version[index].id.search(re) != -1) {
+        else if (pack.version[index].id === originVersion.id) {
           pack.version.splice(index, 1);
           break;
           //should be only one
         }
       }
-
-      //mark as old
-      originVersion.id = originVersion.id + "_1";
     }
     //public version, remove all old version
     else if (!originVersion.is_public && isPublic) {
       // modify origin to second one
-      originVersion.id = originVersion.id.replace(/_./i, '');
       newVersion.id = originVersion.id;
+      newVersion.version++;
 
       //remove the other backup
       re = new RegExp(originVersion.id, 'i');
@@ -399,8 +396,8 @@ function saveNewVersionHandler(pack, isPublic) {
       var i = 0;
       for (; i < pack.version.length; i++) {
         console.log('for:' + pack.version[i].id);
-        if (pack.version[i].id.search(re) != -1) {
-          console.log('delete:' + pack.version[i].id);
+        if (pack.version[i].id === originVersion.id) {
+          console.log('delete:' + pack.version[i].id + ' ' + pack.version[i].version);
           pack.version.splice(i, 1);
           //because delete one i
           i--;

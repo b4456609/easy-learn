@@ -1,6 +1,6 @@
 
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
@@ -23,7 +23,6 @@ table {
 	border-spacing: 0;
 }
 /* end */
-
 
 .setting_flip .ui-slider-switch {
   float: right;
@@ -131,4 +130,9 @@ table {
 /*refrence area*/
 #pack_refrence{
   word-wrap: break-word;
+}
+
+/*version info*/
+.version-look{
+	background: #B2EBF2;
 }

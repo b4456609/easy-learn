@@ -264,12 +264,9 @@ function display_version_info() {
     });
     var userName = version[i].creator_user_name;
     var text = getVersionInfo(version[i]);
-    console.log(viewPackVersion.index);
-
-    console.log(i);
 
     if (i == viewPackVersion.index) {
-      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>目前版本  ' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
+      html += '<li class="version_col version-look" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
     } else {
       html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\'' + i + '\')">觀看此版本</a></li>';
     }

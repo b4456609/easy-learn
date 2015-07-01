@@ -331,10 +331,22 @@ function Reference() {
   };
 
   this.getInfo = function(content) {
+    //Deferred object
+    deferred = $.Deferred();
+
+    //no info can be produce
+    if (slideshare.length + youtube.length === 0) {
+      deferred.resolve();
+      return deferred.promise();
+    } else if (navigator.network.connection.type == Connection.NONE) {
+      //no internet connection
+      deferred.resolve();
+      return deferred.promise();
+    }
+
     //parse content
     this.setRef(content);
 
-    deferred = $.Deferred();
     //get slide share info
     var i;
     for (i in slideshare) {
@@ -342,20 +354,16 @@ function Reference() {
     }
 
     //get youtube info
-    for(i in youtube){
+    for (i in youtube) {
       this.youtubeAjax(youtube[i]);
     }
 
-    //no info can be produce
-    if(slideshare.length + youtube.length === 0){
-      deferred.resolve();
-    }
 
     return deferred.promise();
   };
 
   this.youtubeAjax = function(id) {
-    console.log('[youtubeAjax]'+id);
+    console.log('[youtubeAjax]' + id);
     var self = this;
     var url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + id + '&key=AIzaSyBaRuuH-H3TCyW4ek-_J-XR9BCOBjfbP5s';
     var result;
@@ -456,5 +464,17 @@ function Reference() {
       this.addSlideshare(content.substring(index + 15, endIndex).replace('_', '/'));
       index = content.indexOf('slideshare-img ', index + 1);
     }
+  };
+
+  //delete exist reference
+  this.deleteRef = function(content) {
+    console.log("[Reference]deleteRef");
+    var endIndex = content.indexOf('<div id="pack_refrence">');
+    if (endIndex === -1) {
+      console.log('[Reference]no exist reference');
+      return content;
+    }
+
+    return content.substring(0, endIndex);
   };
 }

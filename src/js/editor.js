@@ -3,22 +3,24 @@ var editingPackId = null;
 var editingFile = [];
 var SLIDESHARE_PATH;
 
-$(document).on("pageinit", "#co_pack", function () {
+$(document).on("pageinit", "#co_pack", function() {
   //set editor height
-  $('#iframe1').load(function () {
+  $('#iframe1').load(function() {
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width('100%');
   });
 
 });
 
-$(document).on('pageshow', "#co_pack", function () {
+$(document).on('pageshow', "#co_pack", function() {
   //get pack from localStorage
   var pack = new Pack();
   pack.getPack(viewPackId);
 
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
+  var r = new Reference();
+  content = r.deleteRef(content);
 
   //set pack title
   $('#pack_title').html(pack.name);
@@ -28,27 +30,27 @@ $(document).on('pageshow', "#co_pack", function () {
   editor_button_handler();
 
   //header button handler
-  $('#pack_branch').click(function () {
+  $('#pack_branch').click(function() {
     saveNewVersionHandler(pack, true);
   });
 
 
-  $('#save_draft').click(function () {
+  $('#save_draft').click(function() {
     saveNewVersionHandler(pack, false);
   });
 
   editingPackId = viewPackId;
 });
 
-$(document).on("pageinit", "#new_pack_edit", function () {
+$(document).on("pageinit", "#new_pack_edit", function() {
   //set editor height
-  $('#iframe1').load(function () {
+  $('#iframe1').load(function() {
     $(this).height($(window).height() - headerHeight - 8);
     $(this).width('100%');
   });
 });
 
-$(document).on("pageshow", "#new_pack_edit", function () {
+$(document).on("pageshow", "#new_pack_edit", function() {
 
   //show saved html
   if (newPackTemp.content !== '') {
@@ -57,7 +59,7 @@ $(document).on("pageshow", "#new_pack_edit", function () {
 
   //save pack in localStorage
   $('#save_pack').click(savePackHandler);
-  $('#edit_back').click(function () {
+  $('#edit_back').click(function() {
     newPackTemp.content = $('#iframe1').contents().find('#edit').editable("getHTML", true, false);
   });
 
@@ -67,17 +69,17 @@ $(document).on("pageshow", "#new_pack_edit", function () {
 
 function getPhotoWithModifySize(successCallback) {
   // Retrieve image file location from specified source
-  navigator.camera.getPicture(function (imageData) {
-    window.resolveLocalFileSystemURL(imageData, function (fileEntry) {
+  navigator.camera.getPicture(function(imageData) {
+    window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
       addFileToPack(newPackTemp.id, fileEntry, successCallback);
     }, fail);
   }, onFail, {
-      quality: 70,
-      targetWidth: 800,
-      targetHeight: 800,
-      destinationType: Camera.DestinationType.FILE_URI,
-      sourceType: Camera.PictureSourceType.PHOTOLIBRARY
-    });
+    quality: 70,
+    targetWidth: 800,
+    targetHeight: 800,
+    destinationType: Camera.DestinationType.FILE_URI,
+    sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+  });
 }
 
 
@@ -96,7 +98,7 @@ function savePackHandler() {
   //add reference information
   var r = new Reference();
   var deffer = r.getInfo(content);
-  $.when(deffer).then(function(){
+  $.when(deffer).then(function() {
     content += r.get();
 
     //add new version
@@ -156,11 +158,11 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-slideshare'
         },
-        callback: function () {
+        callback: function() {
           //open popup slideshare setting
           $("#popup_slideshare").popup("open");
         },
-        refresh: function () { }
+        refresh: function() {}
       },
       youtube: {
         title: 'insert youtube',
@@ -170,12 +172,12 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-youtube'
         },
-        callback: function () {
+        callback: function() {
           //open popup slideshare setting
           $("#popup_youtube").popup("open");
 
         },
-        refresh: function () { }
+        refresh: function() {}
       },
       imageUrlAndFile: {
         title: 'insert youtube',
@@ -185,11 +187,11 @@ function load_editor() {
           // Font Awesome icon class fa fa-*.
           value: 'fa fa-image'
         },
-        callback: function () {
+        callback: function() {
           $("#popup_image").popup("open");
 
         },
-        refresh: function () { }
+        refresh: function() {}
       }
     }
   });
@@ -229,7 +231,7 @@ function youtube_submit_handler() {
   var videoId = youtube_parser(user_url);
 
   //set embed code
-  var embedCode = '<p><div id="'+ videoId +'" class="youtube video-container">' +
+  var embedCode = '<p><div id="' + videoId + '" class="youtube video-container">' +
     '<iframe width="560" height="315" src="http://www.youtube.com/embed/' + videoId +
     '?controls=1&disablekb=1&modestbranding=1&showinfo=0&rel=0' + startPar + endPar + '" frameborder="0" allowfullscreen></iframe>' + '</div></p>';
 
@@ -262,12 +264,12 @@ function slideshare_submit_handler() {
 
   //set slide share path variable
   var indexOfSlash = user_url.lastIndexOf('/');
-  indexOfSlash = user_url.lastIndexOf('/', indexOfSlash-1);
-  SLIDESHARE_PATH = user_url.substr(indexOfSlash+1).replace('/', '_');
+  indexOfSlash = user_url.lastIndexOf('/', indexOfSlash - 1);
+  SLIDESHARE_PATH = user_url.substr(indexOfSlash + 1).replace('/', '_');
 
   //ajax
   $.get(url,
-    function (data) {
+    function(data) {
       //error check
       if (start <= 0 | start === null | start > data.total_slides) {
         start = 1;
@@ -293,8 +295,8 @@ function displayImgInEditor(fileEntry) {
   var img = "<img src='" + imgsrc + "' width='100%' >";
 
   //if the image is slideshare insert id in to html code to display reference
-  if(imgsrc.indexOf('slide')!==-1){
-    img = "<img class='slideshare-img " + SLIDESHARE_PATH + " " +"' src='" + imgsrc + "' width='100%' >";
+  if (imgsrc.indexOf('slide') !== -1) {
+    img = "<img class='slideshare-img " + SLIDESHARE_PATH + " " + "' src='" + imgsrc + "' width='100%' >";
   }
   console.log(img);
   $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
@@ -304,12 +306,12 @@ function editor_button_handler() {
   //image button
   //submit handler
   $("#image_submit").click(image_submit_handler);
-  $("#image_choose").click(function () {
+  $("#image_choose").click(function() {
     $('#popup_image').popup("close");
     getPhotoWithModifySize(displayImgInEditor);
   });
   //cancel handler
-  $('#image_cancel').click(function () {
+  $('#image_cancel').click(function() {
     $('#popup_image').popup("close");
   });
 
@@ -318,7 +320,7 @@ function editor_button_handler() {
   $("#slideshare_submit").click(slideshare_submit_handler);
 
   //cancel handler
-  $('#slideshare_cancel').click(function () {
+  $('#slideshare_cancel').click(function() {
     $('#popup_slideshare').popup("close");
   });
 
@@ -327,12 +329,14 @@ function editor_button_handler() {
   $("#youtube_submit").click(youtube_submit_handler);
 
   //cancel handler
-  $('#youtube_cancel').click(function () {
+  $('#youtube_cancel').click(function() {
     $('#popup_youtube').popup("close");
   });
 }
 
 function saveNewVersionHandler(pack, isPublic) {
+  //start loading spinner
+  navigator.notification.activityStart('新增懶人包', '儲存中');
 
   //get editor word and replace the img
   var content = $('#iframe1').contents().contents().find('#edit').editable("getHTML", true, false);
@@ -341,76 +345,87 @@ function saveNewVersionHandler(pack, isPublic) {
   var re = new RegExp(FILE_STORAGE_PATH, 'g');
   content = content.replace(re, 'FILE_STORAGE_PATH');
 
-  var originVersion = pack.version[viewPackVersion.index];
 
-  //get files and concate it to new one
-  var files = originVersion.file;
-  editingFile = editingFile.concat(files);
+  //add reference information
+  var r = new Reference();
+  var deffer = r.getInfo(content);
+  $.when(deffer).then(function() {
+    content += r.get();
 
-  //new version
-  var newVersion = new Version();
-  newVersion.initial();
-  newVersion.note = originVersion.note;
-  newVersion.file = editingFile;
-  newVersion.is_public = isPublic;
-  newVersion.content = content;
+    var originVersion = pack.version[viewPackVersion.index];
 
-  console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
-  //remain one not public
-  if (!originVersion.is_public && !isPublic) {
-    // modify origin to second one
-    originVersion.id = originVersion.id.replace(/_./i, '');
-    newVersion.id = originVersion.id;
+    //get files and concate it to new one
+    var files = originVersion.file;
+    editingFile = editingFile.concat(files);
 
-    //remove the other backup
-    re = new RegExp(originVersion.id, 'i');
-    for (var index in pack.version) {
-      if (index == viewPackVersion.index) { }//do nothing
-      else if (pack.version[index].id.search(re) != -1) {
-        pack.version.splice(index, 1);
-        break;
-        //should be only one
+    //new version
+    var newVersion = new Version();
+    newVersion.initial();
+    newVersion.note = originVersion.note;
+    newVersion.file = editingFile;
+    newVersion.is_public = isPublic;
+    newVersion.content = content;
+
+    console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
+    //remain one not public
+    if (!originVersion.is_public && !isPublic) {
+      // modify origin to second one
+      originVersion.id = originVersion.id.replace(/_./i, '');
+      newVersion.id = originVersion.id;
+
+      //remove the other backup
+      re = new RegExp(originVersion.id, 'i');
+      for (var index in pack.version) {
+        if (index == viewPackVersion.index) {} //do nothing
+        else if (pack.version[index].id.search(re) != -1) {
+          pack.version.splice(index, 1);
+          break;
+          //should be only one
+        }
       }
+
+      //mark as old
+      originVersion.id = originVersion.id + "_1";
+    }
+    //public version, remove all old version
+    else if (!originVersion.is_public && isPublic) {
+      // modify origin to second one
+      originVersion.id = originVersion.id.replace(/_./i, '');
+      newVersion.id = originVersion.id;
+
+      //remove the other backup
+      re = new RegExp(originVersion.id, 'i');
+      console.log('originVersion.id:' + originVersion.id);
+      var i = 0;
+      for (; i < pack.version.length; i++) {
+        console.log('for:' + pack.version[i].id);
+        if (pack.version[i].id.search(re) != -1) {
+          console.log('delete:' + pack.version[i].id);
+          pack.version.splice(i, 1);
+          //because delete one i
+          i--;
+        }
+      }
+      //version is public the pack will be public
+      pack.is_public = true;
     }
 
-    //mark as old
-    originVersion.id = originVersion.id + "_1";
-  }
-  //public version, remove all old version
-  else if (!originVersion.is_public && isPublic) {
-    // modify origin to second one
-    originVersion.id = originVersion.id.replace(/_./i, '');
-    newVersion.id = originVersion.id;
+    var new_index = pack.version.length;
 
-    //remove the other backup
-    re = new RegExp(originVersion.id, 'i');
-    console.log('originVersion.id:' + originVersion.id);
-    var i = 0;
-    for (; i < pack.version.length; i++) {
-      console.log('for:' + pack.version[i].id);
-      if (pack.version[i].id.search(re) != -1) {
-        console.log('delete:' + pack.version[i].id);
-        pack.version.splice(i, 1);
-        //because delete one i
-        i--;
-      }
-    }
-    //version is public the pack will be public
-    pack.is_public = true;
-  }
+    //add new version in pack
+    pack.version[new_index] = newVersion.get();
 
-  var new_index = pack.version.length;
+    //set new pack in localStorage
+    pack.save();
 
-  //add new version in pack
-  pack.version[new_index] = newVersion.get();
+    //set view this version
+    viewPackVersion.index = new_index;
+    editingFile = [];
 
-  //set new pack in localStorage
-  pack.save();
+    //change page
+    $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 
-  //set view this version
-  viewPackVersion.index = new_index;
-  editingFile = [];
-
-  //change page
-  $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
+    //stop spinner
+    navigator.notification.activityStop();
+  });
 }

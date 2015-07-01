@@ -331,14 +331,13 @@ function Reference() {
   };
 
   this.getInfo = function(content) {
+    console.log('[Reference]getInfo');
     //Deferred object
     deferred = $.Deferred();
 
     //no info can be produce
-    if (slideshare.length + youtube.length === 0) {
-      deferred.resolve();
-      return deferred.promise();
-    } else if (navigator.network.connection.type == Connection.NONE) {
+    if (navigator.network.connection.type == Connection.NONE) {
+      console.log('[Reference]getInfo:no internet');
       //no internet connection
       deferred.resolve();
       return deferred.promise();
@@ -346,6 +345,13 @@ function Reference() {
 
     //parse content
     this.setRef(content);
+
+    //no content Reference
+    if (slideshare.length + youtube.length === 0) {
+      console.log('[Reference]getInfo:no need to ajax');
+      deferred.resolve();
+      return deferred.promise();
+    }
 
     //get slide share info
     var i;

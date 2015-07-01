@@ -13,13 +13,13 @@ var NEW_PACK = null;
 //for new version bug
 var packName;
 
-$(document).on("pageinit", "#version_pack", function () {
+$(document).on("pageinit", "#version_pack", function() {
   display_version_info();
 });
 
 
 
-$(document).on('pageinit', "#new_pack", function () {
+$(document).on('pageinit', "#new_pack", function() {
   //check is user back from edit page
   //initial form
   if (newPackTemp.id === '') {
@@ -42,7 +42,7 @@ $(document).on('pageinit', "#new_pack", function () {
     $('#new_pack_description').val(NEW_PACK.description);
     $('#tags').val(NEW_PACK.tags);
     if (NEW_PACK.cover_filename !== '') {
-      getImgNode(newPackTemp.id, NEW_PACK.cover_filename, function (packId, img) {
+      getImgNode(newPackTemp.id, NEW_PACK.cover_filename, function(packId, img) {
         $("#cover_photo_area").html(img.outerHTML);
       });
     }
@@ -50,9 +50,9 @@ $(document).on('pageinit', "#new_pack", function () {
 
 });
 
-$(document).on('pageshow', "#new_pack", function () {
+$(document).on('pageshow', "#new_pack", function() {
   // save new pack storage for next page use
-  $('#new_pack_next').click(function () {
+  $('#new_pack_next').click(function() {
     //save user data
     NEW_PACK.name = $('#new_pack_title').val();
     NEW_PACK.is_public = document.getElementById("is_public").checked;
@@ -61,12 +61,12 @@ $(document).on('pageshow', "#new_pack", function () {
   });
 
   // choose cover image file hanlder
-  $('#choose_photo').click(function () {
+  $('#choose_photo').click(function() {
     getPhotoWithModifySize(displayCoverImg);
   });
 });
 
-$(document).on('pageinit', "#view_pack", function () {
+$(document).on('pageinit', "#view_pack", function() {
   //stop spinner notification
   navigator.notification.activityStart('觀看懶人包', '載入中');
 
@@ -82,27 +82,21 @@ $(document).on('pageinit', "#view_pack", function () {
 
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
-  packName = pack.name;
-
-  //add version view count
-  pack.version[viewPackVersion.index].user_view_count++;
-  pack.save();
 
   //prepare content
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
   $('#veiw_pack_content').html(content);
 
-  // var r = new Reference();
-  // var deffer = r.getInfo(content);
-  // $.when(deffer).then(function(){
-  //   console.log(r.get());
-  // });
 });
 
-$(document).on('pageshow', "#view_pack", function () {
+$(document).on('pageshow', "#view_pack", function() {
+
+  var pack = new Pack();
+  pack.getPack(viewPackId);
+
   //show pack's title
-  $('#pack_title').text(packName);
+  $('#pack_title').text(pack.name);
   //note initail
   $("#note-display").toolbar("option", "position", "fixed");
   $("#note-display").toolbar("option", "tapToggle", false);
@@ -112,9 +106,13 @@ $(document).on('pageshow', "#view_pack", function () {
 
   //stop spinner notification
   navigator.notification.activityStop();
+
+  //add version view count
+  pack.version[viewPackVersion.index].user_view_count++;
+  pack.save();
 });
 
-$(document).on('pageinit', "#search_view_pack", function () {
+$(document).on('pageinit', "#search_view_pack", function() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
   //set look's version's index, check if index exits
@@ -139,7 +137,7 @@ $(document).on('pageinit', "#search_view_pack", function () {
 });
 
 
-$(document).on('pageshow', "#view_pack", function () {
+$(document).on('pageshow', "#view_pack", function() {
   //show pack's title
   $('#pack_title').text(packName);
   //note initail
@@ -226,11 +224,11 @@ function onFail(message) {
 }
 
 function displayCoverImg(packfileEntry) {
-  packfileEntry.file(function (file) {
+  packfileEntry.file(function(file) {
 
     var img = document.createElement("img");
     var reader = new FileReader();
-    reader.onloadend = function () {
+    reader.onloadend = function() {
       img.src = reader.result;
     };
     img.style.width = '100%';
@@ -257,7 +255,13 @@ function display_version_info() {
   for (i = 0; i < version.length; i++) {
     // get version's create time
     var time = new Date(version[i].create_time);
-    var timeString = time.toLocaleString(navigator.language, { hour: '2-digit', minute: 'numeric', day: "numeric", month: "numeric", year: 'numeric' });
+    var timeString = time.toLocaleString(navigator.language, {
+      hour: '2-digit',
+      minute: 'numeric',
+      day: "numeric",
+      month: "numeric",
+      year: 'numeric'
+    });
     var userName = version[i].creator_user_name;
     var text = getVersionInfo(version[i]);
     console.log(viewPackVersion.index);

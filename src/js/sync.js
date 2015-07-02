@@ -1,7 +1,4 @@
-var uploadImgCount = 0;
-var uploadTotal = 0;
-var downloadCount = 0;
-var downloadTotal = 0;
+var promiseArray = [];
 var SERVER_URL = 'http://140.121.197.135:11116/';
 //var SERVER_URL = 'http://192.168.1.121:8080/';
 
@@ -18,22 +15,25 @@ function getPack(packId, callback) {
       user_id: user.id,
       pack_id: packId
     },
-    success: function (data) {
+    success: function(data) {
       console.log('success get pack' + JSON.stringify(data));
       if (data.length !== 0) {
         localStorage.setItem(packId, JSON.stringify(data));
         callback();
       }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('error');
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
     }
   });
 }
 
 function syncImg(files) {
-
   //upload image
   console.log(files);
-  uploadImgCount = 0;
-  uploadTotal = files.length;
 
   var i;
   for (i in files) {
@@ -42,17 +42,9 @@ function syncImg(files) {
 
   downloadServerImg();
 
-  if (uploadImgCount == uploadTotal && downloadCount == downloadTotal) {
-    $.mobile.loading("hide");
-  }
-
 }
 
 function downloadServerImg() {
-  //initial variable
-  downloadCount = 0;
-  downloadTotal = 0;
-
   //download image sync
   for (var i = 0; i < localStorage.length; i++) {
     //get pack id and object
@@ -81,57 +73,57 @@ function downloadServerImg() {
       //console.log('packVersion for' + packId + ' ' + versionId + ' ' + filesInVersion);
       //console.log(filesInVersion);
       for (var fileIndex in filesInVersion) {
-        FileNotExistThenDownload(packId, filesInVersion[fileIndex]);
+        var downloadDeffer = $.Deferred();
+        promiseArray.push(downloadDeffer);
+        FileNotExistThenDownload(packId, filesInVersion[fileIndex], downloadDeffer);
       }
     }
   }
 }
 
-function FileNotExistThenDownload(packId, filename) {
+function FileNotExistThenDownload(packId, filename, downloadDeffer) {
   //console.log('FileNotExistThenDownload:' + ' ' + packId + ' ' + versionId + ' ' + filename);
   var filePath = cordova.file.externalDataDirectory + packId + '/' + filename;
-  window.resolveLocalFileSystemURL(filePath, function (fileEntry) { }, function (error) {
-    if (downloadTotal === 0) {
-      $.mobile.loading("show", {
-        text: "下載圖片中",
-        textVisible: true,
-        theme: "z",
-        html: ""
-      });
-    }
-    downloadTotal++;
-    console.log('checkFileExist:' + ' ' + error.code + ' ' + packId + ' ' + filename);
+  window.resolveLocalFileSystemURL(filePath, function() {
+    console.log('[FileNotExistThenDownload]FileExist:finished');
+    downloadDeffer.resolve();
+  }, function(error) {
+    console.log('[FileNotExistThenDownload]FileNotExist:' + ' ' + error.code + ' ' + packId + ' ' + filename);
     //first in to download show loading message
-    downloadImg(filename, packId);
+    downloadImg(filename, packId, downloadDeffer);
   });
 }
 
 
-function downloadImg(filename, packId) {
+function downloadImg(filename, packId, downloadDeffer) {
   var url = SERVER_URL + 'easylearn/download?pack_id=' +
     packId + '&filename=' + filename;
   console.log('downloadImgurl:' + url);
 
-  downloadImgByUrl(url, packId, filename, function () {
-    downloadCount++;
-    if (downloadCount === downloadTotal) {
-      $.mobile.loading("hide");
-    }
+  downloadImgByUrl(url, packId, filename, function() {
+    downloadDeffer.resolve();
   });
 }
 
 function uploadImg(filename, packId) {
+  var uploadDeffer = $.Deferred();
+  promiseArray.push(uploadDeffer);
+
+  var failHandler = function(error) {
+    fail(error);
+    uploadDeffer.resolve();
+  };
+
   var filePath = cordova.file.externalDataDirectory + packId + '/' + filename;
   console.log('filepath' + filePath);
-  window.resolveLocalFileSystemURL(filePath, function (fileEntry) {
+  window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
     console.log(fileEntry);
-
-    fileEntry.file(function (file) {
+    fileEntry.file(function(file) {
       console.log(file);
 
       var reader = new FileReader();
 
-      reader.onloadend = function () {
+      reader.onloadend = function() {
         var srcdata = reader.result;
         console.log(srcdata);
         $.ajax({
@@ -144,20 +136,23 @@ function uploadImg(filename, packId) {
           },
           cache: false,
           contentType: "application/x-www-form-urlencoded",
-          success: function () {
-            console.log('success upload img');
-            uploadImgCount++;
-            //hide for upload img
-            if (uploadImgCount === uploadTotal) {
-              $.mobile.loading("hide");
-            }
+          success: function() {
+            console.log('success upload img' + filename);
+            uploadDeffer.resolve();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            uploadDeffer.resolve();
+            console.log('error');
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
           }
         });
       };
 
       reader.readAsDataURL(file);
-    }, fail);
-  }, fail);
+    }, failHandler);
+  }, failHandler);
 }
 
 
@@ -178,9 +173,15 @@ function postComment(noteId, newComment) {
       noteId: noteId,
       newComment: jsonObj
     },
-    success: function () {
+    success: function() {
       console.log('success post new comment');
     },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('error');
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
   });
 }
 
@@ -192,7 +193,7 @@ function getComment(NoteId, lastestCreateTime) {
   $.ajax({
     type: "GET",
     url: url,
-    success: function (data) {
+    success: function(data) {
       console.log('success get comment' + JSON.stringify(data));
       if (data.length !== 0) {
         displayComment(data);
@@ -211,6 +212,12 @@ function getComment(NoteId, lastestCreateTime) {
         //update pack in localStorage
         localStorage.setItem(viewPackId, JSON.stringify(pack));
       }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('error');
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
     }
   });
 }
@@ -222,10 +229,9 @@ function canSync() {
   var wifi = user.setting.wifi_sync;
   var mobile_network = user.setting.mobile_network_sync;
 
-  if (wifi == false && Connection.WIFI === networkState) {
+  if (wifi === false && Connection.WIFI === networkState) {
     return false;
-  }
-  else if (mobile_network == false && Connection.CELL === networkState) {
+  } else if (mobile_network === false && Connection.CELL === networkState) {
     return false;
   }
 
@@ -233,12 +239,27 @@ function canSync() {
 }
 
 function sync() {
-  
-  if(!canSync()){
+  navigator.notification.activityStart('同步中', '請稍後...');
+
+  //reset promise
+  promiseArray = [];
+  var syncDeffer = $.Deferred();
+  promiseArray.push(syncDeffer);
+
+  var defferedFinish = function() {
+    //promise array downloadImg and upload img and sync operation
+    $.when.apply($, promiseArray).done(function() {
+      promiseArray = [];
+      console.log('[sync]all done');
+      navigator.notification.activityStop();
+    });
+  }
+
+  if (!canSync()) {
     $('#sync').text(navigator.connection.type + '狀態下不同步');
     return;
   }
-  
+
   $('#sync').text('同步中...');
 
   var sendData = {
@@ -264,7 +285,7 @@ function sync() {
 
   console.log(sendData);
 
-  var sync = $.ajax({
+  var syncAjax = $.ajax({
     method: "POST",
     url: SERVER_URL + 'easylearn/sync',
     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
@@ -272,41 +293,51 @@ function sync() {
       sync_data: JSON.stringify(sendData)
     },
   });
-  
+
   //success
-  sync.done(function (data) {
+  syncAjax.done(function(data) {
+    syncDeffer.resolve();
     console.log('success sync');
     console.log(data);
 
     if (data.sync.status === 'success') {
       //save DB data to local storage
       saveToLocalStorage(data);
-        
+
       //sync image
       syncImg(data.sync.upload_file);
 
       //refresh home page
       refreshPage();
+
+
     } else if (data.sync.status === 'conflict') {
       //decide To Replace
-      $("#sync_conflict_popup").popup("open", { history: false });
+      $("#sync_conflict_popup").popup("open", {
+        history: false
+      });
       //the user will decide Replace or keep;
       // onclick will handle
-    }
-    else {
+    } else {
       //deal with sync fail
     }
     $('#sync').text('同步');
+
+    defferedFinish();
   });
-  
+
   //fail
-  sync.fail(function (xhr, textStatus, error) {
+  syncAjax.fail(function(xhr, textStatus, error) {
+    syncDeffer.resolve();
     console.log(xhr.statusText);
     console.log(textStatus);
     console.log(error);
     $('#sync').text('同步失敗');
+
+    defferedFinish();
   });
 }
+
 function saveToLocalStorage(data) {
   console.log('saveInLocalStroage');
   //get object's key
@@ -339,25 +370,6 @@ function refreshPage() {
   //update count in panel page
   display_folder();
 }
-
-$(document).on("click", ".show-page-loading-msg", function () {
-  var $this = $(this),
-    theme = $this.jqmData("theme") || $.mobile.loader.prototype.options.theme,
-    msgText = $this.jqmData("msgtext") || $.mobile.loader.prototype.options.text,
-    textVisible = $this.jqmData("textvisible") || $.mobile.loader.prototype.options.textVisible,
-    textonly = !!$this.jqmData("textonly");
-  html = $this.jqmData("html") || "";
-  $.mobile.loading("show", {
-    text: msgText,
-    textVisible: textVisible,
-    theme: theme,
-    textonly: textonly,
-    html: html
-  });
-})
-  .on("click", ".hide-page-loading-msg", function () {
-  $.mobile.loading("hide");
-});
 
 function checkConnection() {
   var networkState = navigator.connection.type;

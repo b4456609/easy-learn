@@ -272,10 +272,43 @@ function display_version_info() {
   //console.log(version);
   console.log(viewPackVersion.index);
 
+  //get user info
+  var user = new User();
+
+  //delete duplicate private version
+  var i;
+  for (i = 0; i < version.length; i++) {
+    //if version if private
+    if (!version[i].is_public) {
+      for (j = i; j < version.length; j++) {
+        //id are same compare version size
+        if (version[i].id == version[j].id && version[i].version < version[j].version) {
+          //mark as null for not break array index arrange
+          version[i] = null;
+          break;
+        } else if (version[i].id == version[j].id && version[i].version > version[j].version) {
+          //mark as null for not break array index arrange
+          version[j] = null;
+          break;
+        }
+      }
+    }
+  }
+
   //generate display code
   var html = '';
-  var i = 0;
   for (i = 0; i < version.length; i++) {
+    //null as not display
+    if(version[i] == null){
+      continue;
+    }
+
+    //other private version not display
+    if (!version[i].is_public && version[i].creator_user_id != user.id) {
+      //it's not this user's private version don't display
+      continue;
+    }
+
     //display private icon
     var privateIcon = '';
     if (!version[i].is_public) {

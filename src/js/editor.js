@@ -2,6 +2,8 @@
 var editingPackId = null;
 var editingFile = [];
 var SLIDESHARE_PATH;
+var lastVersionIndex;
+var currentIndex;
 
 $(document).on("pageinit", "#co_pack", function() {
   //set editor height
@@ -17,6 +19,10 @@ $(document).on('pageshow', "#co_pack", function() {
   var pack = new Pack();
   pack.getPack(viewPackId);
 
+  //save index for checkout use
+  currentIndex = viewPackVersion.index;
+
+  //prepare content
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
   var r = new Reference();
@@ -28,6 +34,23 @@ $(document).on('pageshow', "#co_pack", function() {
   // set edit content
   $('#iframe1').contents().find('#edit').editable("insertHTML", content, true);
   editor_button_handler();
+
+  //add backup button
+  //find backup version index
+  for (var i in pack.version) {
+    console.log(pack.version[i].id + ' ' + pack.version[i].version + ' ' + pack.version[viewPackVersion.index].id + ' ' + pack.version[viewPackVersion.index].version);
+    //id are same compare version size
+    if (pack.version[i].id == pack.version[viewPackVersion.index].id && pack.version[i].version < pack.version[viewPackVersion.index].version) {
+      console.log('[coPack]find old version');
+      var buckupBtn = '<li><a href="#" onclick="checkout();">上次編輯內容</a></li>';
+
+      lastVersionIndex = i;
+
+      $(buckupBtn).prependTo('#co_pack_menu');
+      $('#co_pack_menu').listview();
+      $('#co_pack_menu').listview('refresh');
+    }
+  }
 
   //header button handler
   $('#pack_branch').click(function() {
@@ -41,6 +64,28 @@ $(document).on('pageshow', "#co_pack", function() {
 
   editingPackId = viewPackId;
 });
+
+function checkout(){
+  var pack = new Pack();
+  pack.getPack(viewPackId);
+
+  //checkout other version
+  if(viewPackVersion.index == currentIndex){
+    currentIndex = lastVersionIndex;
+  }
+  else{
+    currentIndex = viewPackVersion.index;
+  }
+
+  //prepare content
+  var content = pack.version[currentIndex].content;
+  content = replacePackImgPath(content);
+  var r = new Reference();
+  content = r.deleteRef(content);
+
+  // set edit content
+  $('#iframe1').contents().find('#edit').editable("setHTML", content, true);
+}
 
 $(document).on("pageinit", "#new_pack_edit", function() {
   //set editor height

@@ -51,19 +51,15 @@ $(document).on('pageshow', "#new_note", function() {
   $('#save_note').click(save_note_handler);
 });
 
-
 $(document).on('pageinit', "#new_note_choose", function() {
+  console.log("#new_note_choose pageinit");
   //show choose content
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = new Pack();
+  pack.getPack(viewPackId);
   //prepare content
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
   $('#choose_pack_content').html(content);
-});
-
-$(document).on('pageshow', "#new_note_choose", function() {
-  //button for next step
-  $('#note_choose_next').click(note_next_handler);
 });
 
 function save_note_handler() {
@@ -99,7 +95,7 @@ function save_note_handler() {
   localStorage.setItem(viewPackId, JSON.stringify(pack));
 }
 
-function note_next_handler() {
+function note_next_handler(sel) {
 
   //get current time
   var time = new Date();
@@ -118,7 +114,7 @@ function note_next_handler() {
   paintNote(selection, noteId);
 
   //get new version's code save into temp variable
-  note_selection.new_version_content = $('#veiw_pack_content').html();
+  note_selection.new_version_content = $(sel).html();
 
 }
 

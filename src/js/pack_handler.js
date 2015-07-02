@@ -105,10 +105,10 @@ $(document).on('pageshow', "#view_pack", function() {
   $('#veiw_pack_content').on("taphold", function() {
     console.log('[viewPack]hold content');
     var sel = window.getSelection();
-    console.log('[viewPack]isCollapsed'+sel.isCollapsed);
+    console.log('[viewPack]isCollapsed' + sel.isCollapsed);
 
-    if(!sel.isCollapsed){
-      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all" onclick="note_next_handler()">新增便利貼</a>';
+    if (!sel.isCollapsed) {
+      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all" onclick="note_next_handler(\'#veiw_pack_content\')">新增便利貼</a>';
       $('.ui-btn-right').html(next);
       $('#note_choose_next').button();
     }
@@ -276,6 +276,12 @@ function display_version_info() {
   var html = '';
   var i = 0;
   for (i = 0; i < version.length; i++) {
+    //display private icon
+    var privateIcon = '';
+    if (!version[i].is_public) {
+      privateIcon = '<i class="fa fa-lock" style="float: right; margin: 2px;"></i>';
+    }
+
     // get version's create time
     var time = new Date(version[i].create_time);
     var timeString = time.toLocaleString("zh-TW", {
@@ -289,9 +295,9 @@ function display_version_info() {
     var text = getVersionInfo(version[i]);
 
     if (i == viewPackVersion.index) {
-      html += '<li class="version_col version-look" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p></li>';
+      html += '<li class="version_col version-look" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + privateIcon + ' </h2><p>' + text + '</p></li>';
     } else {
-      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\'' + i + '\')">觀看此版本</a></li>';
+      html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + privateIcon + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\'' + i + '\')">觀看此版本</a></li>';
     }
   }
   $('#version_pack_content').html(html);

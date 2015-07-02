@@ -196,7 +196,8 @@ function search_pack() {
 
   //if no input do nothing
   if (input === "") {
-    $('#saerch-result').html("請輸入關鍵字查詢");
+    $('#search-result').html("<li>請輸入關鍵字查詢</li>");
+    $('#search-result').listview('refresh');
     return;
   }
 
@@ -209,8 +210,13 @@ function search_pack() {
     success: function(data) {
       console.log('success search');
       console.log(data);
-      var result = '';
+      if (data.length === 0) {
+        $('#search-result').html("<li>找不到符合的懶人包</li>");
+        $('#search-result').listview('refresh');
+        return;
+      }
 
+      var result = '';
       for (var i in data) {
         //cover img
         var img;
@@ -227,8 +233,8 @@ function search_pack() {
           '</li>';
         result += templete;
       }
-      $('#saerch-result').html(result);
-      $('#saerch-result').listview('refresh');
+      $('#search-result').html(result);
+      $('#search-result').listview('refresh');
     }
   });
 }

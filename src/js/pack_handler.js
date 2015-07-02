@@ -50,16 +50,20 @@ $(document).on('pageinit', "#new_pack", function() {
 
 });
 
-$(document).on('pageshow', "#new_pack", function() {
-  // save new pack storage for next page use
-  $('#new_pack_next').click(function() {
-    //save user data
-    NEW_PACK.name = $('#new_pack_title').val();
-    NEW_PACK.is_public = document.getElementById("is_public").checked;
-    NEW_PACK.description = $('#new_pack_description').val();
-    NEW_PACK.tags = $('#tags').val();
-  });
+function new_pack_next() {
+  NEW_PACK.name = $('#new_pack_title').val().trim();
+  if (NEW_PACK.name === "") {
+    navigator.notification.alert('標題不可為空', null, '錯誤', '確定');
+    return;
+  }
 
+  NEW_PACK.is_public = document.getElementById("is_public").checked;
+  NEW_PACK.description = $('#new_pack_description').val();
+  NEW_PACK.tags = $('#tags').val();
+  $(":mobile-pagecontainer").pagecontainer("change", "new_pack_edit.html");
+}
+
+$(document).on('pageshow', "#new_pack", function() {
   // choose cover image file hanlder
   $('#choose_photo').click(function() {
     getPhotoWithModifySize(displayCoverImg);
@@ -299,7 +303,7 @@ function display_version_info() {
   var html = '';
   for (i = 0; i < version.length; i++) {
     //null as not display
-    if(version[i] == null){
+    if (version[i] == null) {
       continue;
     }
 

@@ -1,4 +1,4 @@
-$(document).on("pageshow", "#login", function () {
+$(document).on("pageshow", "#login", function() {
   navigator.splashscreen.hide();
 });
 
@@ -33,17 +33,17 @@ function login_check() {
 }
 
 function successLogin(user) {
-  $('#msg').text('登入成功');
+  // $('#msg').text('登入成功');
   localStorage.setItem('user', JSON.stringify(user));
   var folder = [{
     "name": "All",
     "id": "allPackId",
     "pack": []
   }, {
-      "name": "我的最愛",
-      "id": "fjoeiwjowfe",
-      "pack": []
-    }];
+    "name": "我的最愛",
+    "id": "fjoeiwjowfe",
+    "pack": []
+  }];
   localStorage.folder = JSON.stringify(folder);
   //testLocalStorage();
 
@@ -56,13 +56,13 @@ function successLogin(user) {
 
 function logout() {
   var folder = new Folder();
-  var count =0;
+  var count = 0;
 
-  var callback = function () {
+  var callback = function() {
     count--;
-    if(count === 0){
-    localStorage.clear();
-    login();
+    if (count === 0) {
+      localStorage.clear();
+      login();
     }
   };
 
@@ -106,37 +106,35 @@ function fbLoginSuccess(userData) {
     }
   };
 
-facebookConnectPlugin.api(
+  facebookConnectPlugin.api(
     "/me/friends",
-    function (response) {
+    function(response) {
       if (response && !response.error) {
-          console.log(response);
+        console.log(response);
         /* handle the result */
       }
     }
-); 
-    
-    
+  );
+
+
   facebookConnectPlugin.api("/me", [],
-    function (result) {
+    function(result) {
       console.log(result);
       user.id = result.id;
       user.name = result.name;
       successLogin(user);
     },
-    function (error) {
+    function(error) {
       alert('登入失敗:' + JSON.stringify(error));
       console.log(error);
     });
-
-    
-    
-
 }
 
 function facebook_login() {
-  facebookConnectPlugin.login(["public_profile","user_birthday","user_friends"],
+  facebookConnectPlugin.login(["public_profile", "user_birthday", "user_friends"],
     fbLoginSuccess,
-    function (error) { console.log(error); }
-    );
+    function(error) {
+      console.log(error);
+    }
+  );
 }

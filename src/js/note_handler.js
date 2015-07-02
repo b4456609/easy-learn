@@ -149,7 +149,7 @@ function comment_submit_handler() {
   var commentTemplate = '<li><h2>' + JSON.parse(localStorage.user).name +
     '</h2><font style="white-space:normal; font-size: small">' +
     commentContent + '</font><p class="ui-li-aside" style="margin-top: 9px">' +
-    time.toLocaleString(navigator.language, {
+    time.toLocaleString("zh-TW", {
       hour: '2-digit',
       minute: 'numeric',
       day: "numeric",
@@ -204,7 +204,7 @@ function displayComment(commentArray) {
   for (i in commentArray) {
     var time = new Date(commentArray[i].create_time);
 
-    commentTemplate += '<li><h2>' + commentArray[i].user_name + '</h2><font style="white-space:normal; font-size: small">' + commentArray[i].content + '</font><p class="ui-li-aside" style="margin-top: 9px">' + time.toLocaleString(navigator.language, {
+    commentTemplate += '<li><h2>' + commentArray[i].user_name + '</h2><font style="white-space:normal; font-size: small">' + commentArray[i].content + '</font><p class="ui-li-aside" style="margin-top: 9px">' + time.toLocaleString("zh-TW", {
       hour: '2-digit',
       minute: 'numeric',
       day: "numeric",

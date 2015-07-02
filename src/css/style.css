@@ -133,6 +133,6 @@ table {
 }
 
 /*version info*/
-.version-look{
-	background: #B2EBF2;
+.version-look > h2 > a{
+	background: #B2DFDB  !important;
 }

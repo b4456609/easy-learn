@@ -278,7 +278,7 @@ function display_version_info() {
   for (i = 0; i < version.length; i++) {
     // get version's create time
     var time = new Date(version[i].create_time);
-    var timeString = time.toLocaleString(navigator.language, {
+    var timeString = time.toLocaleString("zh-TW", {
       hour: '2-digit',
       minute: 'numeric',
       day: "numeric",

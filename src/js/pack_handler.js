@@ -345,9 +345,10 @@ function display_version_info() {
 function getVersionInfo(version) {
   var charCount = version.content.length;
   var viewCount = version.user_view_count + version.view_count;
+  var bookmarkCount = version.bookmark.length;
   var pic = version.content.match(/jpg/g);
-  var youtube = version.content.match(/youtube/g);
-  var slideShare = version.content.match(/slideshare/g);
+  var youtube = version.content.match(/video-container/g);
+  var slideShare = version.content.match(/slideshare-img/g);
 
   var picCount = 0;
   var youtubeCount = 0;
@@ -366,10 +367,11 @@ function getVersionInfo(version) {
   }
 
   var result = '懶人包狀態: ' + status + '<br>';
-  result += '字數: ' + charCount + '<br>';
+  result += '字元數量: ' + charCount + '<br>';
   result += '圖片數量: ' + picCount + '<br>';
   result += '影片數量: ' + youtubeCount + '<br>';
-  result += '投影片: ' + slideShareCount + '<br>';
+  result += '投影片數量: ' + slideShareCount + '<br>';
+  result += '書籤數量: ' + bookmarkCount + '<br>';
   result += '瀏覽次數: ' + viewCount;
   return result;
 }

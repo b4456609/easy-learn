@@ -66,6 +66,7 @@ $(document).on('pageshow', "#co_pack", function() {
 });
 
 function checkout(){
+  $('#popupMenu').popup('close');
   var pack = new Pack();
   pack.getPack(viewPackId);
 

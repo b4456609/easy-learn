@@ -1,6 +1,6 @@
 var promiseArray = [];
-//var SERVER_URL = 'http://140.121.197.135:11116/';
-var SERVER_URL = 'http://192.168.0.102:8080/';
+var SERVER_URL = 'http://140.121.197.135:11116/';
+//var SERVER_URL = 'http://192.168.0.102:8080/';
 
 function getPack(packId, callback) {
   var user = new User();

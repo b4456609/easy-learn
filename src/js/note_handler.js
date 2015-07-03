@@ -181,16 +181,8 @@ function comment_submit_handler() {
 function getNewerComment(currentNoteId, commentArray) {
   console.log('getNewerComment');
 
-  //get the newst comment date for ajax
-  var lastestCreateTime = 0;
-  var i;
-  for (i in commentArray) {
-    var commentTime = new Date(commentArray[i].create_time).getTime();
-    if (commentTime > lastestCreateTime) {
-      lastestCreateTime = commentArray[i].create_time;
-    }
-  }
-  getComment(currentNoteId, lastestCreateTime);
+  //get the newst comment date for ajax  
+  getComment(currentNoteId);
 }
 
 function displayComment(commentArray) {

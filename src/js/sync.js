@@ -185,16 +185,17 @@ function postComment(noteId, newComment) {
   });
 }
 
-function getComment(NoteId, lastestCreateTime) {
+function getComment(NoteId) {
   //set url for get comment
   var url = SERVER_URL + 'easylearn/comment?note_id=' +
-    NoteId + '&lastest_create_time=' + lastestCreateTime;
+    NoteId;
   console.log(url);
   $.ajax({
     type: "GET",
     url: url,
     success: function(data) {
-      console.log('success get comment' + JSON.stringify(data));
+      console.log('success get comment');
+      console.log(data);
       if (data.length !== 0) {
         displayComment(data);
 
@@ -202,13 +203,8 @@ function getComment(NoteId, lastestCreateTime) {
         var pack = JSON.parse(localStorage.getItem(viewPackId));
 
         //get current note
-        var comments = pack.version[viewPackVersion.index].note[viewNoteArrayIndex].comment;
+        var comments = pack.version[viewPackVersion.index].note[viewNoteArrayIndex].comment = data;
 
-        //add new comment
-        //currentNote.comment.concat(data);
-        for (var i in data) {
-          comments[comments.length] = data[i];
-        }
         //update pack in localStorage
         localStorage.setItem(viewPackId, JSON.stringify(pack));
       }

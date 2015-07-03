@@ -181,7 +181,7 @@ function comment_submit_handler() {
 function getNewerComment(currentNoteId, commentArray) {
   console.log('getNewerComment');
 
-  //get the newst comment date for ajax  
+  //get the newst comment date for ajax
   getComment(currentNoteId);
 }
 
@@ -201,6 +201,6 @@ function displayComment(commentArray) {
   }
 
   // display comment
-  $('#comment_display_area').append(commentTemplate);
+  $('#comment_display_area').html(commentTemplate);
   $("#comment_display_area").listview("refresh");
 }

@@ -9,26 +9,6 @@
                 "parents": {
                     "/*": [
                         {
-                            "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"FacebookConnectPlugin\"><param name=\"android-package\" value=\"org.apache.cordova.facebook.ConnectPlugin\" /></feature>",
                             "count": 1
                         },
@@ -53,6 +33,14 @@
                             "count": 1
                         },
                         {
+                            "xml": "<feature name=\"PushPlugin\"><param name=\"android-package\" value=\"com.plugin.gcm.PushPlugin\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
@@ -61,11 +49,37 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"PushPlugin\"><param name=\"android-package\" value=\"com.plugin.gcm.PushPlugin\" /></feature>",
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "res/values/facebookconnect.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<string name=\"fb_app_id\">937637919620079</string>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<string name=\"fb_app_name\">easylearn</string>",
                             "count": 1
                         }
                     ]
@@ -73,16 +87,6 @@
             },
             "AndroidManifest.xml": {
                 "parents": {
-                    "/*": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
-                            "count": 3
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
-                            "count": 1
-                        }
-                    ],
                     "application": [
                         {
                             "xml": "<meta-data android:name=\"com.facebook.sdk.ApplicationId\" android:value=\"@string/fb_app_id\" />",
@@ -136,19 +140,15 @@
                             "xml": "<service android:name=\"com.plugin.gcm.GCMIntentService\" />",
                             "count": 1
                         }
-                    ]
-                }
-            },
-            "res/values/facebookconnect.xml": {
-                "parents": {
+                    ],
                     "/*": [
                         {
-                            "xml": "<string name=\"fb_app_id\">937637919620079</string>",
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
                             "count": 1
                         },
                         {
-                            "xml": "<string name=\"fb_app_name\">easylearn</string>",
-                            "count": 1
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 3
                         }
                     ]
                 }
@@ -156,24 +156,15 @@
         }
     },
     "installed_plugins": {
-        "org.apache.cordova.file": {
-            "PACKAGE_NAME": "ntou.cs.easylearn"
-        },
-        "org.apache.cordova.camera": {
-            "PACKAGE_NAME": "ntou.cs.easylearn"
-        },
-        "org.apache.cordova.file-transfer": {
-            "PACKAGE_NAME": "ntou.cs.easylearn"
-        },
-        "org.apache.cordova.dialogs": {
-            "PACKAGE_NAME": "ntou.cs.easylearn"
-        },
-        "cordova-plugin-network-information": {
-            "PACKAGE_NAME": "ntou.cs.easylearn"
-        },
         "com.phonegap.plugins.facebookconnect": {
             "APP_ID": "937637919620079",
             "APP_NAME": "easylearn",
+            "PACKAGE_NAME": "ntou.cs.easylearn"
+        },
+        "com.phonegap.plugins.PushPlugin": {
+            "PACKAGE_NAME": "ntou.cs.easylearn"
+        },
+        "cordova-plugin-network-information": {
             "PACKAGE_NAME": "ntou.cs.easylearn"
         },
         "cordova-plugin-splashscreen": {
@@ -182,10 +173,19 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "ntou.cs.easylearn"
         },
-        "org.apache.cordova.inappbrowser": {
+        "org.apache.cordova.camera": {
             "PACKAGE_NAME": "ntou.cs.easylearn"
         },
-        "com.phonegap.plugins.PushPlugin": {
+        "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "ntou.cs.easylearn"
+        },
+        "org.apache.cordova.file": {
+            "PACKAGE_NAME": "ntou.cs.easylearn"
+        },
+        "org.apache.cordova.file-transfer": {
+            "PACKAGE_NAME": "ntou.cs.easylearn"
+        },
+        "org.apache.cordova.inappbrowser": {
             "PACKAGE_NAME": "ntou.cs.easylearn"
         }
     },

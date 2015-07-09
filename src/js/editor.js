@@ -42,7 +42,7 @@ $(document).on('pageshow', "#co_pack", function() {
     //id are same compare version size
     if (pack.version[i].id == pack.version[viewPackVersion.index].id && pack.version[i].version < pack.version[viewPackVersion.index].version) {
       console.log('[coPack]find old version');
-      var buckupBtn = '<li><a href="#" onclick="checkout();">上次編輯內容</a></li>';
+      var buckupBtn = '<li><a href="#" id="last-btn" onclick="checkout();">上次編輯內容</a></li>';
 
       lastVersionIndex = i;
 
@@ -65,28 +65,6 @@ $(document).on('pageshow', "#co_pack", function() {
   editingPackId = viewPackId;
 });
 
-function checkout(){
-  $('#popupMenu').popup('close');
-  var pack = new Pack();
-  pack.getPack(viewPackId);
-
-  //checkout other version
-  if(viewPackVersion.index == currentIndex){
-    currentIndex = lastVersionIndex;
-  }
-  else{
-    currentIndex = viewPackVersion.index;
-  }
-
-  //prepare content
-  var content = pack.version[currentIndex].content;
-  content = replacePackImgPath(content);
-  var r = new Reference();
-  content = r.deleteRef(content);
-
-  // set edit content
-  $('#iframe1').contents().find('#edit').editable("setHTML", content, true);
-}
 
 $(document).on("pageinit", "#new_pack_edit", function() {
   //set editor height
@@ -111,6 +89,43 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 
   editor_button_handler();
 });
+
+
+function checkout(){
+  $('#popupMenu').popup('close');
+  var pack = new Pack();
+  pack.getPack(viewPackId);
+
+  //checkout other version
+  if(viewPackVersion.index == currentIndex){
+    currentIndex = lastVersionIndex;
+  }
+  else{
+    currentIndex = viewPackVersion.index;
+  }
+
+  //prepare content
+  var content = pack.version[currentIndex].content;
+  content = replacePackImgPath(content);
+  var r = new Reference();
+  content = r.deleteRef(content);
+
+  // set edit content
+  $('#iframe1').contents().find('#edit').editable("setHTML", '', true);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", content, true);
+
+  //change the button name
+  toogleLastBtn();
+}
+
+function toogleLastBtn() {
+  if($('#last-btn').text() == '上次編輯內容'){
+    $('#last-btn').text('較新內容');
+  }
+  else{
+    $('#last-btn').text('上次編輯內容');
+  }
+}
 
 
 function getPhotoWithModifySize(successCallback) {

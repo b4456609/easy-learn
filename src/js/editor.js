@@ -428,6 +428,7 @@ function saveNewVersionHandler(pack, isPublic) {
     newVersion.content = content;
     newVersion.version = originVersion.version;
 
+
     console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
     //remain one not public
     if (!originVersion.is_public && !isPublic) {
@@ -472,6 +473,8 @@ function saveNewVersionHandler(pack, isPublic) {
 
     //add new version in pack
     pack.version[new_index] = newVersion.get();
+
+    console.log(newVersion);
 
     //set new pack in localStorage
     pack.save();

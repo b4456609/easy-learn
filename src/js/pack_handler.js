@@ -78,15 +78,17 @@ $(document).on('pageinit', "#view_pack", function() {
   pack.getPack(viewPackId);
 
   //set look's version's index, check if index exits
-  var version_time = 0;
-  var version_index_temp = null;
-  for(var i in pack.version){
-    if(pack.version[i].create_time > version_time){
-      version_time = pack.version[i].create_time;
-      version_index_temp = i;
+  if(viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0){
+    var version_time = 0;
+    var version_index_temp = null;
+    for(var i in pack.version){
+      if(pack.version[i].create_time > version_time){
+        version_time = pack.version[i].create_time;
+        version_index_temp = i;
+      }
     }
-  }
-  viewPackVersion.index = version_index_temp;
+    viewPackVersion.index = version_index_temp;
+  }  
 
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;

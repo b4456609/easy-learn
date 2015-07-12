@@ -460,9 +460,9 @@ function saveNewVersionHandler(pack, isPublic) {
 
       for (var j in pack.version) {
         if (pack.version[i].private_id === originVersion.private_id) {
-          pack.version.splice(i, 1);
+          pack.version.splice(j, 1);
           //because delete one i
-          i--;
+          j--;
         }
       }
       //version is public the pack will be public

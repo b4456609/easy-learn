@@ -3,7 +3,34 @@ var promiseArray = [];
 var SERVER_URL = 'http://192.168.3.146:8080/';
 var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
+function fileDataUpload(id, deletehash) {
+  $.ajax({
+    url: SERVER_URL+'easylearn/file_data',
+    type: 'POST',
+    data: {
+      id: id,
+      deletehash: deletehash
+    },
+    success:function () {
+      console.log('[fileDataUpload]success');
+    },
+    error:function () {
+      console.log('[fileDataUpload]fail');
+    }
+  });
+}
+
 function uploadImgUseUrl(imgUrl, callback) {
+  if (navigator.network.connection.type == Connection.NONE) {
+    navigator.notification.alert(
+      '需要網路才能使用此功能', // message
+      null, // callback
+      '錯誤', // title
+      '確定' // buttonName
+    );
+  }
+  navigator.notification.activityStart('上傳圖片中', '請稍後...');
+
   $.ajax({
     url: 'https://api.imgur.com/3/image',
     type: 'POST',
@@ -25,6 +52,7 @@ function uploadImgUseUrl(imgUrl, callback) {
           link: result.data.link,
           deletehash: result.data.deletehash
         };
+        fileDataUpload(item.id, item.deletehash)
 
         callback(item);
       } else {

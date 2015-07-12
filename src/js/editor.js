@@ -38,9 +38,8 @@ $(document).on('pageshow', "#co_pack", function() {
   //add backup button
   //find backup version index
   for (var i in pack.version) {
-    console.log(pack.version[i].id + ' ' + pack.version[i].version + ' ' + pack.version[viewPackVersion.index].id + ' ' + pack.version[viewPackVersion.index].version);
     //id are same compare version size
-    if (pack.version[i].id == pack.version[viewPackVersion.index].id && pack.version[i].version < pack.version[viewPackVersion.index].version) {
+    if (i != viewPackVersion.index && pack.version[i].private_id == pack.version[viewPackVersion.index].private_id) {
       console.log('[coPack]find old version');
       var buckupBtn = '<li><a href="#" id="last-btn" onclick="checkout();">上次編輯內容</a></li>';
 

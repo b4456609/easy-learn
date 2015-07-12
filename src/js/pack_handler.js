@@ -77,6 +77,18 @@ $(document).on('pageinit', "#view_pack", function() {
   var pack = new Pack();
   pack.getPack(viewPackId);
 
+  //if index is on private and old set to lastest verison
+  var viewPrivateId = pack.version[viewPackVersion.index].private_id;
+  if(viewPrivateId !== ''){
+    for(var j in pack.version){
+      if(pack.version[j].private_id == viewPrivateId){
+        if(pack.version[j].version > pack.version[viewPackVersion.index].version){
+          viewPackVersion.index = j;
+        }
+      }
+    }
+  }
+
   //set look's version's index, check if index exits
   if(viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0){
     var version_time = 0;
@@ -88,7 +100,7 @@ $(document).on('pageinit', "#view_pack", function() {
       }
     }
     viewPackVersion.index = version_index_temp;
-  }  
+  }
 
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
@@ -295,11 +307,11 @@ function display_version_info() {
     if (!version[i].is_public) {
       for (j = i; j < version.length; j++) {
         //id are same compare version size
-        if (version[i].id == version[j].id && version[i].version < version[j].version) {
+        if (version[i].private_id == version[j].private_id && version[i].version < version[j].version) {
           //mark as null for not break array index arrange
           version[i] = null;
           break;
-        } else if (version[i].id == version[j].id && version[i].version > version[j].version) {
+        } else if (version[i].private_id == version[j].private_id && version[i].version > version[j].version) {
           //mark as null for not break array index arrange
           version[j] = null;
           break;
@@ -312,7 +324,7 @@ function display_version_info() {
   var html = '';
   for (i = 0; i < version.length; i++) {
     //null as not display
-    if (version[i] == null) {
+    if (version[i] === null) {
       continue;
     }
 

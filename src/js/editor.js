@@ -169,7 +169,7 @@ function savePackHandler() {
     version.content = content;
 
     //is private version
-    if(!version.is_public){
+    if (!version.is_public) {
       //set new private id
       version.newPrivateId();
     }
@@ -262,19 +262,24 @@ function load_editor() {
 }
 
 function image_submit_handler() {
+  navigator.notification.activityStart('上傳圖片中', '請稍後...');
   //get img url
   var imgUrl = $('#image_url').val().trim();
   //close popup
   $('#popup_image').popup("close");
   //download img and display in editor
-  downloadImgByUrl(imgUrl, editingPackId, 'user', displayImgInEditor);
+  uploadImgUseUrl(imgUrl,function (item) {
+    var img = "<img id='"+ item.id + " 'src='" + item.link + "' width='100%' >";
+
+    $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+  });
 }
 
 function youtube_submit_handler() {
   // get youtube url
-  var user_url = $("#youtube_url").val();
-  var start = $('#youtube_start_time').val();
-  var end = $('#youtube_end_time').val();
+  var user_url = $("#youtube_url").val().trim();
+  var start = $('#youtube_start_time').val().trim();
+  var end = $('#youtube_end_time').val().trim();
 
   //save embed parameter
   var startPar = '',
@@ -444,7 +449,7 @@ function saveNewVersionHandler(pack, isPublic) {
 
       //remove the other backup
       for (var index in pack.version) {
-        if (pack.version[index].id == originVersion.id){
+        if (pack.version[index].id == originVersion.id) {
           continue;
         }
         if (pack.version[index].private_id === find) {
@@ -469,7 +474,7 @@ function saveNewVersionHandler(pack, isPublic) {
       pack.is_public = true;
     }
     // old is public and new private
-    else if(originVersion.is_public && !isPublic){
+    else if (originVersion.is_public && !isPublic) {
       //set new private id
       newVersion.newPrivateId();
     }

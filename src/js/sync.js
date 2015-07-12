@@ -2,6 +2,54 @@ var promiseArray = [];
 //var SERVER_URL = 'http://140.121.197.135:11116/';
 var SERVER_URL = 'http://192.168.3.146:8080/';
 
+function uploadImgUseUrl(imgUrl, callback) {
+  $.ajax({
+    url: 'https://api.imgur.com/3/image',
+    type: 'POST',
+    headers: {
+      Authorization: auth,
+      Accept: 'application/json'
+    },
+    data: {
+      image: imgUrl,
+      type: 'URL',
+      album: "dvtm9wHkgA5cbZa"
+    },
+    success: function(result) {
+      navigator.notification.activityStop();
+      console.log('[image_submit_handler]success', result);
+      if (result.success == true) {
+        var item = {
+          id: result.data.id,
+          link: result.data.link,
+          deletehash: result.data.deletehash
+        };
+
+        callback(item);
+      } else {
+        console.log('[image_submit_handler]imgeHostFail', result);
+        navigator.notification.alert(
+          '圖片伺服器錯誤，請稍後再重試', // message
+          null, // callback
+          '錯誤', // title
+          '確定' // buttonName
+        );
+      }
+    },
+    error: function(e, s, t) {
+      navigator.notification.activityStop();
+      console.log('[image_submit_handler]Fail');
+      console.log(e, s, t);
+      navigator.notification.alert(
+        '上傳圖片失敗，請稍後再重試', // message
+        null, // callback
+        '錯誤', // title
+        '確定' // buttonName
+      );
+    }
+  });
+}
+
 function getPack(packId, callback) {
   var user = new User();
   var url = SERVER_URL + 'easylearn/pack';

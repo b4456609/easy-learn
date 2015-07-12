@@ -263,7 +263,7 @@ function load_editor() {
 
 function image_submit_handler() {
   //get img url
-  var imgUrl = $('#image_url').val();
+  var imgUrl = $('#image_url').val().trim();
   //close popup
   $('#popup_image').popup("close");
   //download img and display in editor
@@ -459,7 +459,7 @@ function saveNewVersionHandler(pack, isPublic) {
       newVersion.version++;
 
       for (var j in pack.version) {
-        if (pack.version[i].private_id === originVersion.private_id) {
+        if (pack.version[j].private_id === originVersion.private_id) {
           pack.version.splice(j, 1);
           //because delete one i
           j--;

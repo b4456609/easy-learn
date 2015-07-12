@@ -1,13 +1,14 @@
 var promiseArray = [];
 //var SERVER_URL = 'http://140.121.197.135:11116/';
 var SERVER_URL = 'http://192.168.3.146:8080/';
+var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
 function uploadImgUseUrl(imgUrl, callback) {
   $.ajax({
     url: 'https://api.imgur.com/3/image',
     type: 'POST',
     headers: {
-      Authorization: auth,
+      Authorization: ImgurAuth,
       Accept: 'application/json'
     },
     data: {

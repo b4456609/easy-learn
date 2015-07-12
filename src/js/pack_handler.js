@@ -279,18 +279,10 @@ function onFail(message) {
 }
 
 function displayCoverImg(packfileEntry) {
-  packfileEntry.file(function(file) {
-
-    var img = document.createElement("img");
-    var reader = new FileReader();
-    reader.onloadend = function() {
-      img.src = reader.result;
-    };
-    img.style.width = '100%';
-
-    reader.readAsDataURL(file);
-    $("#cover_photo_area").html(img);
-  }, fail);
+  NEW_PACK.cover_filename = packfileEntry.name;
+  var imgsrc = packfileEntry.toURL();
+  var img = "<img src='" + imgsrc + "' width='100%' >";
+  $("#cover_photo_area").html(img);
 }
 
 function go_version_handler(index) {

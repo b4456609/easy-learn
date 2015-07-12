@@ -1,23 +1,3 @@
-function addFileToPack(packId, fileEntry, callback) {
-  var time = new Date().getTime();
-  window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dirEntry) {
-    dirEntry.getDirectory(packId, {
-      create: true
-    }, function(destDirEntry) {
-      fileEntry.moveTo(destDirEntry, time + '.jpg');
-      //add to pack's cover
-      if (NEW_PACK !== null) {
-        NEW_PACK.cover_filename = time + '.jpg';
-      }
-      destDirEntry.getFile(time + '.jpg', {
-        create: false
-      }, function(fileEntry) {
-        callback(fileEntry);
-      }, fail);
-    }, fail);
-  }, fail);
-}
-
 function getImgNode(packId, fileName, callback) {
 
   var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
@@ -42,7 +22,7 @@ function downloadImgByUrl(url, packId, imgName, callback, errorCallback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
-  var filename;
+  var filename =  imgName + '.jpg';
   //set file path
   var filepath= FILE_STORAGE_PATH + packId + '/' + imgName + '.jpg';
 

@@ -269,7 +269,12 @@ function hideButtonHandler() {
 }
 
 function onFail(message) {
-  alert('Failed because: ' + message);
+  navigator.notification.alert(
+    message, // message
+    null, // callback
+    '錯誤', // title
+    '確定' // buttonName
+  );
   console.log('Failed because: ' + message);
 }
 

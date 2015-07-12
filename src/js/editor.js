@@ -126,11 +126,37 @@ function toogleLastBtn() {
 
 
 function getPhotoWithModifySize(successCallback) {
+  var errorHandler = function () {
+    navigator.notification.activityStop();
+    navigator.notification.alert(
+      '發生錯誤', // message
+      null, // callback
+      '錯誤', // title
+      '確定' // buttonName
+    );
+  };
+
   // Retrieve image file location from specified source
   navigator.camera.getPicture(function(imageData) {
+    navigator.notification.activityStart('處理中', '請稍後...');
     window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
-      addFileToPack(newPackTemp.id, fileEntry, successCallback);
-    }, fail);
+      //add file to pack folder
+      addFileToPack(newPackTemp.id, fileEntry, function (fileEntry) {
+        fileEntry.file(function(file) {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            //upload to server
+            var base64 = reader.result;
+            base64= base64.substring(base64.indexOf(',')+1);
+            uploadImgUseBase64(base64, function () {
+              navigator.notification.activityStop();
+              successCallback(fileEntry);
+            })
+          };
+          reader.readAsDataURL(file);
+        }, errorHandler);
+      }, errorHandler);
+    }, errorHandler);
   }, onFail, {
     quality: 70,
     targetWidth: 800,
@@ -262,15 +288,23 @@ function load_editor() {
 }
 
 function image_submit_handler() {
+  navigator.notification.activityStart('處理中', '請稍後...');
   //get img url
   var imgUrl = $('#image_url').val().trim();
   //close popup
   $('#popup_image').popup("close");
   //download img and display in editor
-  uploadImgUseUrl(imgUrl, function(item) {
-    var img = "<img id='" + item.id + " 'src='" + item.link + "' width='100%' >";
 
-    $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+  uploadImgUseUrl(imgUrl, function(item) {
+    downloadImgByUrl(item.link, newPackTemp.id, item.id, function(fileEntry) {
+      navigator.notification.activityStop();
+      var imgsrc = fileEntry.toURL();
+      var img = "<img id='" + item.id + " ' src='" + imgsrc + "' width='100%' >";
+
+      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+    },function () {
+      navigator.notification.activityStop();
+    });
   });
 }
 
@@ -350,19 +384,18 @@ function slideshare_submit_handler() {
         end = data.total_slides;
       }
 
-      console.log(start + '  ' + end);
       //download img to localStorage
       for (; start <= end; start++) {
         var imgUrl = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         uploadImgUseUrl(imgUrl, function(item) {
-          downloadImgByUrl(item.link, newPackTemp.id, item.name, function(fileEntry) {
+          downloadImgByUrl(item.link, newPackTemp.id, item.id, function(fileEntry) {
             navigator.notification.activityStop();
             var imgsrc = fileEntry.toURL();
-            var img = "<img id='" + imgsrc + "' class='slideshare-img " + SLIDESHARE_PATH + " ' src='" + item.link + "' width='100%' >";
+            var img = "<img id='" + item.id + "' class='slideshare-img " + SLIDESHARE_PATH + " ' src='" + imgsrc + "' width='100%' >";
 
             $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
           },function () {
-            navigator.notification.activityStop();            
+            navigator.notification.activityStop();
           });
         });
       }

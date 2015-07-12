@@ -20,6 +20,64 @@ function fileDataUpload(id, deletehash) {
   });
 }
 
+function uploadImgUseBase64(data, callback) {
+  console.log('[uploadImgUseBase64]start');
+  if (navigator.network.connection.type == Connection.NONE) {
+    navigator.notification.alert(
+      '需要網路才能使用此功能', // message
+      null, // callback
+      '錯誤', // title
+      '確定' // buttonName
+    );
+  }
+
+  $.ajax({
+    url: 'https://api.imgur.com/3/image',
+    type: 'POST',
+    headers: {
+      Authorization: ImgurAuth,
+      Accept: 'application/json'
+    },
+    data: {
+      image: data,
+      type: 'base64',
+      album: "dvtm9wHkgA5cbZa"
+    },
+    success: function(result) {
+      console.log('[uploadImgUseBase64]success', result);
+      if (result.success == true) {
+        var item = {
+          id: result.data.id,
+          link: result.data.link,
+          deletehash: result.data.deletehash
+        };
+        fileDataUpload(item.id, item.deletehash)
+
+        callback(item);
+      } else {
+        console.log('[uploadImgUseBase64]imgeHostFail', result);
+        navigator.notification.alert(
+          '圖片伺服器錯誤，請稍後再重試', // message
+          null, // callback
+          '錯誤', // title
+          '確定' // buttonName
+        );
+      }
+    },
+    error: function(e, s, t) {
+      console.log('[uploadImgUseBase64]Fail');
+      console.log(e, s, t);
+      navigator.notification.alert(
+        '上傳圖片失敗，請稍後再重試', // message
+        null, // callback
+        '錯誤', // title
+        '確定' // buttonName
+      );
+    }
+  });
+}
+
+
 function uploadImgUseUrl(imgUrl, callback) {
   console.log('[uploadImgUseUrl]start');
   if (navigator.network.connection.type == Connection.NONE) {
@@ -30,7 +88,6 @@ function uploadImgUseUrl(imgUrl, callback) {
       '確定' // buttonName
     );
   }
-  navigator.notification.activityStart('上傳圖片中', '請稍後...');
 
   $.ajax({
     url: 'https://api.imgur.com/3/image',
@@ -45,7 +102,6 @@ function uploadImgUseUrl(imgUrl, callback) {
       album: "dvtm9wHkgA5cbZa"
     },
     success: function(result) {
-      navigator.notification.activityStop();
       console.log('[uploadImgUseUrl]success', result);
       if (result.success == true) {
         var item = {
@@ -67,7 +123,6 @@ function uploadImgUseUrl(imgUrl, callback) {
       }
     },
     error: function(e, s, t) {
-      navigator.notification.activityStop();
       console.log('[uploadImgUseUrl]Fail');
       console.log(e, s, t);
       navigator.notification.alert(

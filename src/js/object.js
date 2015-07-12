@@ -76,7 +76,7 @@ function Version() {
   this.note = '';
   this.file = '';
   this.version = 0;
-  this.modified = '';
+  this.private_id = '';
   this.view_count = '';
   this.user_view_count = '';
 
@@ -97,7 +97,7 @@ function Version() {
     this.note = [];
     this.file = [];
     this.version = 0;
-    this.modified = false;
+    this.private_id = '';
     this.view_count = 0;
     this.user_view_count = 0;
   };
@@ -114,11 +114,16 @@ function Version() {
       note: this.note,
       file: this.file,
       version: this.version,
-      modified: this.modified,
+      private_id: this.private_id,
       view_count: this.view_count,
       user_view_count: this.user_view_count,
     };
     return newVersion;
+  };
+
+  this.newPrivateId = function () {
+    var time = new Date().getTime();
+    this.private_id = "private" + time;
   };
 }
 

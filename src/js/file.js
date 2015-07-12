@@ -38,7 +38,7 @@ function getImgNode(packId, fileName, callback) {
   }, fail);
 }
 
-function downloadImgByUrl(url, packId, prefixOrName, callback) {
+function downloadImgByUrl(url, packId, prefixOrName, callback, errorCallback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
@@ -66,6 +66,7 @@ function downloadImgByUrl(url, packId, prefixOrName, callback) {
       console.log("download error source " + error.source);
       console.log("download error target " + error.target);
       console.log("upload error code" + error.code);
+      typeof errorCallback === 'function' && errorCallback();
     },
     false
   );

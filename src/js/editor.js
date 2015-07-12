@@ -91,16 +91,15 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 });
 
 
-function checkout(){
+function checkout() {
   $('#popupMenu').popup('close');
   var pack = new Pack();
   pack.getPack(viewPackId);
 
   //checkout other version
-  if(viewPackVersion.index == currentIndex){
+  if (viewPackVersion.index == currentIndex) {
     currentIndex = lastVersionIndex;
-  }
-  else{
+  } else {
     currentIndex = viewPackVersion.index;
   }
 
@@ -119,10 +118,9 @@ function checkout(){
 }
 
 function toogleLastBtn() {
-  if($('#last-btn').text() == '上次編輯內容'){
+  if ($('#last-btn').text() == '上次編輯內容') {
     $('#last-btn').text('較新內容');
-  }
-  else{
+  } else {
     $('#last-btn').text('上次編輯內容');
   }
 }
@@ -170,6 +168,12 @@ function savePackHandler() {
     version.is_public = NEW_PACK.is_public;
     version.id = newPackTemp.versionId;
     version.content = content;
+
+    //is private version
+    if(!version.is_public){
+      //set new private id
+      version.newPrivateId();
+    }
 
     //create first version
     NEW_PACK.version[0] = version.get();
@@ -427,19 +431,24 @@ function saveNewVersionHandler(pack, isPublic) {
     newVersion.is_public = isPublic;
     newVersion.content = content;
     newVersion.version = originVersion.version;
+    newVersion.private_id = originVersion.private_id;
 
 
     console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
+
+    //origin is private, new is private
     //remain one not public
     if (!originVersion.is_public && !isPublic) {
       // modify origin to second one
-      newVersion.id = originVersion.id;
+      var find = originVersion.private_id;
       newVersion.version++;
 
       //remove the other backup
       for (var index in pack.version) {
-        if (index == viewPackVersion.index) {} //do nothing
-        else if (pack.version[index].id === originVersion.id) {
+        if (pack.version[index].id == originVersion.id){
+          continue;
+        }
+        if (pack.version[index].private_id === find) {
           pack.version.splice(index, 1);
           break;
           //should be only one
@@ -448,18 +457,10 @@ function saveNewVersionHandler(pack, isPublic) {
     }
     //public version, remove all old version
     else if (!originVersion.is_public && isPublic) {
-      // modify origin to second one
-      newVersion.id = originVersion.id;
       newVersion.version++;
 
-      //remove the other backup
-      re = new RegExp(originVersion.id, 'i');
-      console.log('originVersion.id:' + originVersion.id);
-      var i = 0;
-      for (; i < pack.version.length; i++) {
-        console.log('for:' + pack.version[i].id);
-        if (pack.version[i].id === originVersion.id) {
-          console.log('delete:' + pack.version[i].id + ' ' + pack.version[i].version);
+      for (var j in pack.version) {
+        if (pack.version[i].private_id === originVersion.private_id) {
           pack.version.splice(i, 1);
           //because delete one i
           i--;
@@ -468,13 +469,16 @@ function saveNewVersionHandler(pack, isPublic) {
       //version is public the pack will be public
       pack.is_public = true;
     }
+    // old is public and new private
+    else if(originVersion.is_public && !isPublic){
+      //set new private id
+      newVersion.newPrivateId();
+    }
 
     var new_index = pack.version.length;
 
     //add new version in pack
     pack.version[new_index] = newVersion.get();
-
-    console.log(newVersion);
 
     //set new pack in localStorage
     pack.save();

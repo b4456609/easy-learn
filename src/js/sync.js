@@ -102,6 +102,8 @@ function downloadImg(filename, packId, downloadDeffer) {
 
   downloadImgByUrl(url, packId, filename, function() {
     downloadDeffer.resolve();
+  }, function() {
+    downloadDeffer.resolve();
   });
 }
 

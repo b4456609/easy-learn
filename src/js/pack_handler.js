@@ -279,6 +279,11 @@ function onFail(message) {
 }
 
 function displayCoverImg(packfileEntry) {
+  for(var i in editingFile){
+    if(editingFile[i] == packfileEntry.name){
+      editingFile.splice(i,1);
+    }
+  }
   NEW_PACK.cover_filename = packfileEntry.name;
   var imgsrc = packfileEntry.toURL();
   var img = "<img src='" + imgsrc + "' width='100%' >";

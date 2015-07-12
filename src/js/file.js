@@ -38,20 +38,13 @@ function getImgNode(packId, fileName, callback) {
   }, fail);
 }
 
-function downloadImgByUrl(url, packId, prefixOrName, callback, errorCallback) {
+function downloadImgByUrl(url, packId, imgName, callback, errorCallback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
   var filename;
   //set file path
-  var filepath;
-  if (prefixOrName.indexOf('jpg') > 0) {
-    filepath = cordova.file.externalDataDirectory + packId + '/' + prefixOrName;
-    filename = prefixOrName;
-  } else {
-    filepath = cordova.file.externalDataDirectory + packId + '/' + prefixOrName + time + '.jpg';
-    filename = prefixOrName + time + '.jpg';
-  }
+  var filepath= FILE_STORAGE_PATH + packId + '/' + imgName + '.jpg';
 
   fileTransfer.download(
     uri,

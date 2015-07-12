@@ -262,7 +262,6 @@ function load_editor() {
 }
 
 function image_submit_handler() {
-  navigator.notification.activityStart('上傳圖片中', '請稍後...');
   //get img url
   var imgUrl = $('#image_url').val().trim();
   //close popup
@@ -353,8 +352,11 @@ function slideshare_submit_handler() {
       //download img to localStorage
       for (; start <= end; start++) {
         var imgUrl = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
-        console.log(imgUrl);
-        downloadImgByUrl(imgUrl, editingPackId, 'slideshare', displayImgInEditor);
+        uploadImgUseUrl(imgUrl,function (item) {
+          var img = "<img id='"+ item.id + " 'src='" + item.link + "' width='100%' >";
+
+          $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+        });
       }
     });
 }

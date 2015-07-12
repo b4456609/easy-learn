@@ -21,6 +21,7 @@ function fileDataUpload(id, deletehash) {
 }
 
 function uploadImgUseUrl(imgUrl, callback) {
+  console.log('[uploadImgUseUrl]start');
   if (navigator.network.connection.type == Connection.NONE) {
     navigator.notification.alert(
       '需要網路才能使用此功能', // message
@@ -45,7 +46,7 @@ function uploadImgUseUrl(imgUrl, callback) {
     },
     success: function(result) {
       navigator.notification.activityStop();
-      console.log('[image_submit_handler]success', result);
+      console.log('[uploadImgUseUrl]success', result);
       if (result.success == true) {
         var item = {
           id: result.data.id,
@@ -56,7 +57,7 @@ function uploadImgUseUrl(imgUrl, callback) {
 
         callback(item);
       } else {
-        console.log('[image_submit_handler]imgeHostFail', result);
+        console.log('[uploadImgUseUrl]imgeHostFail', result);
         navigator.notification.alert(
           '圖片伺服器錯誤，請稍後再重試', // message
           null, // callback
@@ -67,7 +68,7 @@ function uploadImgUseUrl(imgUrl, callback) {
     },
     error: function(e, s, t) {
       navigator.notification.activityStop();
-      console.log('[image_submit_handler]Fail');
+      console.log('[uploadImgUseUrl]Fail');
       console.log(e, s, t);
       navigator.notification.alert(
         '上傳圖片失敗，請稍後再重試', // message

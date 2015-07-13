@@ -148,7 +148,8 @@ function getPhotoWithModifySize(successCallback) {
           base64= base64.substring(base64.indexOf(',')+1);
           uploadImgUseBase64(base64, function (item) {
             navigator.notification.activityStop();
-            downloadImgByUrl(item.link, editingPackId, item.id, successCallback ,function () {
+            var filename = item.link.substring(item.link.lastIndexOf('/')+1);
+            downloadImgByUrl(item.link, editingPackId, filename, successCallback ,function () {
               navigator.notification.activityStop();
             });
           })
@@ -295,7 +296,8 @@ function image_submit_handler() {
   //download img and display in editor
 
   uploadImgUseUrl(imgUrl, function(item) {
-    downloadImgByUrl(item.link, editingPackId, item.id, function(fileEntry) {
+    var filename = item.link.substring(item.link.lastIndexOf('/')+1);
+    downloadImgByUrl(item.link, editingPackId, filename, function(fileEntry) {
       navigator.notification.activityStop();
       var imgsrc = fileEntry.toURL();
       var img = "<img id='" + item.id + " ' src='" + imgsrc + "' width='100%' >";
@@ -374,7 +376,7 @@ function slideshare_submit_handler() {
   $.get(url,
     function(data) {
       //error check
-      if (start <= 0 | start === null | start > data.total_slides) {
+      if (start <= 0 || start === null || start > data.total_slides) {
         start = 1;
       }
       if (end < start) {
@@ -387,7 +389,8 @@ function slideshare_submit_handler() {
       for (; start <= end; start++) {
         var imgUrl = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
         uploadImgUseUrl(imgUrl, function(item) {
-          downloadImgByUrl(item.link, editingPackId, item.id, function(fileEntry) {
+          var filename = item.link.substring(item.link.lastIndexOf('/')+1);
+          downloadImgByUrl(item.link, editingPackId, filename, function(fileEntry) {
             navigator.notification.activityStop();
             var imgsrc = fileEntry.toURL();
             var img = "<img id='" + item.id + "' class='slideshare-img " + SLIDESHARE_PATH + " ' src='" + imgsrc + "' width='100%' >";

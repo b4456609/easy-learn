@@ -1,6 +1,6 @@
 function getImgNode(packId, fileName, callback) {
 
-  var path = cordova.file.externalDataDirectory + packId + '/' + fileName;
+  var path = FILE_STORAGE_PATH + packId + '/' + fileName;
 
   window.resolveLocalFileSystemURL(path, function(fileEntry) {
     fileEntry.file(function(file) {
@@ -22,9 +22,9 @@ function downloadImgByUrl(url, packId, imgName, callback, errorCallback) {
   var fileTransfer = new FileTransfer();
   var uri = encodeURI(url);
   var time = new Date().getTime();
-  var filename =  imgName + '.jpg';
+  var filename =  imgName;
   //set file path
-  var filepath= FILE_STORAGE_PATH + packId + '/' + imgName + '.jpg';
+  var filepath= FILE_STORAGE_PATH + packId + '/' + imgName;
 
   fileTransfer.download(
     uri,

@@ -87,6 +87,7 @@ function uploadImgUseUrl(imgUrl, callback) {
       '錯誤', // title
       '確定' // buttonName
     );
+    return;
   }
 
   $.ajax({
@@ -164,20 +165,8 @@ function getPack(packId, callback) {
   });
 }
 
-function syncImg(files) {
-  //upload image
-  console.log(files);
-
-  var i;
-  for (i in files) {
-    uploadImg(files[i].name, files[i].version_pack_id);
-  }
-
-  downloadServerImg();
-
-}
-
 function downloadServerImg() {
+  promiseArray=[];
   //download image sync
   for (var i = 0; i < localStorage.length; i++) {
     //get pack id and object
@@ -206,17 +195,18 @@ function downloadServerImg() {
       //console.log('packVersion for' + packId + ' ' + versionId + ' ' + filesInVersion);
       //console.log(filesInVersion);
       for (var fileIndex in filesInVersion) {
-        var downloadDeffer = $.Deferred();
-        promiseArray.push(downloadDeffer);
-        FileNotExistThenDownload(packId, filesInVersion[fileIndex], downloadDeffer);
+        FileNotExistThenDownload(packId, filesInVersion[fileIndex]);
       }
     }
   }
 }
 
-function FileNotExistThenDownload(packId, filename, downloadDeffer) {
-  //console.log('FileNotExistThenDownload:' + ' ' + packId + ' ' + versionId + ' ' + filename);
-  var filePath = cordova.file.externalDataDirectory + packId + '/' + filename;
+function FileNotExistThenDownload(packId, filename) {
+  //user defer object
+  var downloadDeffer = $.Deferred();
+  promiseArray.push(downloadDeffer);
+  
+  var filePath = FILE_STORAGE_PATH + packId + '/' + filename;
   window.resolveLocalFileSystemURL(filePath, function() {
     console.log('[FileNotExistThenDownload]FileExist:finished');
     downloadDeffer.resolve();
@@ -229,67 +219,20 @@ function FileNotExistThenDownload(packId, filename, downloadDeffer) {
 
 
 function downloadImg(filename, packId, downloadDeffer) {
-  var url = SERVER_URL + 'easylearn/download?pack_id=' +
-    packId + '&filename=' + filename;
-  console.log('downloadImgurl:' + url);
-
-  downloadImgByUrl(url, packId, filename, function() {
+  var url = 'http://i.imgur.com/' + filename;
+  console.log('[downloadImg]url:' + url);
+  
+  var success = function(){
     downloadDeffer.resolve();
-  }, function() {
+  }
+  
+  var fail = function(){
     downloadDeffer.resolve();
-  });
+    console.log('[downloadImg]:fail')
+  }
+
+  downloadImgByUrl(url, packId, filename, success, fail);
 }
-
-function uploadImg(filename, packId) {
-  var uploadDeffer = $.Deferred();
-  promiseArray.push(uploadDeffer);
-
-  var failHandler = function(error) {
-    fail(error);
-    uploadDeffer.resolve();
-  };
-
-  var filePath = cordova.file.externalDataDirectory + packId + '/' + filename;
-  console.log('filepath' + filePath);
-  window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
-    console.log(fileEntry);
-    fileEntry.file(function(file) {
-      console.log(file);
-
-      var reader = new FileReader();
-
-      reader.onloadend = function() {
-        var srcdata = reader.result;
-        console.log(srcdata);
-        $.ajax({
-          type: "POST",
-          url: SERVER_URL + "easylearn/upload",
-          data: {
-            file: srcdata,
-            filename: filename,
-            pack_id: packId
-          },
-          cache: false,
-          contentType: "application/x-www-form-urlencoded",
-          success: function() {
-            console.log('success upload img' + filename);
-            uploadDeffer.resolve();
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            uploadDeffer.resolve();
-            console.log('error');
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-          }
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }, failHandler);
-  }, failHandler);
-}
-
 
 //change last sync time to indicate newer data
 function changeModifyStroageTime() {
@@ -436,7 +379,7 @@ function sync() {
       saveToLocalStorage(data);
 
       //sync image
-      syncImg(data.sync.upload_file);
+      downloadServerImg();
 
       //refresh home page
       refreshPage();

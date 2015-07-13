@@ -51,7 +51,7 @@ function uploadImgUseBase64(data, callback) {
           link: result.data.link,
           deletehash: result.data.deletehash
         };
-        fileDataUpload(item.id, item.deletehash)
+        fileDataUpload(item.id, item.deletehash);
 
         callback(item);
       } else {
@@ -110,7 +110,7 @@ function uploadImgUseUrl(imgUrl, callback) {
           link: result.data.link,
           deletehash: result.data.deletehash
         };
-        fileDataUpload(item.id, item.deletehash)
+        fileDataUpload(item.id, item.deletehash);
 
         callback(item);
       } else {

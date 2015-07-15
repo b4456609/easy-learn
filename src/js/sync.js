@@ -1,20 +1,20 @@
 var promiseArray = [];
 //var SERVER_URL = 'http://140.121.197.135:11116/';
-var SERVER_URL = 'http://192.168.3.146:8080/';
+var SERVER_URL = 'http://192.168.3.147:8080/';
 var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
 function fileDataUpload(id, deletehash) {
   $.ajax({
-    url: SERVER_URL+'easylearn/file_data',
+    url: SERVER_URL + 'easylearn/file_data',
     type: 'POST',
     data: {
       id: id,
       deletehash: deletehash
     },
-    success:function () {
+    success: function() {
       console.log('[fileDataUpload]success');
     },
-    error:function () {
+    error: function() {
       console.log('[fileDataUpload]fail');
     }
   });
@@ -32,6 +32,26 @@ function uploadImgUseBase64(data, callback) {
   }
 
   $.ajax({
+    xhr: function() {
+      var xhr = new window.XMLHttpRequest();
+      //Upload progress
+      xhr.upload.addEventListener("progress", function(evt) {
+        if (evt.lengthComputable) {
+          var percentComplete = evt.loaded / evt.total;
+          //Do something with upload progress
+          console.log(percentComplete);
+        }
+      }, false);
+      //Download progress
+      xhr.addEventListener("progress", function(evt) {
+        if (evt.lengthComputable) {
+          var percentComplete = evt.loaded / evt.total;
+          //Do something with download progress
+          console.log(percentComplete);
+        }
+      }, false);
+      return xhr;
+    },
     url: 'https://api.imgur.com/3/image',
     type: 'POST',
     headers: {
@@ -166,7 +186,7 @@ function getPack(packId, callback) {
 }
 
 function downloadServerImg() {
-  promiseArray=[];
+  promiseArray = [];
   //download image sync
   for (var i = 0; i < localStorage.length; i++) {
     //get pack id and object
@@ -205,7 +225,7 @@ function FileNotExistThenDownload(packId, filename) {
   //user defer object
   var downloadDeffer = $.Deferred();
   promiseArray.push(downloadDeffer);
-  
+
   var filePath = FILE_STORAGE_PATH + packId + '/' + filename;
   window.resolveLocalFileSystemURL(filePath, function() {
     console.log('[FileNotExistThenDownload]FileExist:finished');
@@ -221,12 +241,12 @@ function FileNotExistThenDownload(packId, filename) {
 function downloadImg(filename, packId, downloadDeffer) {
   var url = 'http://i.imgur.com/' + filename;
   console.log('[downloadImg]url:' + url);
-  
-  var success = function(){
+
+  var success = function() {
     downloadDeffer.resolve();
   }
-  
-  var fail = function(){
+
+  var fail = function() {
     downloadDeffer.resolve();
     console.log('[downloadImg]:fail')
   }

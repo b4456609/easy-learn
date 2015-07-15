@@ -300,7 +300,7 @@ function image_submit_handler() {
     downloadImgByUrl(item.link, editingPackId, filename, function(fileEntry) {
       navigator.notification.activityStop();
       var imgsrc = fileEntry.toURL();
-      var img = "<img id='" + item.id + " ' src='" + imgsrc + "' width='100%' >";
+      var img = "<img id='" + item.id + " ' src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
 
       $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
     },function () {
@@ -393,7 +393,7 @@ function slideshare_submit_handler() {
           downloadImgByUrl(item.link, editingPackId, filename, function(fileEntry) {
             navigator.notification.activityStop();
             var imgsrc = fileEntry.toURL();
-            var img = "<img id='" + item.id + "' class='slideshare-img " + SLIDESHARE_PATH + " ' src='" + imgsrc + "' width='100%' >";
+            var img = "<img id='" + item.id + "' class='slideshare-img " + SLIDESHARE_PATH + " ' src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
 
             $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
           },function () {
@@ -406,11 +406,11 @@ function slideshare_submit_handler() {
 
 function displayImgInEditor(fileEntry) {
   var imgsrc = fileEntry.toURL();
-  var img = "<img src='" + imgsrc + "' width='100%' >";
+  var img = "<img src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
 
   //if the image is slideshare insert id in to html code to display reference
   if (imgsrc.indexOf('slide') !== -1) {
-    img = "<img class='slideshare-img " + SLIDESHARE_PATH + " " + "' src='" + imgsrc + "' width='100%' >";
+    img = "<img class='slideshare-img " + SLIDESHARE_PATH + " " + "' src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
   }
   console.log(img);
   $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);

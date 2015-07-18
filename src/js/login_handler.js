@@ -106,15 +106,7 @@ function fbLoginSuccess(userData) {
     }
   };
 
-  facebookConnectPlugin.api(
-    "/me/friends",
-    function(response) {
-      if (response && !response.error) {
-        console.log(response);
-        /* handle the result */
-      }
-    }
-  );
+
 
 
   facebookConnectPlugin.api("/me", [],

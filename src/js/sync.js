@@ -1,6 +1,160 @@
 var promiseArray = [];
 var SERVER_URL = 'http://140.121.197.135:11116/';
-//var SERVER_URL = 'http://192.168.0.102:8080/';
+//var SERVER_URL = 'http://192.168.3.147:8080/';
+var ImgurAuth = 'Client-ID 3cda8943e794d34';
+
+function fileDataUpload(id, deletehash) {
+  $.ajax({
+    url: SERVER_URL + 'easylearn/file_data',
+    type: 'POST',
+    data: {
+      id: id,
+      deletehash: deletehash
+    },
+    success: function() {
+      console.log('[fileDataUpload]success');
+    },
+    error: function() {
+      console.log('[fileDataUpload]fail');
+    }
+  });
+}
+
+function uploadImgUseBase64(data, callback) {
+  console.log('[uploadImgUseBase64]start');
+  if (navigator.network.connection.type == Connection.NONE) {
+    navigator.notification.alert(
+      '需要網路才能使用此功能', // message
+      null, // callback
+      '錯誤', // title
+      '確定' // buttonName
+    );
+  }
+
+  $.ajax({
+    xhr: function() {
+      var xhr = new window.XMLHttpRequest();
+      //Upload progress
+      xhr.upload.addEventListener("progress", function(evt) {
+        if (evt.lengthComputable) {
+          var percentComplete = evt.loaded / evt.total;
+          //Do something with upload progress
+          console.log(percentComplete);
+        }
+      }, false);
+      //Download progress
+      xhr.addEventListener("progress", function(evt) {
+        if (evt.lengthComputable) {
+          var percentComplete = evt.loaded / evt.total;
+          //Do something with download progress
+          console.log(percentComplete);
+        }
+      }, false);
+      return xhr;
+    },
+    url: 'https://api.imgur.com/3/image',
+    type: 'POST',
+    headers: {
+      Authorization: ImgurAuth,
+      Accept: 'application/json'
+    },
+    data: {
+      image: data,
+      type: 'base64',
+      album: "dvtm9wHkgA5cbZa"
+    },
+    success: function(result) {
+      console.log('[uploadImgUseBase64]success', result);
+      if (result.success == true) {
+        var item = {
+          id: result.data.id,
+          link: result.data.link,
+          deletehash: result.data.deletehash
+        };
+        fileDataUpload(item.id, item.deletehash);
+
+        callback(item);
+      } else {
+        console.log('[uploadImgUseBase64]imgeHostFail', result);
+        navigator.notification.alert(
+          '圖片伺服器錯誤，請稍後再重試', // message
+          null, // callback
+          '錯誤', // title
+          '確定' // buttonName
+        );
+      }
+    },
+    error: function(e, s, t) {
+      console.log('[uploadImgUseBase64]Fail');
+      console.log(e, s, t);
+      navigator.notification.alert(
+        '上傳圖片失敗，請稍後再重試', // message
+        null, // callback
+        '錯誤', // title
+        '確定' // buttonName
+      );
+    }
+  });
+}
+
+
+function uploadImgUseUrl(imgUrl, callback) {
+  console.log('[uploadImgUseUrl]start');
+  if (navigator.network.connection.type == Connection.NONE) {
+    navigator.notification.alert(
+      '需要網路才能使用此功能', // message
+      null, // callback
+      '錯誤', // title
+      '確定' // buttonName
+    );
+    return;
+  }
+
+  $.ajax({
+    url: 'https://api.imgur.com/3/image',
+    type: 'POST',
+    headers: {
+      Authorization: ImgurAuth,
+      Accept: 'application/json'
+    },
+    data: {
+      image: imgUrl,
+      type: 'URL',
+      album: "dvtm9wHkgA5cbZa"
+    },
+    success: function(result) {
+      console.log('[uploadImgUseUrl]success', result);
+      if (result.success == true) {
+        var item = {
+          id: result.data.id,
+          link: result.data.link,
+          deletehash: result.data.deletehash
+        };
+        fileDataUpload(item.id, item.deletehash);
+
+        callback(item);
+      } else {
+        console.log('[uploadImgUseUrl]imgeHostFail', result);
+        navigator.notification.alert(
+          '圖片伺服器錯誤，請稍後再重試', // message
+          null, // callback
+          '錯誤', // title
+          '確定' // buttonName
+        );
+      }
+    },
+    error: function(e, s, t) {
+      console.log('[uploadImgUseUrl]Fail');
+      console.log(e, s, t);
+      navigator.notification.alert(
+        '上傳圖片失敗，請稍後再重試', // message
+        null, // callback
+        '錯誤', // title
+        '確定' // buttonName
+      );
+    }
+  });
+}
 
 function getPack(packId, callback) {
   var user = new User();
@@ -31,20 +185,8 @@ function getPack(packId, callback) {
   });
 }
 
-function syncImg(files) {
-  //upload image
-  console.log(files);
-
-  var i;
-  for (i in files) {
-    uploadImg(files[i].name, files[i].version_pack_id);
-  }
-
-  downloadServerImg();
-
-}
-
 function downloadServerImg() {
+  promiseArray = [];
   //download image sync
   for (var i = 0; i < localStorage.length; i++) {
     //get pack id and object
@@ -73,17 +215,18 @@ function downloadServerImg() {
       //console.log('packVersion for' + packId + ' ' + versionId + ' ' + filesInVersion);
       //console.log(filesInVersion);
       for (var fileIndex in filesInVersion) {
-        var downloadDeffer = $.Deferred();
-        promiseArray.push(downloadDeffer);
-        FileNotExistThenDownload(packId, filesInVersion[fileIndex], downloadDeffer);
+        FileNotExistThenDownload(packId, filesInVersion[fileIndex]);
       }
     }
   }
 }
 
-function FileNotExistThenDownload(packId, filename, downloadDeffer) {
-  //console.log('FileNotExistThenDownload:' + ' ' + packId + ' ' + versionId + ' ' + filename);
-  var filePath = cordova.file.externalDataDirectory + packId + '/' + filename;
+function FileNotExistThenDownload(packId, filename) {
+  //user defer object
+  var downloadDeffer = $.Deferred();
+  promiseArray.push(downloadDeffer);
+
+  var filePath = FILE_STORAGE_PATH + packId + '/' + filename;
   window.resolveLocalFileSystemURL(filePath, function() {
     console.log('[FileNotExistThenDownload]FileExist:finished');
     downloadDeffer.resolve();
@@ -96,65 +239,20 @@ function FileNotExistThenDownload(packId, filename, downloadDeffer) {
 
 
 function downloadImg(filename, packId, downloadDeffer) {
-  var url = SERVER_URL + 'easylearn/download?pack_id=' +
-    packId + '&filename=' + filename;
-  console.log('downloadImgurl:' + url);
+  var url = 'http://i.imgur.com/' + filename;
+  console.log('[downloadImg]url:' + url);
 
-  downloadImgByUrl(url, packId, filename, function() {
+  var success = function() {
     downloadDeffer.resolve();
-  });
+  }
+
+  var fail = function() {
+    downloadDeffer.resolve();
+    console.log('[downloadImg]:fail')
+  }
+
+  downloadImgByUrl(url, packId, filename, success, fail);
 }
-
-function uploadImg(filename, packId) {
-  var uploadDeffer = $.Deferred();
-  promiseArray.push(uploadDeffer);
-
-  var failHandler = function(error) {
-    fail(error);
-    uploadDeffer.resolve();
-  };
-
-  var filePath = cordova.file.externalDataDirectory + packId + '/' + filename;
-  console.log('filepath' + filePath);
-  window.resolveLocalFileSystemURL(filePath, function(fileEntry) {
-    console.log(fileEntry);
-    fileEntry.file(function(file) {
-      console.log(file);
-
-      var reader = new FileReader();
-
-      reader.onloadend = function() {
-        var srcdata = reader.result;
-        console.log(srcdata);
-        $.ajax({
-          type: "POST",
-          url: SERVER_URL + "easylearn/upload",
-          data: {
-            file: srcdata,
-            filename: filename,
-            pack_id: packId
-          },
-          cache: false,
-          contentType: "application/x-www-form-urlencoded",
-          success: function() {
-            console.log('success upload img' + filename);
-            uploadDeffer.resolve();
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            uploadDeffer.resolve();
-            console.log('error');
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-          }
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }, failHandler);
-  }, failHandler);
-}
-
 
 //change last sync time to indicate newer data
 function changeModifyStroageTime() {
@@ -301,7 +399,7 @@ function sync() {
       saveToLocalStorage(data);
 
       //sync image
-      syncImg(data.sync.upload_file);
+      downloadServerImg();
 
       //refresh home page
       refreshPage();

@@ -38,11 +38,10 @@ $(document).on('pageshow', "#co_pack", function() {
   //add backup button
   //find backup version index
   for (var i in pack.version) {
-    console.log(pack.version[i].id + ' ' + pack.version[i].version + ' ' + pack.version[viewPackVersion.index].id + ' ' + pack.version[viewPackVersion.index].version);
     //id are same compare version size
-    if (pack.version[i].id == pack.version[viewPackVersion.index].id && pack.version[i].version < pack.version[viewPackVersion.index].version) {
+    if (i != viewPackVersion.index && pack.version[i].private_id == pack.version[viewPackVersion.index].private_id) {
       console.log('[coPack]find old version');
-      var buckupBtn = '<li><a href="#" onclick="checkout();">上次編輯內容</a></li>';
+      var buckupBtn = '<li><a href="#" id="last-btn" onclick="checkout();">上次編輯內容</a></li>';
 
       lastVersionIndex = i;
 
@@ -65,28 +64,6 @@ $(document).on('pageshow', "#co_pack", function() {
   editingPackId = viewPackId;
 });
 
-function checkout(){
-  $('#popupMenu').popup('close');
-  var pack = new Pack();
-  pack.getPack(viewPackId);
-
-  //checkout other version
-  if(viewPackVersion.index == currentIndex){
-    currentIndex = lastVersionIndex;
-  }
-  else{
-    currentIndex = viewPackVersion.index;
-  }
-
-  //prepare content
-  var content = pack.version[currentIndex].content;
-  content = replacePackImgPath(content);
-  var r = new Reference();
-  content = r.deleteRef(content);
-
-  // set edit content
-  $('#iframe1').contents().find('#edit').editable("setHTML", content, true);
-}
 
 $(document).on("pageinit", "#new_pack_edit", function() {
   //set editor height
@@ -113,12 +90,73 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 });
 
 
+function checkout() {
+  $('#popupMenu').popup('close');
+  var pack = new Pack();
+  pack.getPack(viewPackId);
+
+  //checkout other version
+  if (viewPackVersion.index == currentIndex) {
+    currentIndex = lastVersionIndex;
+  } else {
+    currentIndex = viewPackVersion.index;
+  }
+
+  //prepare content
+  var content = pack.version[currentIndex].content;
+  content = replacePackImgPath(content);
+  var r = new Reference();
+  content = r.deleteRef(content);
+
+  // set edit content
+  $('#iframe1').contents().find('#edit').editable("setHTML", '', true);
+  $('#iframe1').contents().find('#edit').editable("insertHTML", content, true);
+
+  //change the button name
+  toogleLastBtn();
+}
+
+function toogleLastBtn() {
+  if ($('#last-btn').text() == '上次編輯內容') {
+    $('#last-btn').text('較新內容');
+  } else {
+    $('#last-btn').text('上次編輯內容');
+  }
+}
+
+
 function getPhotoWithModifySize(successCallback) {
+  var errorHandler = function () {
+    navigator.notification.activityStop();
+    navigator.notification.alert(
+      '發生錯誤', // message
+      null, // callback
+      '錯誤', // title
+      '確定' // buttonName
+    );
+  };
+
   // Retrieve image file location from specified source
   navigator.camera.getPicture(function(imageData) {
+    navigator.notification.activityStart('處理中', '請稍後...');
     window.resolveLocalFileSystemURL(imageData, function(fileEntry) {
-      addFileToPack(newPackTemp.id, fileEntry, successCallback);
-    }, fail);
+      fileEntry.file(function(file) {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+          //upload to server
+          var base64 = reader.result;
+          base64= base64.substring(base64.indexOf(',')+1);
+          uploadImgUseBase64(base64, function (item) {
+            navigator.notification.activityStop();
+            var filename = item.link.substring(item.link.lastIndexOf('/')+1);
+            downloadImgByUrl(item.link, editingPackId, filename, successCallback ,function () {
+              navigator.notification.activityStop();
+            });
+          })
+        };
+        reader.readAsDataURL(file);
+      }, errorHandler);
+    }, errorHandler);
   }, onFail, {
     quality: 70,
     targetWidth: 800,
@@ -155,6 +193,12 @@ function savePackHandler() {
     version.is_public = NEW_PACK.is_public;
     version.id = newPackTemp.versionId;
     version.content = content;
+
+    //is private version
+    if (!version.is_public) {
+      //set new private id
+      version.newPrivateId();
+    }
 
     //create first version
     NEW_PACK.version[0] = version.get();
@@ -244,19 +288,32 @@ function load_editor() {
 }
 
 function image_submit_handler() {
+  navigator.notification.activityStart('處理中', '請稍後...');
   //get img url
-  var imgUrl = $('#image_url').val();
+  var imgUrl = $('#image_url').val().trim();
   //close popup
   $('#popup_image').popup("close");
   //download img and display in editor
-  downloadImgByUrl(imgUrl, editingPackId, 'user', displayImgInEditor);
+
+  uploadImgUseUrl(imgUrl, function(item) {
+    var filename = item.link.substring(item.link.lastIndexOf('/')+1);
+    downloadImgByUrl(item.link, editingPackId, filename, function(fileEntry) {
+      navigator.notification.activityStop();
+      var imgsrc = fileEntry.toURL();
+      var img = "<img id='" + item.id + " ' src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
+
+      $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+    },function () {
+      navigator.notification.activityStop();
+    });
+  });
 }
 
 function youtube_submit_handler() {
   // get youtube url
-  var user_url = $("#youtube_url").val();
-  var start = $('#youtube_start_time').val();
-  var end = $('#youtube_end_time').val();
+  var user_url = $("#youtube_url").val().trim();
+  var start = $('#youtube_start_time').val().trim();
+  var end = $('#youtube_end_time').val().trim();
 
   //save embed parameter
   var startPar = '',
@@ -313,11 +370,13 @@ function slideshare_submit_handler() {
   indexOfSlash = user_url.lastIndexOf('/', indexOfSlash - 1);
   SLIDESHARE_PATH = user_url.substr(indexOfSlash + 1).replace('/', '_');
 
+  navigator.notification.activityStart('處理中', '請稍後...');
+
   //ajax
   $.get(url,
     function(data) {
       //error check
-      if (start <= 0 | start === null | start > data.total_slides) {
+      if (start <= 0 || start === null || start > data.total_slides) {
         start = 1;
       }
       if (end < start) {
@@ -326,23 +385,32 @@ function slideshare_submit_handler() {
         end = data.total_slides;
       }
 
-      console.log(start + '  ' + end);
       //download img to localStorage
       for (; start <= end; start++) {
         var imgUrl = 'http:' + data.slide_image_baseurl + start + data.slide_image_baseurl_suffix;
-        console.log(imgUrl);
-        downloadImgByUrl(imgUrl, editingPackId, 'slideshare', displayImgInEditor);
+        uploadImgUseUrl(imgUrl, function(item) {
+          var filename = item.link.substring(item.link.lastIndexOf('/')+1);
+          downloadImgByUrl(item.link, editingPackId, filename, function(fileEntry) {
+            navigator.notification.activityStop();
+            var imgsrc = fileEntry.toURL();
+            var img = "<img id='" + item.id + "' class='slideshare-img " + SLIDESHARE_PATH + " ' src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
+
+            $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
+          },function () {
+            navigator.notification.activityStop();
+          });
+        });
       }
     });
 }
 
 function displayImgInEditor(fileEntry) {
   var imgsrc = fileEntry.toURL();
-  var img = "<img src='" + imgsrc + "' width='100%' >";
+  var img = "<img src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
 
   //if the image is slideshare insert id in to html code to display reference
   if (imgsrc.indexOf('slide') !== -1) {
-    img = "<img class='slideshare-img " + SLIDESHARE_PATH + " " + "' src='" + imgsrc + "' width='100%' >";
+    img = "<img class='slideshare-img " + SLIDESHARE_PATH + " " + "' src='" + imgsrc + "' style='max-width:100% !important; height:auto;' >";
   }
   console.log(img);
   $('#iframe1').contents().find('#edit').editable("insertHTML", img, true);
@@ -412,18 +480,24 @@ function saveNewVersionHandler(pack, isPublic) {
     newVersion.is_public = isPublic;
     newVersion.content = content;
     newVersion.version = originVersion.version;
+    newVersion.private_id = originVersion.private_id;
+
 
     console.log('[publicInfo]oldVersion ' + originVersion.is_public + ' newVersion ' + isPublic);
+
+    //origin is private, new is private
     //remain one not public
     if (!originVersion.is_public && !isPublic) {
       // modify origin to second one
-      newVersion.id = originVersion.id;
+      var find = originVersion.private_id;
       newVersion.version++;
 
       //remove the other backup
       for (var index in pack.version) {
-        if (index == viewPackVersion.index) {} //do nothing
-        else if (pack.version[index].id === originVersion.id) {
+        if (pack.version[index].id == originVersion.id) {
+          continue;
+        }
+        if (pack.version[index].private_id === find) {
           pack.version.splice(index, 1);
           break;
           //should be only one
@@ -432,25 +506,22 @@ function saveNewVersionHandler(pack, isPublic) {
     }
     //public version, remove all old version
     else if (!originVersion.is_public && isPublic) {
-      // modify origin to second one
-      newVersion.id = originVersion.id;
       newVersion.version++;
 
-      //remove the other backup
-      re = new RegExp(originVersion.id, 'i');
-      console.log('originVersion.id:' + originVersion.id);
-      var i = 0;
-      for (; i < pack.version.length; i++) {
-        console.log('for:' + pack.version[i].id);
-        if (pack.version[i].id === originVersion.id) {
-          console.log('delete:' + pack.version[i].id + ' ' + pack.version[i].version);
-          pack.version.splice(i, 1);
+      for (var j in pack.version) {
+        if (pack.version[j].private_id === originVersion.private_id) {
+          pack.version.splice(j, 1);
           //because delete one i
-          i--;
+          j--;
         }
       }
       //version is public the pack will be public
       pack.is_public = true;
+    }
+    // old is public and new private
+    else if (originVersion.is_public && !isPublic) {
+      //set new private id
+      newVersion.newPrivateId();
     }
 
     var new_index = pack.version.length;

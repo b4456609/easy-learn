@@ -77,10 +77,33 @@ $(document).on('pageinit', "#view_pack", function() {
   var pack = new Pack();
   pack.getPack(viewPackId);
 
+
   //set look's version's index, check if index exits
   if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
-    viewPackVersion.index = pack.version.length;
+    var version_time = 0;
+    var version_index_temp = null;
+    for (var i in pack.version) {
+      if (pack.version[i].create_time > version_time) {
+        version_time = pack.version[i].create_time;
+        version_index_temp = i;
+      }
+    }
+    viewPackVersion.index = version_index_temp;
   }
+
+  //if index is on private and old set to lastest verison
+  var viewPrivateId = pack.version[viewPackVersion.index].private_id;
+  if (viewPrivateId !== '') {
+    for (var j in pack.version) {
+      if (pack.version[j].private_id == viewPrivateId) {
+        if (pack.version[j].version > pack.version[viewPackVersion.index].version) {
+          viewPackVersion.index = j;
+        }
+      }
+    }
+  }
+
+
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
 
@@ -246,23 +269,25 @@ function hideButtonHandler() {
 }
 
 function onFail(message) {
-  alert('Failed because: ' + message);
+  navigator.notification.alert(
+    message, // message
+    null, // callback
+    '錯誤', // title
+    '確定' // buttonName
+  );
   console.log('Failed because: ' + message);
 }
 
 function displayCoverImg(packfileEntry) {
-  packfileEntry.file(function(file) {
-
-    var img = document.createElement("img");
-    var reader = new FileReader();
-    reader.onloadend = function() {
-      img.src = reader.result;
-    };
-    img.style.width = '100%';
-
-    reader.readAsDataURL(file);
-    $("#cover_photo_area").html(img);
-  }, fail);
+  for(var i in editingFile){
+    if(editingFile[i] == packfileEntry.name){
+      editingFile.splice(i,1);
+    }
+  }
+  NEW_PACK.cover_filename = packfileEntry.name;
+  var imgsrc = packfileEntry.toURL();
+  var img = "<img src='" + imgsrc + "' width='100%' >";
+  $("#cover_photo_area").html(img);
 }
 
 function go_version_handler(index) {
@@ -286,11 +311,11 @@ function display_version_info() {
     if (!version[i].is_public) {
       for (j = i; j < version.length; j++) {
         //id are same compare version size
-        if (version[i].id == version[j].id && version[i].version < version[j].version) {
+        if (version[i].private_id == version[j].private_id && version[i].version < version[j].version) {
           //mark as null for not break array index arrange
           version[i] = null;
           break;
-        } else if (version[i].id == version[j].id && version[i].version > version[j].version) {
+        } else if (version[i].private_id == version[j].private_id && version[i].version > version[j].version) {
           //mark as null for not break array index arrange
           version[j] = null;
           break;
@@ -303,7 +328,7 @@ function display_version_info() {
   var html = '';
   for (i = 0; i < version.length; i++) {
     //null as not display
-    if (version[i] == null) {
+    if (version[i] === null) {
       continue;
     }
 

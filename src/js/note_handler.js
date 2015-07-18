@@ -71,6 +71,11 @@ function save_note_handler() {
 
   //set color to content
   note_selection.new_version_content = note_selection.new_version_content.replace('class="note"', 'class="note ' + colorClassName + '"');
+  
+  //replace file path
+  var find = FILE_STORAGE_PATH;
+  var re = new RegExp(find, 'g');
+  note_selection.new_version_content = note_selection.new_version_content.replace(re, 'FILE_STORAGE_PATH');
 
   //save in localStorage
   var pack = JSON.parse(localStorage.getItem(viewPackId));

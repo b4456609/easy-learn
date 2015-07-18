@@ -1,6 +1,6 @@
 var promiseArray = [];
-//var SERVER_URL = 'http://140.121.197.135:11116/';
-var SERVER_URL = 'http://192.168.3.147:8080/';
+var SERVER_URL = 'http://140.121.197.135:11116/';
+//var SERVER_URL = 'http://192.168.3.147:8080/';
 var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
 function fileDataUpload(id, deletehash) {
@@ -259,6 +259,31 @@ function changeModifyStroageTime() {
   var user = JSON.parse(localStorage.user);
   user.setting.last_sync_time = (new Date().getTime()) + 30000;
   localStorage.setItem('user', JSON.stringify(user));
+}
+
+//comment instant sync handler
+function postDeviceId(deviceId) {
+  if (navigator.network.connection.type == Connection.NONE) {
+    return;
+  }
+  var user = JSON.parse(localStorage.user);
+  $.ajax({
+    type: "POST",
+    url: SERVER_URL + 'easylearn/device',
+    data: {
+      user_id: user.id,
+      device_id: deviceId
+    },
+    success: function() {
+      console.log('success post device');
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('error');
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
 }
 
 //comment instant sync handler

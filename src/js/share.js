@@ -9,7 +9,7 @@ $(document).on('pageshow', "#share_contact", function() {
       console.log("Friedns:"+friend_array[0].name);
 
       for (i in friend_array) {
-          var templete ='<input type="checkbox" name="contact-'+i+'" id="contact-'+i+'" data-cacheval="true"> <label for="contact-'+i+'">'+friend_array[i].name+'</label></div>';
+          var templete ='<input type="checkbox" name="'+friend_array[i].id+'" id="contact-'+i+'" data-cacheval="true"> <label for="contact-'+i+'">'+friend_array[i].name+'</label></div>';
           $("fieldset").controlgroup("container").append(templete);
       }
       $('input[type=checkbox]').checkboxradio();
@@ -23,7 +23,7 @@ $(document).on('pageshow', "#share_contact", function() {
   );
 
 
-
+  $("#share").click(share_friends);
 
 /*
   <fieldset data-role="controlgroup" id="choose_contact">
@@ -40,3 +40,38 @@ $(document).on('pageshow', "#share_contact", function() {
   */
 
 });
+
+
+function share_friends(){
+  var elements = document.querySelectorAll('input[type="checkbox"]:checked');
+  var checkedElements = Array.prototype.map.call(elements, function (el, i) {
+    return el.name;
+  });
+  console.log(checkedElements);
+  console.log(user_ID);
+  var sendData = {
+    user: checkedElements
+  };
+
+
+
+
+  $.ajax({
+              url: SERVER_URL+'easylearn/push',
+              contentType: 'application/json',
+              data: {
+                RegID:JSON.stringify(sendData)
+              },
+              type:'GET',
+              success: function(msg){
+                  alert(msg);
+              },
+               error:function(xhr, ajaxOptions, thrownError){
+                  alert(xhr.status);
+                  alert(thrownError);
+               }
+    });
+
+
+
+}

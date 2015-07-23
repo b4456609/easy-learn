@@ -262,6 +262,31 @@ function changeModifyStroageTime() {
 }
 
 //comment instant sync handler
+function postDeviceId(deviceId) {
+  if (navigator.network.connection.type == Connection.NONE) {
+    return;
+  }
+  var user = JSON.parse(localStorage.user);
+  $.ajax({
+    type: "POST",
+    url: SERVER_URL + 'easylearn/device',
+    data: {
+      user_id: user.id,
+      device_id: deviceId
+    },
+    success: function() {
+      console.log('success post device');
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log('error');
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
+}
+
+//comment instant sync handler
 function postComment(noteId, newComment) {
   var jsonObj = JSON.stringify(newComment);
   $.ajax({

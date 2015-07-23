@@ -1,27 +1,26 @@
-
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
 ol, ul {
-	list-style: none;
+  list-style: none;
 }
 blockquote, q {
-	quotes: none;
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+blockquote:before, blockquote:after, q:before, q:after {
+  content: '';
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
+
 /* end */
 
 .setting_flip .ui-slider-switch {
@@ -30,7 +29,6 @@ table {
 .setting_flip h2 {
   display: inline;
 }
-
 .note-content {
   padding-left: 10px;
   padding-right: 10px;
@@ -84,55 +82,56 @@ table {
 }
 
 /*note color*/
-.note-purple{
+
+.note-purple {
   background-color: #E1BEE7;
+  border-radius: 8px;
 }
-.note-indigo{
+.note-indigo {
   background-color: #C5CAE9;
+  border-radius: 8px;
 }
-.note-teal{
+.note-teal {
   background-color: #B2DFDB;
+  border-radius: 8px;
 }
-.note-orange{
+.note-orange {
   background-color: #FFE0B2;
+  border-radius: 8px;
 }
 .note {
   text-shadow: none;
 }
 
 /*login button*/
+
 .facebook_button {
-    display: inline-block;
-
-    background: #627aac url(facebook_small.png) left no-repeat;
-
-    border-top: 1px solid #29447e;
-    border-right: 1px solid #29447e;
-    border-bottom: 1px solid #1a356e;
-    border-left: none;
-
-    height: 22px;
-
-    padding-right: 7px;
-    padding-left: 29px;
-
-    font-weight: bold;
-    font-size: 11px;
-    color: white;
-    text-decoration: none;
-    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-    line-height: 22px;
-
-    cursor: pointer;
-
+  display: inline-block;
+  background: #627aac url(facebook_small.png) left no-repeat;
+  border-top: 1px solid #29447e;
+  border-right: 1px solid #29447e;
+  border-bottom: 1px solid #1a356e;
+  border-left: none;
+  height: 22px;
+  padding-right: 7px;
+  padding-left: 29px;
+  font-weight: bold;
+  font-size: 11px;
+  color: white;
+  text-decoration: none;
+  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+  line-height: 22px;
+  cursor: pointer;
 }
 
 /*refrence area*/
-#pack_refrence{
+
+#pack_refrence {
   word-wrap: break-word;
 }
 
 /*version info*/
-.version-look > h2 > a{
-	background: #B2DFDB  !important;
+
+.version-look > h2 > a {
+  background: #B2DFDB !important;
 }

@@ -262,16 +262,15 @@ function changeModifyStroageTime() {
 }
 
 //comment instant sync handler
-function postDeviceId(deviceId) {
+function postDeviceId(userId, deviceId) {
   if (navigator.network.connection.type == Connection.NONE) {
     return;
   }
-  var user = JSON.parse(localStorage.user);
   $.ajax({
     type: "POST",
     url: SERVER_URL + 'easylearn/device',
     data: {
-      user_id: user.id,
+      user_id: userId,
       device_id: deviceId
     },
     success: function() {

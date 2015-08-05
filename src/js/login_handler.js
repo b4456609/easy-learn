@@ -52,6 +52,8 @@ function successLogin(user) {
     reverse: false,
     changeHash: false
   });
+
+  pushRegistry();
 }
 
 function logout() {
@@ -137,4 +139,49 @@ function facebook_login() {
       console.log(error);
     }
   );
+}
+
+function pushRegistry() {
+  var pushNotification = window.plugins.pushNotification;
+  pushNotification.register(
+    successHandler,
+    errorHandler, {
+      'senderID': '277155669423',
+      'ecb': 'onNotificationGCM' // callback function
+    }
+  );
+}
+
+// push notification function
+function successHandler(result) {
+  console.log('Success: ' + result);
+}
+
+function errorHandler(error) {
+  console.log('Error: ' + error);
+}
+
+function onNotificationGCM(e) {
+  switch (e.event) {
+    case 'registered':
+      if (e.regid.length > 0) {
+        console.log("regID = " + e.regid);
+
+        //post user regid to server
+        var user = new User();
+        postDeviceId(user.id, e.regid);
+      }
+      break;
+    case 'message':
+      if (e.foreground) { // When the app is running foreground.
+        alert('The room temperature is set too high')
+      }
+      break;
+    case 'error':
+      console.log('Error: ' + e.msg);
+      break;
+    default:
+      console.log('An unknown event was received');
+      break;
+  }
 }

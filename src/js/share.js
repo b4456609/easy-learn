@@ -6,8 +6,6 @@ $(document).on('pageshow', "#share_contact", function() {
     function(result) {
       console.log(result)
       friend_array=result.data;
-      console.log("Friedns:"+friend_array[0].name);
-
       for (i in friend_array) {
           var templete ='<input type="checkbox" name="'+friend_array[i].id+'" id="contact-'+i+'" data-cacheval="true"> <label for="contact-'+i+'">'+friend_array[i].name+'</label></div>';
           $("fieldset").controlgroup("container").append(templete);
@@ -48,19 +46,34 @@ function share_friends(){
     return el.name;
   });
   console.log(checkedElements);
-  console.log(user_ID);
-  var sendData = {
-    user: checkedElements
-  };
+
+  //console.log(user_ID);
 
 
+   var sendData = '{"User":[';
+   var x,length;
+   length=checkedElements.length;
+   for(x in checkedElements){
+     sendData+='{"name":"';
+     sendData+=checkedElements[x];
+     if(x==length-1){
+        sendData+='"}';
+        }
+     else {
+       sendData+='"},'
+     }
+   }
+   sendData+=']}';
+  var temp1 = JSON.parse(sendData);
+  var temp2 = JSON.stringify(temp1);
 
+  console.log(temp2);
 
   $.ajax({
               url: SERVER_URL+'easylearn/push',
               contentType: 'application/json',
               data: {
-                RegID:JSON.stringify(sendData)
+                RegID:temp2
               },
               type:'GET',
               success: function(msg){

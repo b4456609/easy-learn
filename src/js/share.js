@@ -23,19 +23,6 @@ $(document).on('pageshow', "#share_contact", function() {
 
   $("#share").click(share_friends);
 
-/*
-  <fieldset data-role="controlgroup" id="choose_contact">
-
-    <input type="checkbox" name="contact-2a" id="contact-2a">
-    <label for="contact-2a">Doritos</label>
-
-    <input type="checkbox" name="contact-3a" id="contact-3a">
-    <label for="contact-3a">Fritos</label>
-
-    <input type="checkbox" name="contact-4a" id="contact-4a">
-    <label for="contact-4a">Sun Chips</label>
-  </fieldset>
-  */
 
 });
 
@@ -63,7 +50,9 @@ function share_friends(){
        sendData+='"},'
      }
    }
-   sendData+=']}';
+   sendData+='],"pack":"'+viewPackId+'"}';
+
+
   var temp1 = JSON.parse(sendData);
   var temp2 = JSON.stringify(temp1);
 
@@ -84,7 +73,36 @@ function share_friends(){
                   alert(thrownError);
                }
     });
-
-
-
 }
+/*
+      run the index's share Pack
+*/
+
+$(document).on("pageshow","#share_pack",function(){
+  var folderArray = JSON.parse(localStorage.folder);
+
+  var packArray;
+  //find current folder in data
+  var i;
+  for (i in folderArray) {
+    if (folderArray[i].id === "allfolder") {
+      packArray = folderArray[i].pack;
+      break;
+    }
+  }
+
+
+
+  for (i in packArray) {
+    var pack = new Pack();
+    pack.getPack(packArray[i]);
+
+      //var templete ='<input type="checkbox" name="'+packArray[i].id+'" id="contact-'+i+'" data-cacheval="true"> <label for="contact-'+i+'">'+friend_array[i].name+'</label>';
+     var templete ='<input type="checkbox" name="'+packArray[i].id+'" id="contact-'+i+'" data-cacheval="true"><li class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r"   ><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></li></input>';
+
+
+      $("fieldset").controlgroup("container").append(templete);
+  }
+  $('input[type=checkbox]').checkboxradio();
+  $('fieldset').controlgroup('refresh');
+});

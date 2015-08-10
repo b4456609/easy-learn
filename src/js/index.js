@@ -82,13 +82,13 @@ function myAppLogic() {
   $('#logout').click(logout);
 
   var pushNotification = window.plugins.pushNotification;
-     pushNotification.register(
-          successHandler,
-          errorHandler, {
-            'senderID':'277155669423',
-            'ecb':'onNotificationGCM' // callback function
-      }
-      );
+  pushNotification.register(
+    successHandler,
+    errorHandler, {
+      'senderID': '277155669423',
+      'ecb': 'onNotificationGCM' // callback function
+    }
+  );
 
 
 }
@@ -258,7 +258,20 @@ function checkout_pack(packId) {
       transition: "pop",
     });
   };
-  getPack(packId, callback);
+
+  //if pack is exist in local do not download from server
+  var folder = new Folder();
+  if(folder.hasPack(packId)){
+    console.log('[checkout_pack]has pack in local');
+    viewPackId = packId;
+    $.mobile.changePage("view_pack.html", {
+      transition: "pop",
+    });
+  }
+  else{
+    console.log('[checkout_pack]no pack in local');
+    getPack(packId, callback);
+  }
 }
 
 function export_popup() {
@@ -288,58 +301,56 @@ function export_popup() {
 */
 
 function successHandler(result) {
-    console.log('Success: '+ result);
- }
- function errorHandler(error) {
-    console.log('Error: '+ error);
-  }
+  console.log('Success: ' + result);
+}
+
+function errorHandler(error) {
+  console.log('Error: ' + error);
+}
 
 function onNotificationGCM(e) {
-$("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
+  $("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
 
-switch( e.event )
-{
-case 'registered':
-    if ( e.regid.length > 0 )
-    {
+  switch (e.event) {
+    case 'registered':
+      if (e.regid.length > 0) {
         // Your GCM push server needs to know the regID before it can push to this device
         // here is where you might want to send it the regID for later use.
         console.log("regID = " + e.regid);
-    }
-break;
+      }
+      break;
 
-case 'message':
-    // if this flag is set, this notification happened while we were in the foreground.
-    // you might want to play a sound to get the user's attention, throw up a dialog, etc.
-    if ( e.foreground )
-    {   var htm = "";
+    case 'message':
+      // if this flag is set, this notification happened while we were in the foreground.
+      // you might want to play a sound to get the user's attention, throw up a dialog, etc.
+      if (e.foreground) {
+        var htm = "";
         $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
-        alert("foreground "+e.payload.message+"pack:"+e.payload.packId);
-        $("#home").append("<div class='notify-bar notify-bar-height' style='display: none'>"+"有人與你分享懶人包"+"</div>");
+        alert("foreground " + e.payload.message + "pack:" + e.payload.packId);
+        $("#home").append("<div class='notify-bar notify-bar-height' style='display: none'>" + "有人與你分享懶人包" + "</div>");
         $('.notify-bar').show().addClass('notify-bar-height-change');
-        setTimeout(function () {
-          $('.notify-bar').remove();
-      },5000)
-      /*
-           after read the push notification in app
-      */
+        setTimeout(function() {
+            $('.notify-bar').remove();
+          }, 5000)
+          /*
+               after read the push notification in app
+          */
 
-    }
-    else
-    {  // otherwise we were launched because the user touched a notification in the notification tray.
+      } else { // otherwise we were launched because the user touched a notification in the notification tray.
 
 
         /*   device   push notificaion  after tap  e.payload.packId  */
 
-    }
-break;
+        checkout_pack(e.payload.packId);
+      }
+      break;
 
-case 'error':
-    $("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
-break;
+    case 'error':
+      $("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+      break;
 
-default:
-    $("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
-break;
-}
+    default:
+      $("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+      break;
+  }
 }

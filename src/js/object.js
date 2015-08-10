@@ -233,7 +233,6 @@ function Folder() {
           if (this.folderArray[i].pack[j] === packId) {
             return true;
           }
-          break;
         }
       }
     }

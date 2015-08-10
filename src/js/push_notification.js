@@ -37,7 +37,7 @@ function onNotificationGCM(e) {
       // if this flag is set, this notification happened while we were in the foreground.
       // you might want to play a sound to get the user's attention, throw up a dialog, etc.
       if (e.foreground) {
-        window.plugins.toast.showShortTop('有人與你分享懶人包', function(a) {
+        window.plugins.toast.showShortBottom('有人與你分享懶人包', function(a) {
           console.log('toast success: ' + a)
         }, function(b) {
           alert('toast error: ' + b)

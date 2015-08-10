@@ -116,6 +116,7 @@ function fbLoginSuccess(userData) {
       user.id = result.id;
       user.name = result.name;
       successLogin(user);
+      postDeviceId(user.id, sessionStorage.getItem('regID'));
     },
     function(error) {
       alert('登入失敗:' + JSON.stringify(error));

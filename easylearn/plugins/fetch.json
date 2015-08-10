@@ -74,5 +74,13 @@
             "type": "registry",
             "id": "org.apache.cordova.file"
         }
+    },
+    "nl.x-services.plugins.toast": {
+        "source": {
+            "type": "registry",
+            "id": "nl.x-services.plugins.toast"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

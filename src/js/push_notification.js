@@ -1,4 +1,3 @@
-
 /*
     message pass scuess or not
     and display message
@@ -14,7 +13,7 @@ function pushNotification() {
     }
   );
 
-  function successHandler(result){
+  function successHandler(result) {
     console.log('Success: ' + result);
   }
 
@@ -38,19 +37,23 @@ function onNotificationGCM(e) {
       // if this flag is set, this notification happened while we were in the foreground.
       // you might want to play a sound to get the user's attention, throw up a dialog, etc.
       if (e.foreground) {
-          //add to local share folder
-          var packId = e.payload.packId;
-          var folder = new Folder();
-          if(folder.hasPack(packId)){
-            console.log('[checkout_pack]has pack in local');
+        window.plugins.toast.showShortTop('有人與你分享懶人包', function(a) {
+          console.log('toast success: ' + a)
+        }, function(b) {
+          alert('toast error: ' + b)
+        });
+        //add to local share folder
+        var packId = e.payload.packId;
+        var folder = new Folder();
+        if (folder.hasPack(packId)) {
+          console.log('[checkout_pack]has pack in local');
+          addSharePack(packId);
+        } else {
+          console.log('[checkout_pack]no pack in local');
+          getPack(packId, function() {
             addSharePack(packId);
-          }
-          else{
-            console.log('[checkout_pack]no pack in local');
-            getPack(packId, function () {
-              addSharePack(packId);
-            });
-          }
+          });
+        }
 
 
       } else { // otherwise we were launched because the user touched a notification in the notification tray.
@@ -76,7 +79,7 @@ function onNotificationGCM(e) {
 function addSharePack(packId) {
   //add to local share folder
   var folder = new Folder();
-folder.addShareFolder();
-folder.addPackToShareFolder(packId);
+  folder.addShareFolder();
+  folder.addPackToShareFolder(packId);
   refreshHomePage();
 }

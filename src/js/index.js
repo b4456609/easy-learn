@@ -302,7 +302,6 @@ switch( e.event )
 case 'registered':
     if ( e.regid.length > 0 )
     {
-        $("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
         // Your GCM push server needs to know the regID before it can push to this device
         // here is where you might want to send it the regID for later use.
         console.log("regID = " + e.regid);
@@ -321,32 +320,18 @@ case 'message':
         setTimeout(function () {
           $('.notify-bar').remove();
       },5000)
-
-
-        $("#both-popup").popup({theme: "b"});
+      /*
+           after read the push notification in app
+      */
 
     }
     else
     {  // otherwise we were launched because the user touched a notification in the notification tray.
-        if ( e.coldstart )
-        {
-            $("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
-            alert("cold start");
-        }
-        else
-        {
-            $("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
-            alert("except cold start");
-        }
 
-        /*   device   */
+
+        /*   device   push notificaion  after tap  e.payload.packId  */
 
     }
-
-   $("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
-       //Only works for GCM
-   $("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
-
 break;
 
 case 'error':

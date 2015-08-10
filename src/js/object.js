@@ -273,6 +273,50 @@ function Folder() {
 
     this.save();
   };
+
+  //if no share folder add it
+  this.addShareFolder = function () {
+    for (var i in this.folderArray) {
+      if(this.folderArray[i].id == 'shareFolder'){
+        return;
+      }
+    }
+
+    //add new folder
+    this.folderArray[this.folderArray.length] = {
+      name: '與你分享懶人包',
+      id: 'shareFolder',
+      pack: []
+    };
+
+    this.save();
+  };
+
+  //add a pack to all folder
+  this.addPackToShareFolder = function(packId) {
+    //if not in all folder add in
+    if(!this.hasPack){
+      this.addToAllFolder(packId);
+    }
+    for (var i in this.folderArray) {
+      if (this.folderArray[i].id === 'shareFolder') {
+        console.log('[addAPack] addPackToShareFolder:' + packId);
+
+        //check is exist in share folder
+        var packs = this.folderArray[i].pack;
+        for(var j in packs){
+          if(packs[j] === packId){
+            return;
+          }
+        }
+        this.folderArray[i].pack.push(packId);
+
+        break;
+      }
+    }
+
+    this.save();
+  };
 }
 
 

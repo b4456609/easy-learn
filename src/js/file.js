@@ -414,7 +414,7 @@ function import_action(zipFilename) {
 
   var finish = function() {
     //resfresh home
-    refreshPage();
+    refreshHomePage();
 
     //stop spinner
     navigator.notification.activityStop();

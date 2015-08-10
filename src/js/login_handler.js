@@ -53,7 +53,6 @@ function successLogin(user) {
     changeHash: false
   });
 
-  pushRegistry();
 }
 
 function logout() {

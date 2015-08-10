@@ -80,6 +80,17 @@ function myAppLogic() {
   }
 
   $('#logout').click(logout);
+
+  var pushNotification = window.plugins.pushNotification;
+     pushNotification.register(
+          successHandler,
+          errorHandler, {
+            'senderID':'277155669423',
+            'ecb':'onNotificationGCM' // callback function
+      }
+      );
+
+
 }
 
 $(document).on("pageshow", "#home", function() {
@@ -270,75 +281,80 @@ function export_popup() {
   $('#export_popup').popup('open');
 }
 
-document.addEventListener("deviceready", function(){
-  var pushNotification = window.plugins.pushNotification;
-     pushNotification.register(
-          successHandler,
-          errorHandler, {
-            'senderID':'277155669423',
-            'ecb':'onNotificationGCM' // callback function
-      }
-      );
 
+/*
+    message pass scuess or not
+    and display message
+*/
 
-});
-    function successHandler(result) {
-        console.log('Success: '+ result);
-     }
-     function errorHandler(error) {
-        console.log('Error: '+ error);
-      }
+function successHandler(result) {
+    console.log('Success: '+ result);
+ }
+ function errorHandler(error) {
+    console.log('Error: '+ error);
+  }
 
-  function onNotificationGCM(e) {
-    $("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
+function onNotificationGCM(e) {
+$("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
 
-    switch( e.event )
+switch( e.event )
+{
+case 'registered':
+    if ( e.regid.length > 0 )
     {
-    case 'registered':
-        if ( e.regid.length > 0 )
-        {
-            $("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
-            // Your GCM push server needs to know the regID before it can push to this device
-            // here is where you might want to send it the regID for later use.
-            console.log("regID = " + e.regid);
-        }
-    break;
+        $("#app-status-ul").append('<li>REGISTERED -> REGID:' + e.regid + "</li>");
+        // Your GCM push server needs to know the regID before it can push to this device
+        // here is where you might want to send it the regID for later use.
+        console.log("regID = " + e.regid);
+    }
+break;
 
-    case 'message':
-        // if this flag is set, this notification happened while we were in the foreground.
-        // you might want to play a sound to get the user's attention, throw up a dialog, etc.
-        if ( e.foreground )
-        {
-            $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
-            alert("foreground");
+case 'message':
+    // if this flag is set, this notification happened while we were in the foreground.
+    // you might want to play a sound to get the user's attention, throw up a dialog, etc.
+    if ( e.foreground )
+    {   var htm = "";
+        $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
+        alert("foreground "+e.payload.message+"pack:"+e.payload.packId);
+        $("#home").append("<div class='notify-bar notify-bar-height' style='display: none'>"+"有人與你分享懶人包"+"</div>");
+        $('.notify-bar').show().addClass('notify-bar-height-change');
+        setTimeout(function () {
+          $('.notify-bar').remove();
+      },5000)
 
+
+        $("#both-popup").popup({theme: "b"});
+
+    }
+    else
+    {  // otherwise we were launched because the user touched a notification in the notification tray.
+        if ( e.coldstart )
+        {
+            $("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
+            alert("cold start");
         }
         else
-        {  // otherwise we were launched because the user touched a notification in the notification tray.
-            if ( e.coldstart )
-            {
-                $("#app-status-ul").append('<li>--COLDSTART NOTIFICATION--' + '</li>');
-                alert("cold start");
-            }
-            else
-            {
-                $("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
-                alert("except cold start");
-            }
+        {
+            $("#app-status-ul").append('<li>--BACKGROUND NOTIFICATION--' + '</li>');
+            alert("except cold start");
         }
 
-       $("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
-           //Only works for GCM
-       $("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
+        /*   device   */
 
-    break;
+    }
 
-    case 'error':
-        $("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
-    break;
+   $("#app-status-ul").append('<li>MESSAGE -> MSG: ' + e.payload.message + '</li>');
+       //Only works for GCM
+   $("#app-status-ul").append('<li>MESSAGE -> MSGCNT: ' + e.payload.msgcnt + '</li>');
 
-    default:
-        $("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
-    break;
-  }
+break;
+
+case 'error':
+    $("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+break;
+
+default:
+    $("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+break;
+}
 }

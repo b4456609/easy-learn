@@ -67,6 +67,10 @@
                         {
                             "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Toast\"><param name=\"android-package\" value=\"nl.xservices.plugins.Toast\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -186,6 +190,9 @@
             "PACKAGE_NAME": "ntou.cs.easylearn"
         },
         "org.apache.cordova.inappbrowser": {
+            "PACKAGE_NAME": "ntou.cs.easylearn"
+        },
+        "nl.x-services.plugins.toast": {
             "PACKAGE_NAME": "ntou.cs.easylearn"
         }
     },

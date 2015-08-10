@@ -315,11 +315,12 @@ case 'message':
     {   var htm = "";
         $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
         alert("foreground "+e.payload.message+"pack:"+e.payload.packId);
-        $("#home").append("<div class='notify-bar notify-bar-height' style='display: none'>"+"有人與你分享懶人包"+"</div>");
+      /*  $("#home").append("<div class='notify-bar notify-bar-height' style='display: none'>"+"有人與你分享懶人包"+"</div>");
         $('.notify-bar').show().addClass('notify-bar-height-change');
         setTimeout(function () {
           $('.notify-bar').remove();
-      },5000)
+      },5000)*/
+      window.plugins.toast.showShortTop('有人與你分享懶人包', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});
       /*
            after read the push notification in app
       */
@@ -335,11 +336,11 @@ case 'message':
 break;
 
 case 'error':
-    $("#app-status-ul").append('<li>ERROR -> MSG:' + e.msg + '</li>');
+    alert('<li>ERROR -> MSG:' + e.msg + '</li>');
 break;
 
 default:
-    $("#app-status-ul").append('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+    alert('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
 break;
 }
 }

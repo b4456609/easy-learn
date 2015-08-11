@@ -135,33 +135,3 @@ table {
 .version-look > h2 > a {
   background: #B2DFDB !important;
 }
-
-
-/*  push notification */
-
-.notify-bar{
-        background-size: 40px 40px;
-        background-image: linear-gradient(135deg, rgba(255, 255, 255, .05) 25%, transparent 25%,
-                            transparent 50%, rgba(255, 255, 255, .05) 50%, rgba(255, 255, 255, .05) 75%,
-                            transparent 75%, transparent);
-         box-shadow: inset 0 -1px 0 rgba(255,255,255,.4);
-         width: 100%;
-         border: 1px solid;
-         color: #fff;
-         text-shadow: 0 1px 0 rgba(0,0,0,.5);
-         background-color: #4ea5cd;
-         border-color: #3b8eb5;
-         padding: 5px;
-}
-
-.notify-bar-height {
-    height: 0;
-    -webkit-transition: height 0.5s ease;
-    -moz-transition: height 0.5s ease;
-    -o-transition: height 0.5s ease;
-    -ms-transition: height 0.5s ease;
-    transition: height 0.5s ease;
-}
-.notify-bar-height-change {
-    height: 20px;
-}

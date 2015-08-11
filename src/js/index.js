@@ -295,8 +295,6 @@ function successHandler(result) {
   }
 
 function onNotificationGCM(e) {
-$("#app-status-ul").append('<li>EVENT -> RECEIVED:' + e.event + '</li>');
-
 switch( e.event )
 {
 case 'registered':
@@ -313,14 +311,13 @@ case 'message':
     // you might want to play a sound to get the user's attention, throw up a dialog, etc.
     if ( e.foreground )
     {   var htm = "";
-        $("#app-status-ul").append('<li>--INLINE NOTIFICATION--' + '</li>');
         alert("foreground "+e.payload.message+"pack:"+e.payload.packId);
       /*  $("#home").append("<div class='notify-bar notify-bar-height' style='display: none'>"+"有人與你分享懶人包"+"</div>");
         $('.notify-bar').show().addClass('notify-bar-height-change');
         setTimeout(function () {
           $('.notify-bar').remove();
       },5000)*/
-      window.plugins.toast.showShortTop('有人與你分享懶人包', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});
+      window.plugins.toast.showShortTop(e.payload.userName+'與你分享懶人包', function(a){console.log('toast success: ' + a)}, function(b){alert('toast error: ' + b)});
       /*
            after read the push notification in app
       */
@@ -336,11 +333,11 @@ case 'message':
 break;
 
 case 'error':
-    alert('<li>ERROR -> MSG:' + e.msg + '</li>');
+    alert('ERROR -> MSG:' + e.msg + ' ');
 break;
 
 default:
-    alert('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+    alert('EVENT -> Unknown, an event was received and we do not know what it is');
 break;
 }
 }

@@ -50,7 +50,7 @@ function share_friends(){
        sendData+='"},'
      }
    }
-   sendData+='],"pack":"'+viewPackId+',"userName":"'+user.name+'"}';
+   sendData+='],"pack":"'+viewPackId+'","userName":"'+(JSON.parse(localStorage.user)).name+'"}';
 
 
   var temp1 = JSON.parse(sendData);
@@ -98,8 +98,13 @@ $(document).on("pageshow","#share_pack",function(){
     pack.getPack(packArray[i]);
 
       //var templete ='<input type="checkbox" name="'+packArray[i].id+'" id="contact-'+i+'" data-cacheval="true"> <label for="contact-'+i+'">'+friend_array[i].name+'</label>';
-     var templete ='<input type="checkbox" name="'+packArray[i].id+'" id="contact-'+i+'" data-cacheval="true"><li class="ui-btn ui-btn-icon-left ui-nodisc-icon ui-alt-icon ui-icon-carat-r"   ><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></li></input>';
+    if (pack.cover_filename !== "") {
+      var templete ='<input type="checkbox" name="'+packArray[i].id+'" id="contact-'+i+'" data-cacheval="true"><label for="contact-'+i+'"><img  style="float:left; width:50%;height : 10%;" src="' + FILE_STORAGE_PATH + pack.id + '/' + pack.cover_filename + '"/><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></lable></input>';
 
+        }
+   else {
+     var templete ='<input type="checkbox" name="'+packArray[i].id+'" id="contact-'+i+'" data-cacheval="true"><label for="contact-'+i+'"><img  style="float:left; width:20%;height : 10%;" src="img/light102.png"/><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></lable></input>';
+   }
 
       $("fieldset").controlgroup("container").append(templete);
   }

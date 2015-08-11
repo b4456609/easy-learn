@@ -45,26 +45,6 @@ function downloadImgByUrl(url, packId, imgName, callback, errorCallback) {
   );
 }
 
-function displayPackImg(viewPackId, imgNode, imgName) {
-  var path = cordova.file.externalDataDirectory + viewPackId + '/' + imgName;
-  console.log(path);
-  //console.log(imgNode);
-
-  window.resolveLocalFileSystemURL(path, function(fileEntry) {
-    console.log('getFileEntry');
-    fileEntry.file(function(file) {
-
-      var reader = new FileReader();
-      reader.onloadend = function() {
-        imgNode.attr('src', reader.result);
-      };
-
-      imgNode.attr('width', '100%');
-      reader.readAsDataURL(file);
-
-    }, fail);
-  }, fail);
-}
 
 function fail(error) {
   console.log('FileSystem Error:' + error.code);
@@ -414,7 +394,7 @@ function import_action(zipFilename) {
 
   var finish = function() {
     //resfresh home
-    refreshPage();
+    refreshHomePage();
 
     //stop spinner
     navigator.notification.activityStop();

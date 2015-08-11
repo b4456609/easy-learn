@@ -1,6 +1,6 @@
 var promiseArray = [];
 var SERVER_URL = 'http://140.121.197.135:11116/';
-//var SERVER_URL = 'http://192.168.3.147:8080/';
+// var SERVER_URL = 'http://192.168.3.147:8080/';
 var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
 function fileDataUpload(id, deletehash) {
@@ -170,10 +170,11 @@ function getPack(packId, callback) {
       pack_id: packId
     },
     success: function(data) {
-      console.log('success get pack' + JSON.stringify(data));
+      console.log('success get pack');
       if (data.length !== 0) {
         localStorage.setItem(packId, JSON.stringify(data));
         callback();
+        downloadServerImg();
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -426,7 +427,7 @@ function sync() {
       downloadServerImg();
 
       //refresh home page
-      refreshPage();
+      refreshHomePage();
 
 
     } else if (data.sync.status === 'conflict') {
@@ -481,7 +482,7 @@ function replace_data() {
 }
 
 
-function refreshPage() {
+function refreshHomePage() {
   //refresh every visit home page
   display_pack();
 

@@ -163,7 +163,8 @@ $(document).on('pageshow', "#view_pack", function() {
 });
 
 $(document).on('pageinit', "#search_view_pack", function() {
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = new Pack();
+  pack.getPack(viewPackId);
 
   //set look's version's index, check if index exits
   if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
@@ -174,32 +175,34 @@ $(document).on('pageinit', "#search_view_pack", function() {
 
   console.log('view pack ID:' + viewPackId);
   console.log('view pack name:' + pack.name);
-  packName = pack.name;
 
   var content = pack.version[viewPackVersion.index].content;
   //get image by server
   content = replaceSearchPackImgPath(content);
   $('#veiw_pack_content').html(content);
 
-  // $('#view_pack_content').onselect(function(){
-  //   console.log('selected');
-  // })
+  //show pack's title
+  $('#pack_title').text(pack.name);
+
+
+  //add version view count
+  pack.version[viewPackVersion.index].user_view_count++;
+  pack.save();
 });
 
-
-$(document).on('pageshow', "#view_pack", function() {
-  //show pack's title
-  $('#pack_title').text(packName);
+$(document).on('pageshow', "#search_view_pack", function() {
   //note initail
   $("#note-display").toolbar("option", "position", "fixed");
   $("#note-display").toolbar("option", "tapToggle", false);
 
   //click and show note hanlder
   $(".note").click(showNoteHandler);
+
+  $("#note-display").toolbar("hide");
 });
 
 function replaceSearchPackImgPath(content) {
-  var url = SERVER_URL + 'easylearn/download?pack_id=' + viewPackId + '&filename=';
+  var url = 'http://i.imgur.com/';
   var find = 'FILE_STORAGE_PATH' + viewPackId + '/';
   var re = new RegExp(find, 'g');
 
@@ -279,9 +282,9 @@ function onFail(message) {
 }
 
 function displayCoverImg(packfileEntry) {
-  for(var i in editingFile){
-    if(editingFile[i] == packfileEntry.name){
-      editingFile.splice(i,1);
+  for (var i in editingFile) {
+    if (editingFile[i] == packfileEntry.name) {
+      editingFile.splice(i, 1);
     }
   }
   NEW_PACK.cover_filename = packfileEntry.name;
@@ -335,6 +338,10 @@ function display_version_info() {
     //other private version not display
     if (!version[i].is_public && version[i].creator_user_id != user.id) {
       //it's not this user's private version don't display
+      continue;
+    }
+
+    if(version[i].modified === 'delete'){
       continue;
     }
 

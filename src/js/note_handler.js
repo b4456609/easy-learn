@@ -71,7 +71,7 @@ function save_note_handler() {
 
   //set color to content
   note_selection.new_version_content = note_selection.new_version_content.replace('class="note"', 'class="note ' + colorClassName + '"');
-  
+
   //replace file path
   var find = FILE_STORAGE_PATH;
   var re = new RegExp(find, 'g');
@@ -81,7 +81,11 @@ function save_note_handler() {
   var pack = JSON.parse(localStorage.getItem(viewPackId));
 
   //update version
-  pack.version[viewPackVersion.index].content = note_selection.new_version_content;
+  var currentVersion = pack.version[viewPackVersion.index];
+  currentVersion.content = note_selection.new_version_content;
+
+  //update modified
+  currentVersion.modified = "true";
 
   //prepare new note
   var newNote = {
@@ -94,7 +98,7 @@ function save_note_handler() {
   };
 
   //append note in pack's version
-  pack.version[viewPackVersion.index].note[pack.version[viewPackVersion.index].note.length] = newNote;
+  currentVersion.note.push(newNote);
 
   //write in localStorage
   localStorage.setItem(viewPackId, JSON.stringify(pack));

@@ -135,3 +135,8 @@ table {
 .version-look > h2 > a {
   background: #B2DFDB !important;
 }
+
+
+#veiw_pack_content img{
+  max-width: 100%
+}

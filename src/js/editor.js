@@ -39,7 +39,7 @@ $(document).on('pageshow', "#co_pack", function() {
   //find backup version index
   for (var i in pack.version) {
     //id are same compare version size
-    if (i != viewPackVersion.index && pack.version[i].private_id == pack.version[viewPackVersion.index].private_id) {
+    if (i != viewPackVersion.index && pack.version[i].private_id == pack.version[viewPackVersion.index].private_id && pack.version[i].modified !== 'delete') {
       console.log('[coPack]find old version');
       var buckupBtn = '<li><a href="#" id="last-btn" onclick="checkout();">上次編輯內容</a></li>';
 
@@ -498,9 +498,7 @@ function saveNewVersionHandler(pack, isPublic) {
           continue;
         }
         if (pack.version[index].private_id === find) {
-          pack.version.splice(index, 1);
-          break;
-          //should be only one
+          pack.version[index].modified = "delete";
         }
       }
     }
@@ -510,9 +508,7 @@ function saveNewVersionHandler(pack, isPublic) {
 
       for (var j in pack.version) {
         if (pack.version[j].private_id === originVersion.private_id) {
-          pack.version.splice(j, 1);
-          //because delete one i
-          j--;
+          pack.version[j].modified = "delete";
         }
       }
       //version is public the pack will be public

@@ -79,6 +79,7 @@ function Version() {
   this.private_id = '';
   this.view_count = '';
   this.user_view_count = '';
+  this.modified = 'false';
 
   this.initial = function() {
     //get current time
@@ -117,6 +118,7 @@ function Version() {
       private_id: this.private_id,
       view_count: this.view_count,
       user_view_count: this.user_view_count,
+      modified: this.modified
     };
     return newVersion;
   };
@@ -233,7 +235,6 @@ function Folder() {
           if (this.folderArray[i].pack[j] === packId) {
             return true;
           }
-          break;
         }
       }
     }
@@ -268,6 +269,50 @@ function Folder() {
     for (var j in this.folderArray) {
       if (this.folderArray[j].id === folderId) {
         this.folderArray[j].name = name;
+        break;
+      }
+    }
+
+    this.save();
+  };
+
+  //if no share folder add it
+  this.addShareFolder = function () {
+    for (var i in this.folderArray) {
+      if(this.folderArray[i].id == 'shareFolder'){
+        return;
+      }
+    }
+
+    //add new folder
+    this.folderArray[this.folderArray.length] = {
+      name: '與你分享懶人包',
+      id: 'shareFolder',
+      pack: []
+    };
+
+    this.save();
+  };
+
+  //add a pack to all folder
+  this.addPackToShareFolder = function(packId) {
+    //if not in all folder add in
+    if(!this.hasPack){
+      this.addToAllFolder(packId);
+    }
+    for (var i in this.folderArray) {
+      if (this.folderArray[i].id === 'shareFolder') {
+        console.log('[addAPack] addPackToShareFolder:' + packId);
+
+        //check is exist in share folder
+        var packs = this.folderArray[i].pack;
+        for(var j in packs){
+          if(packs[j] === packId){
+            return;
+          }
+        }
+        this.folderArray[i].pack.push(packId);
+
         break;
       }
     }

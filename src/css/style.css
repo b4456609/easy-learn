@@ -165,3 +165,7 @@ table {
 .notify-bar-height-change {
     height: 20px;
 }
+
+#veiw_pack_content img{
+  max-width: 100%
+}

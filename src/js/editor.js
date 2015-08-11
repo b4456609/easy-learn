@@ -498,9 +498,7 @@ function saveNewVersionHandler(pack, isPublic) {
           continue;
         }
         if (pack.version[index].private_id === find) {
-          pack.version.splice(index, 1);
-          break;
-          //should be only one
+          pack.version[index].modified = "delete";
         }
       }
     }
@@ -510,9 +508,7 @@ function saveNewVersionHandler(pack, isPublic) {
 
       for (var j in pack.version) {
         if (pack.version[j].private_id === originVersion.private_id) {
-          pack.version.splice(j, 1);
-          //because delete one i
-          j--;
+          pack.version[j].modified = "delete";
         }
       }
       //version is public the pack will be public

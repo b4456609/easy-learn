@@ -79,6 +79,7 @@ function Version() {
   this.private_id = '';
   this.view_count = '';
   this.user_view_count = '';
+  this.modified = 'false';
 
   this.initial = function() {
     //get current time
@@ -117,6 +118,7 @@ function Version() {
       private_id: this.private_id,
       view_count: this.view_count,
       user_view_count: this.user_view_count,
+      modified: this.modified
     };
     return newVersion;
   };

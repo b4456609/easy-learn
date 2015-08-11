@@ -341,6 +341,10 @@ function display_version_info() {
       continue;
     }
 
+    if(version[i].modified === 'delete'){
+      continue;
+    }
+
     //display private icon
     var privateIcon = '';
     if (!version[i].is_public) {

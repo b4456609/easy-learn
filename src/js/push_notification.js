@@ -38,9 +38,9 @@ function onNotificationGCM(e) {
       // you might want to play a sound to get the user's attention, throw up a dialog, etc.
       if (e.foreground) {
         window.plugins.toast.showShortBottom('有人與你分享懶人包', function(a) {
-          console.log('toast success: ' + a)
+          console.log('toast success: ' + a);
         }, function(b) {
-          alert('toast error: ' + b)
+          console.log('toast error: ' + a);
         });
         //add to local share folder
         var packId = e.payload.packId;
@@ -67,11 +67,11 @@ function onNotificationGCM(e) {
       break;
 
     case 'error':
-      alert('<li>ERROR -> MSG:' + e.msg + '</li>');
+      console.log('<li>ERROR -> MSG:' + e.msg + '</li>');
       break;
 
     default:
-      alert('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
+      console.log('<li>EVENT -> Unknown, an event was received and we do not know what it is</li>');
       break;
   }
 }

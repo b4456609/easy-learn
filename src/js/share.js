@@ -15,7 +15,7 @@ $(document).on('pageshow', "#share_contact", function() {
 
     },
     function(error) {
-      alert('搜索失敗:' + JSON.stringify(error));
+      //alert('搜索失敗:' + JSON.stringify(error));
       console.log(error);
     }
   );
@@ -66,11 +66,11 @@ function share_friends(){
               },
               type:'GET',
               success: function(msg){
-                  alert(msg);
+                  //alert(msg);
               },
                error:function(xhr, ajaxOptions, thrownError){
-                  alert(xhr.status);
-                  alert(thrownError);
+                  //alert(xhr.status);
+                  //alert(thrownError);
                }
     });
 }

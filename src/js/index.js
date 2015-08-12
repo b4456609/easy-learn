@@ -224,7 +224,7 @@ function search_pack() {
         //cover img
         var img;
         if (data[i].cover_filename !== '')
-          img = '<img src="' + SERVER_URL + 'easylearn/download?filename=' + data[i].cover_filename + '&pack_id=' + data[i].id + '">';
+          img = '<img src="http://i.imgur.com/' + data[i].cover_filename + '">';
         else
           img = '<img src="img/light102.png">';
 

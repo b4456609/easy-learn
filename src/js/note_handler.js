@@ -198,6 +198,7 @@ function displayComment(commentArray) {
   //create comment html code
   var i;
   var commentTemplate = '';
+  commentArray.sort(function (a, b) {return a.create_time - b.create_time})
   for (i in commentArray) {
     var time = new Date(commentArray[i].create_time);
 

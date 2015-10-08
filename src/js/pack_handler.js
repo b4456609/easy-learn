@@ -75,7 +75,7 @@ $(document).on('pageinit', "#view_pack", function() {
   navigator.notification.activityStart('觀看懶人包', '載入中');
 
   var pack = new Pack();
-  pack.getPack(viewPackId);
+  pack.getPack(viewStorage.getViewPackId());
 
 
   //set look's version's index, check if index exits
@@ -107,7 +107,7 @@ $(document).on('pageinit', "#view_pack", function() {
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
 
-  console.log('view pack ID:' + viewPackId);
+  console.log('view pack ID:' + viewStorage.getViewPackId());
   console.log('view pack name:' + pack.name);
 
   //prepare content
@@ -120,7 +120,7 @@ $(document).on('pageinit', "#view_pack", function() {
 $(document).on('pageshow', "#view_pack", function() {
 
   var pack = new Pack();
-  pack.getPack(viewPackId);
+  pack.getPack(viewStorage.getViewPackId());
 
   //show pack's title
   $('#pack_title').text(pack.name);
@@ -164,7 +164,7 @@ $(document).on('pageshow', "#view_pack", function() {
 
 $(document).on('pageinit', "#search_view_pack", function() {
   var pack = new Pack();
-  pack.getPack(viewPackId);
+  pack.getPack(viewStorage.getViewPackId());
 
   //set look's version's index, check if index exits
   if (viewPackVersion.index >= pack.version.length || viewPackVersion.index < 0) {
@@ -173,7 +173,7 @@ $(document).on('pageinit', "#search_view_pack", function() {
   //set look version's id
   viewPackVersion.id = pack.version[viewPackVersion.index].id;
 
-  console.log('view pack ID:' + viewPackId);
+  console.log('view pack ID:' + viewStorage.getViewPackId());
   console.log('view pack name:' + pack.name);
 
   var content = pack.version[viewPackVersion.index].content;
@@ -203,7 +203,7 @@ $(document).on('pageshow', "#search_view_pack", function() {
 
 function replaceSearchPackImgPath(content) {
   var url = 'http://i.imgur.com/';
-  var find = 'FILE_STORAGE_PATH' + viewPackId + '/';
+  var find = 'FILE_STORAGE_PATH' + viewStorage.getViewPackId() + '/';
   var re = new RegExp(find, 'g');
 
   content = content.replace(re, url);
@@ -230,7 +230,7 @@ function showNoteHandler() {
   noteText = $(this).text();
 
   //get pack for note content
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
   var noteArray = pack.version[viewPackVersion.index].note;
 
   //find current note
@@ -300,7 +300,7 @@ function go_version_handler(index) {
 
 function display_version_info() {
   //get pack from localStorage
-  var version = JSON.parse(localStorage.getItem(viewPackId)).version;
+  var version = JSON.parse(localStorage.getItem(viewStorage.getViewPackId())).version;
   //console.log(version);
   console.log(viewPackVersion.index);
 
@@ -410,5 +410,5 @@ function getVersionInfo(version) {
 
 function save_to_folder() {
   var folder = new Folder();
-  folder.addAPack(viewPackId);
+  folder.addAPack(viewStorage.getViewPackId());
 }

@@ -17,7 +17,7 @@ $(document).on("pageinit", "#co_pack", function() {
 $(document).on('pageshow', "#co_pack", function() {
   //get pack from localStorage
   var pack = new Pack();
-  pack.getPack(viewPackId);
+  pack.getPack(viewStorage.getViewPackId());
 
   //save index for checkout use
   currentIndex = viewPackVersion.index;
@@ -61,7 +61,7 @@ $(document).on('pageshow', "#co_pack", function() {
     saveNewVersionHandler(pack, false);
   });
 
-  editingPackId = viewPackId;
+  editingPackId = viewStorage.getViewPackId();
 });
 
 
@@ -93,7 +93,7 @@ $(document).on("pageshow", "#new_pack_edit", function() {
 function checkout() {
   $('#popupMenu').popup('close');
   var pack = new Pack();
-  pack.getPack(viewPackId);
+  pack.getPack(viewStorage.getViewPackId());
 
   //checkout other version
   if (viewPackVersion.index == currentIndex) {

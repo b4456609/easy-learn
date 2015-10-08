@@ -50,7 +50,7 @@ function share_friends(){
        sendData+='"},'
      }
    }
-   sendData+='],"pack":"'+viewPackId+'","userName":"'+(JSON.parse(localStorage.user)).name+'"}';
+   sendData+='],"pack":"'+viewStorage.getViewPackId()+'","userName":"'+(JSON.parse(localStorage.user)).name+'"}';
 
 
   var temp1 = JSON.parse(sendData);

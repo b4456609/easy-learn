@@ -323,13 +323,13 @@ function getComment(NoteId) {
         displayComment(data);
 
         //get pack for comment content
-        var pack = JSON.parse(localStorage.getItem(viewPackId));
+        var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
 
         //get current note
         var comments = pack.version[viewPackVersion.index].note[viewNoteArrayIndex].comment = data;
 
         //update pack in localStorage
-        localStorage.setItem(viewPackId, JSON.stringify(pack));
+        localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {

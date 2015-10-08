@@ -10,7 +10,7 @@ var viewNoteArrayIndex;
 
 $(document).on('pageinit', "#comment", function() {
   //get pack for comment content
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
   var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
 
   //display note word
@@ -33,7 +33,7 @@ $(document).on('pageshow', "#comment", function() {
   //comment submit button
   $('#comment_submit').click(comment_submit_handler);
   $('#reload_comment').click(function() {
-    var pack = JSON.parse(localStorage.getItem(viewPackId));
+    var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
     var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
     var commentArray = currentNote.comment;
     getNewerComment(currentNote.id, commentArray);
@@ -55,7 +55,7 @@ $(document).on('pageinit', "#new_note_choose", function() {
   console.log("#new_note_choose pageinit");
   //show choose content
   var pack = new Pack();
-  pack.getPack(viewPackId);
+  pack.getPack(viewStorage.getViewPackId());
   //prepare content
   var content = pack.version[viewPackVersion.index].content;
   content = replacePackImgPath(content);
@@ -78,7 +78,7 @@ function save_note_handler() {
   note_selection.new_version_content = note_selection.new_version_content.replace(re, 'FILE_STORAGE_PATH');
 
   //save in localStorage
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
 
   //update version
   var currentVersion = pack.version[viewPackVersion.index];
@@ -101,7 +101,7 @@ function save_note_handler() {
   currentVersion.note.push(newNote);
 
   //write in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
+  localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));
 }
 
 function note_next_handler(sel) {
@@ -139,7 +139,7 @@ function paintNote(selection, noteId) {
 function comment_submit_handler() {
 
   //get pack for comment content
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
 
   //get text from user input
   var commentContent = $('#comment_text').val();
@@ -181,7 +181,7 @@ function comment_submit_handler() {
   currentNote.comment[currentNote.comment.length] = newComment;
 
   //update pack in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
+  localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));
 
   //save to server
   postComment(currentNote.id, newComment);

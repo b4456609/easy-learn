@@ -123,7 +123,7 @@ function Version() {
     return newVersion;
   };
 
-  this.newPrivateId = function () {
+  this.newPrivateId = function() {
     var time = new Date().getTime();
     this.private_id = "private" + time;
   };
@@ -277,9 +277,9 @@ function Folder() {
   };
 
   //if no share folder add it
-  this.addShareFolder = function () {
+  this.addShareFolder = function() {
     for (var i in this.folderArray) {
-      if(this.folderArray[i].id == 'shareFolder'){
+      if (this.folderArray[i].id == 'shareFolder') {
         return;
       }
     }
@@ -297,7 +297,7 @@ function Folder() {
   //add a pack to all folder
   this.addPackToShareFolder = function(packId) {
     //if not in all folder add in
-    if(!this.hasPack){
+    if (!this.hasPack) {
       this.addToAllFolder(packId);
     }
     for (var i in this.folderArray) {
@@ -306,8 +306,8 @@ function Folder() {
 
         //check is exist in share folder
         var packs = this.folderArray[i].pack;
-        for(var j in packs){
-          if(packs[j] === packId){
+        for (var j in packs) {
+          if (packs[j] === packId) {
             return;
           }
         }
@@ -532,5 +532,44 @@ function Reference() {
     }
 
     return content.substring(0, endIndex);
+  };
+}
+
+function ViewStorage(){
+  var packMemo = localStorage.getItem('view_storage');
+  this.currentPack = null;
+  this.versio
+  this.folder;
+
+  this.findPackRecord = function(packId){
+    for(var i in packMemo){
+      if(packMemo[i].packId == packId){
+        this.currentPack = packMemo[i];
+        break;
+      }
+    }
+    this.currentPack = null;
+  };
+
+  this.addOrUpdateRecord = function(packId, versionId, pos){
+    this.findRecord(packId);
+    if(this.currentPack == null){
+      this.currentPack.pos = pos;
+      this.currentPack.versionId = versionId;
+    }
+    else{
+      var record = {
+        packId: packId,
+        versionId: versionId,
+        pos: pos
+      }
+      packMemo.push(record);
+    }
+
+    this.save();
+  };
+
+  this.save = function () {
+    localStorage.setItem('view_storage', packMemo);
   };
 }

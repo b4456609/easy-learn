@@ -1,4 +1,4 @@
-//use to new bookmark temp 
+//use to new bookmark temp
 var book_temp = {
   id: '',
   name: '',
@@ -10,7 +10,7 @@ var height1;
 var bookmark_top=0;
 
 $(document).on('pageshow', "#view_pack", function() {
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
   var MarkArray = pack.version[viewPackVersion.index].bookmark;
   var real_width = $(document).width();
   height1=$(document).height();
@@ -18,7 +18,7 @@ $(document).on('pageshow', "#view_pack", function() {
   else {
        for (i in MarkArray) {
         $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:"+(MarkArray[i].position*height1)+"px;left:"+(real_width-70)+"px;opacity:0.5;'/>");
-      
+
     }
   }
   $("#new_mark").click(Remind);
@@ -38,7 +38,7 @@ $('#submit').click(MarkThePosition);
 
 console.log(bookmark_top);
 $( "#view_pack" ).on( "panelbeforeclose", function() { $(".remind_img").remove();} );
-    
+
 $(document).on("scrollstart",function () {
 	$("#drag").draggable({
 		start: function () {
@@ -66,9 +66,9 @@ $(document).on("scrollstart",function () {
 
 function Remind(){
     var real_width = $(document).width();
-	var hight = ($(document).scrollTop())+real_width/2; 
+	var hight = ($(document).scrollTop())+real_width/2;
 	 $("#veiw_pack_content").append("<div  style='position: fixed;z-index:10000000;top:100px;'><img id='drag'; class ='remind_img' src='img/mark_remind.png' alt='Smiley face' width='"+real_width+"' height='70' style='position:absolute;top:"+hight+"px;opacity:0.5;'/></div>");
-    
+
 
 }
 
@@ -82,9 +82,9 @@ function MarkThePosition(){
     console.log(real_width);
     var hight = ($(document).scrollTop())+(real_width/2)+250;     //取得目前卷軸畫面的Y座標
     console.log(hight);
-	
+
     $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:"+bookmark_top+"px;left:"+(real_width-70)+"px;opacity:0.5;'/>");
-    
+
     var relative_position = hight/real_height;
     console.log(hight/real_height);
     save_book_mark_handler();
@@ -97,7 +97,7 @@ var viewMarkArrayIndex;
 
 $(document).on('pageinit', "#bookmark", function() {
   //get pack for comment content
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
   var MarkArray = pack.version[viewPackVersion.index].bookmark;
 
   //create comment html code
@@ -112,7 +112,7 @@ $(document).on('pageinit', "#bookmark", function() {
     }
   commentTemplate+='</ul>'
   // display comment
-    
+
   $('#book_mark_content').append(commentTemplate);
  // $("#book_mark_content").listview("refresh");
 
@@ -123,71 +123,24 @@ $(document).on("pageshow", "#bookmark", function () {
 
 
 function back2read() {
-    
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
   var MarkArray = pack.version[viewPackVersion.index].bookmark;
 
   var temp = parseInt($(this).attr('Markindex'));
   var position = MarkArray[temp].position;
   real_position=position;
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
-  
+
 
 }
 
-
-
-
-//$.mobile.silentScroll(300);
-
-/*
-var viewbookmarkArrayIndex;
-
-
-$(document).on('pageshow', "#book_mark_content", display_bookmark());
-function display_bookmark() {
-  //generate bookmark html code
-  var result = "";
-  var pack_templete = "";
-  var j;
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
-  var currentMark = pack.version[viewPackVersion.index].bookmark[viewbookmarkArrayIndex];
-
-    
-    
-  for (j in viewPackId) {
-    //get pack from localStorage
-    
-
-    //get pack's id
-    var packId = packArray[j];
-
-    if (pack.cover_filename !== "") {
-      //display the bookmark
-      pack_templete = '<li id="'+id+'" value="'+position+'" >"'+name+'" </li>';
-    } else {
-      pack_templete = '<li packid= "' + packId + '"><a href="#"><img src="img/light102.png"><h2>' + pack.name + '</h2><font style="white-space:normal; font-size: small">' + pack.description + '</font></a></li>';
-    }
-    result += pack_templete;
-  }
-
-  //display pack
-  $('#pack_display_area').html(result);
-  $("#pack_display_area").listview("refresh");
-
-  //register click handler
-  $("li[packid]").click(Bookmark);
-}*/
-
-
-
-
 function save_book_mark_handler(relative_position) {
   var real_height = $(document).height();
-  var hight = bookmark_top;     
+  var hight = bookmark_top;
   var relative_position = hight/real_height;
   //save in localStorage
-  var pack = JSON.parse(localStorage.getItem(viewPackId));
+  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
 
   //prepare new note
   var mark = {
@@ -195,15 +148,15 @@ function save_book_mark_handler(relative_position) {
     name: $('#mark_name').val(),
     position:relative_position
     };
-  
+
     console.log($('#mark_name').val());
     console.log(relative_position);
-    
-    
+
+
   //append note in pack's version
   pack.version[viewPackVersion.index].bookmark[pack.version[viewPackVersion.index].bookmark.length] = mark;
 
   //write in localStorage
-  localStorage.setItem(viewPackId, JSON.stringify(pack));
+  localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));
   changeModifyStroageTime();
 }

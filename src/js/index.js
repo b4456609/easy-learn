@@ -49,6 +49,8 @@ $.when(gapReady, jqmReady).then(myAppLogic);
 
 var headerHeight;
 
+var viewStorage = new ViewStorage();
+
 //remember the pack to display
 var viewPackId;
 var viewPackVersion = {

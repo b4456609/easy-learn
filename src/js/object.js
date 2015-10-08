@@ -538,21 +538,43 @@ function Reference() {
 function ViewStorage(){
   var packMemo = localStorage.getItem('view_storage');
   this.currentPack = null;
-  this.versio
+  this.versionIndex = 0;
   this.folder;
+
+  this.setViewPackId = function (packId) {
+    this.findPackRecord(packId);
+    //not in record
+    if(this.currentPack == null){
+      var pack = new Pack();
+      pack.getPack(packId);
+      pack.version.sort(function (a, b) {
+        return a.create_time - b.create_time;
+      });
+      this.versionIndex = pack.version.length - 1;
+      this.addOrUpdateRecord(packId, pack.version[pack.version.length - 1].id, 0);
+    }
+
+    this.findPackRecord(packId);
+  };
+
+  this.getViewPackId = function () {
+    return this.currentPack.packId;
+  };
 
   this.findPackRecord = function(packId){
     for(var i in packMemo){
       if(packMemo[i].packId == packId){
         this.currentPack = packMemo[i];
+        this.versionIndex = i;
         break;
       }
     }
     this.currentPack = null;
+    this.versionIndex = 0;
   };
 
   this.addOrUpdateRecord = function(packId, versionId, pos){
-    this.findRecord(packId);
+    this.findPackRecord(packId);
     if(this.currentPack == null){
       this.currentPack.pos = pos;
       this.currentPack.versionId = versionId;

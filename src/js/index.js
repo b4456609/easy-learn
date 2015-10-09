@@ -51,13 +51,6 @@ var headerHeight;
 
 var viewStorage = new ViewStorage();
 
-//remember the pack to display
-var viewPackId;
-var viewPackVersion = {
-  index: 0,
-  id: ''
-};
-
 var folderName = 'All';
 var FILE_STORAGE_PATH;
 
@@ -190,8 +183,8 @@ function folder_click_handler(folderId) {
   $("#menu_panel").panel("close");
 }
 
-function go_pack_handler(packid) {
-  viewPackId = packid;
+function go_pack_handler(packId) {
+  viewStorage.setViewPackId(packId);
 
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
@@ -247,7 +240,7 @@ function search_pack() {
 function checkout_pack(packId) {
   var folder = new Folder();
   var callback = function() {
-    viewPackId = packId;
+    viewStorage.setViewPackId(packId);
     $.mobile.changePage("search_view_pack.html", {
       transition: "pop",
     });
@@ -256,7 +249,7 @@ function checkout_pack(packId) {
   //if pack is exist in local do not download from server
   if(folder.hasPack(packId)){
     console.log('[checkout_pack]has pack in local');
-    viewPackId = packId;
+      viewStorage.setViewPackId(packId);
 
     $.mobile.changePage("view_pack.html", {
       transition: "pop",

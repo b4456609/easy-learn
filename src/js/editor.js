@@ -20,10 +20,10 @@ $(document).on('pageshow', "#co_pack", function() {
   pack.getPack(viewStorage.getViewPackId());
 
   //save index for checkout use
-  currentIndex = viewPackVersion.index;
+  currentIndex = viewStorage.versionIndex;
 
   //prepare content
-  var content = pack.version[viewPackVersion.index].content;
+  var content = pack.version[viewStorage.versionIndex].content;
   content = replacePackImgPath(content);
   var r = new Reference();
   content = r.deleteRef(content);
@@ -39,7 +39,7 @@ $(document).on('pageshow', "#co_pack", function() {
   //find backup version index
   for (var i in pack.version) {
     //id are same compare version size
-    if (i != viewPackVersion.index && pack.version[i].private_id == pack.version[viewPackVersion.index].private_id && pack.version[i].modified !== 'delete') {
+    if (i != viewStorage.versionIndex && pack.version[i].private_id == pack.version[viewStorage.versionIndex].private_id && pack.version[i].modified !== 'delete') {
       console.log('[coPack]find old version');
       var buckupBtn = '<li><a href="#" id="last-btn" onclick="checkout();">上次編輯內容</a></li>';
 
@@ -96,10 +96,10 @@ function checkout() {
   pack.getPack(viewStorage.getViewPackId());
 
   //checkout other version
-  if (viewPackVersion.index == currentIndex) {
+  if (viewStorage.versionIndex == currentIndex) {
     currentIndex = lastVersionIndex;
   } else {
-    currentIndex = viewPackVersion.index;
+    currentIndex = viewStorage.versionIndex;
   }
 
   //prepare content
@@ -466,7 +466,7 @@ function saveNewVersionHandler(pack, isPublic) {
   $.when(deffer).then(function() {
     content += r.get();
 
-    var originVersion = pack.version[viewPackVersion.index];
+    var originVersion = pack.version[viewStorage.versionIndex];
 
     //get files and concate it to new one
     var files = originVersion.file;
@@ -529,7 +529,7 @@ function saveNewVersionHandler(pack, isPublic) {
     pack.save();
 
     //set view this version
-    viewPackVersion.index = new_index;
+    viewStorage.versionIndex = new_index;
     editingFile = [];
 
     //change page

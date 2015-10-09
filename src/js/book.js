@@ -11,7 +11,7 @@ var bookmark_top=0;
 
 $(document).on('pageshow', "#view_pack", function() {
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
-  var MarkArray = pack.version[viewPackVersion.index].bookmark;
+  var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
   var real_width = $(document).width();
   height1=$(document).height();
   if(MarkArray==""){}
@@ -98,7 +98,7 @@ var viewMarkArrayIndex;
 $(document).on('pageinit', "#bookmark", function() {
   //get pack for comment content
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
-  var MarkArray = pack.version[viewPackVersion.index].bookmark;
+  var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
 
   //create comment html code
   var i;
@@ -125,7 +125,7 @@ $(document).on("pageshow", "#bookmark", function () {
 function back2read() {
 
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
-  var MarkArray = pack.version[viewPackVersion.index].bookmark;
+  var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
 
   var temp = parseInt($(this).attr('Markindex'));
   var position = MarkArray[temp].position;
@@ -154,7 +154,7 @@ function save_book_mark_handler(relative_position) {
 
 
   //append note in pack's version
-  pack.version[viewPackVersion.index].bookmark[pack.version[viewPackVersion.index].bookmark.length] = mark;
+  pack.version[viewStorage.versionIndex].bookmark[pack.version[viewStorage.versionIndex].bookmark.length] = mark;
 
   //write in localStorage
   localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));

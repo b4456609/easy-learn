@@ -536,7 +536,8 @@ function Reference() {
 }
 
 function ViewStorage(){
-  var packMemo = localStorage.getItem('view_storage');
+  var packMemo = JSON.parse(localStorage.getItem('view_storage'));
+  if(packMemo === null) packMemo = [];
   this.currentPack = null;
   this.versionIndex = 0;
   this.folder;
@@ -544,7 +545,7 @@ function ViewStorage(){
   this.setViewPackId = function (packId) {
     this.findPackRecord(packId);
     //not in record
-    if(this.currentPack == null){
+    if(this.currentPack === null){
       var pack = new Pack();
       pack.getPack(packId);
       pack.version.sort(function (a, b) {
@@ -565,26 +566,38 @@ function ViewStorage(){
     for(var i in packMemo){
       if(packMemo[i].packId == packId){
         this.currentPack = packMemo[i];
-        this.versionIndex = i;
-        break;
+
+        //set versionIndex
+        var pack = new Pack();
+        pack.getPack(packId);
+        for(var j in pack.version){
+          if(pack.version[j].id === this.currentPack.versionId){
+            this.versionIndex = j;
+            break;
+          }
+        }
+
+        return;
       }
     }
     this.currentPack = null;
-    this.versionIndex = 0;
   };
 
   this.addOrUpdateRecord = function(packId, versionId, pos){
     this.findPackRecord(packId);
-    if(this.currentPack == null){
+    //update record
+    if(this.currentPack !== null){
       this.currentPack.pos = pos;
       this.currentPack.versionId = versionId;
     }
+    //add new record
     else{
       var record = {
         packId: packId,
         versionId: versionId,
         pos: pos
-      }
+      };
+      console.log(packMemo);
       packMemo.push(record);
     }
 
@@ -592,6 +605,6 @@ function ViewStorage(){
   };
 
   this.save = function () {
-    localStorage.setItem('view_storage', packMemo);
+    localStorage.setItem('view_storage', JSON.stringify(packMemo));
   };
 }

@@ -81,7 +81,7 @@ $(document).on('pageinit', "#view_pack", function() {
   console.log('view pack name:' + pack.name);
 
   //prepare content
-  var content = pack.version[viewPackVersion.index].content;
+  var content = pack.version[viewStorage.versionIndex].content;
   content = replacePackImgPath(content);
   $('#veiw_pack_content').html(content);
 
@@ -128,7 +128,7 @@ $(document).on('pageshow', "#view_pack", function() {
   navigator.notification.activityStop();
 
   //add version view count
-  pack.version[viewPackVersion.index].user_view_count++;
+  pack.version[viewStorage.versionIndex].user_view_count++;
   pack.save();
 });
 
@@ -139,7 +139,7 @@ $(document).on('pageinit', "#search_view_pack", function() {
   console.log('view pack ID:' + viewStorage.getViewPackId());
   console.log('view pack name:' + pack.name);
 
-  var content = pack.version[viewPackVersion.index].content;
+  var content = pack.version[viewStorage.versionIndex].content;
   //get image by server
   content = replaceSearchPackImgPath(content);
   $('#veiw_pack_content').html(content);
@@ -149,7 +149,7 @@ $(document).on('pageinit', "#search_view_pack", function() {
 
 
   //add version view count
-  pack.version[viewPackVersion.index].user_view_count++;
+  pack.version[viewStorage.versionIndex].user_view_count++;
   pack.save();
 });
 
@@ -194,7 +194,7 @@ function showNoteHandler() {
 
   //get pack for note content
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
-  var noteArray = pack.version[viewPackVersion.index].note;
+  var noteArray = pack.version[viewStorage.versionIndex].note;
 
   //find current note
   var i;
@@ -257,7 +257,7 @@ function displayCoverImg(packfileEntry) {
 }
 
 function go_version_handler(index) {
-  viewPackVersion.index = index;
+  viewStorage.versionIndex = index;
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
@@ -265,7 +265,7 @@ function display_version_info() {
   //get pack from localStorage
   var version = JSON.parse(localStorage.getItem(viewStorage.getViewPackId())).version;
   //console.log(version);
-  console.log(viewPackVersion.index);
+  console.log(viewStorage.versionIndex);
 
   //get user info
   var user = new User();
@@ -326,7 +326,7 @@ function display_version_info() {
     var userName = version[i].creator_user_name;
     var text = getVersionInfo(version[i]);
 
-    if (i == viewPackVersion.index) {
+    if (i == viewStorage.versionIndex) {
       html += '<li class="version_col version-look" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + privateIcon + ' </h2><p>' + text + '</p></li>';
     } else {
       html += '<li class="version_col" data-role="collapsible" version_index="' + i + '"><h2>' + timeString + '   ' + userName + privateIcon + ' </h2><p>' + text + '</p><a href="#" class="ui-btn" onclick="go_version_handler(\'' + i + '\')">觀看此版本</a></li>';

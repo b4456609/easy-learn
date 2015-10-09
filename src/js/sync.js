@@ -326,7 +326,7 @@ function getComment(NoteId) {
         var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
 
         //get current note
-        var comments = pack.version[viewPackVersion.index].note[viewNoteArrayIndex].comment = data;
+        var comments = pack.version[viewStorage.versionIndex].note[viewNoteArrayIndex].comment = data;
 
         //update pack in localStorage
         localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));

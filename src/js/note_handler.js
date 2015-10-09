@@ -11,7 +11,7 @@ var viewNoteArrayIndex;
 $(document).on('pageinit', "#comment", function() {
   //get pack for comment content
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
-  var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
+  var currentNote = pack.version[viewStorage.versionIndex].note[viewNoteArrayIndex];
 
   //display note word
   $('#note_word').html(noteText);
@@ -34,7 +34,7 @@ $(document).on('pageshow', "#comment", function() {
   $('#comment_submit').click(comment_submit_handler);
   $('#reload_comment').click(function() {
     var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
-    var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
+    var currentNote = pack.version[viewStorage.versionIndex].note[viewNoteArrayIndex];
     var commentArray = currentNote.comment;
     getNewerComment(currentNote.id, commentArray);
   });
@@ -57,7 +57,7 @@ $(document).on('pageinit', "#new_note_choose", function() {
   var pack = new Pack();
   pack.getPack(viewStorage.getViewPackId());
   //prepare content
-  var content = pack.version[viewPackVersion.index].content;
+  var content = pack.version[viewStorage.versionIndex].content;
   content = replacePackImgPath(content);
   $('#choose_pack_content').html(content);
 });
@@ -81,7 +81,7 @@ function save_note_handler() {
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
 
   //update version
-  var currentVersion = pack.version[viewPackVersion.index];
+  var currentVersion = pack.version[viewStorage.versionIndex];
   currentVersion.content = note_selection.new_version_content;
 
   //update modified
@@ -175,7 +175,7 @@ function comment_submit_handler() {
 
 
   //get current note
-  var currentNote = pack.version[viewPackVersion.index].note[viewNoteArrayIndex];
+  var currentNote = pack.version[viewStorage.versionIndex].note[viewNoteArrayIndex];
 
   //add new comment
   currentNote.comment[currentNote.comment.length] = newComment;

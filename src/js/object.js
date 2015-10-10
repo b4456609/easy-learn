@@ -543,6 +543,10 @@ function ViewStorage() {
   this.folder = '';
 }
 
+ViewStorage.prototype.getViewPos = function() {
+  return this.currentPack.pos;
+};
+
 ViewStorage.prototype.getViewPackId = function() {
   return this.currentPack.packId;
 };
@@ -569,12 +573,9 @@ ViewStorage.prototype.findPackRecord = function(packId) {
 };
 
 ViewStorage.prototype.checkoutVersion = function (index) {
-  console.log('[checkoutVersion]'+this.currentPack);
   var pack = new Pack();
   pack.getPack(this.currentPack.packId);
   this.addOrUpdateRecord(this.currentPack.packId, pack.version[index].id, 0);
-
-  console.log('[checkoutVersion]'+this.currentPack);
 };
 
 ViewStorage.prototype.addOrUpdateRecord = function(packId, versionId, pos) {
@@ -616,4 +617,10 @@ ViewStorage.prototype.setViewPackId = function(packId) {
     this.addOrUpdateRecord(packId, pack.version[pack.version.length - 1].id, 0);
     this.findPackRecord(packId);
   }
+};
+
+ViewStorage.prototype.updatePos = function(pos) {
+  console.log('[updatePos]',this.currentPack.pos,pos);
+  this.currentPack.pos = pos;
+  console.log('[updatePos]',this.currentPack.pos);
 };

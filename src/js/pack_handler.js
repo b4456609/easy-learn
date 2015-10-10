@@ -17,8 +17,6 @@ $(document).on("pageinit", "#version_pack", function() {
   display_version_info();
 });
 
-
-
 $(document).on('pageinit', "#new_pack", function() {
   //check is user back from edit page
   //initial form
@@ -88,6 +86,11 @@ $(document).on('pageinit', "#view_pack", function() {
 });
 
 $(document).on('pageshow', "#view_pack", function() {
+  var pos = viewStorage.getViewPos();
+  window.scrollTo(0, pos);
+  if(pos !== 0){
+
+  }
 
   var pack = new Pack();
   pack.getPack(viewStorage.getViewPackId());
@@ -124,12 +127,23 @@ $(document).on('pageshow', "#view_pack", function() {
   //click and show note hanlder
   $(".note").click(showNoteHandler);
 
+
   //stop spinner notification
   navigator.notification.activityStop();
 
   //add version view count
   pack.version[viewStorage.versionIndex].user_view_count++;
   pack.save();
+
+
+  //memory pack pos
+  window.onscroll = function() {
+    viewStorage.updatePos(document.body.scrollTop);
+  };
+});
+
+$(document).on('pagebeforehide', '#view_pack', function() {
+  window.onscroll = null;
 });
 
 $(document).on('pageinit', "#search_view_pack", function() {
@@ -258,7 +272,6 @@ function displayCoverImg(packfileEntry) {
 
 function go_version_handler(index) {
   viewStorage.checkoutVersion(index);
-  //viewStorage.versionIndex = index;
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
@@ -305,7 +318,7 @@ function display_version_info() {
       continue;
     }
 
-    if(version[i].modified === 'delete'){
+    if (version[i].modified === 'delete') {
       continue;
     }
 

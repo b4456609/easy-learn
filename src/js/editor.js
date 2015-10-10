@@ -152,7 +152,7 @@ function getPhotoWithModifySize(successCallback) {
             downloadImgByUrl(item.link, editingPackId, filename, successCallback ,function () {
               navigator.notification.activityStop();
             });
-          })
+          });
         };
         reader.readAsDataURL(file);
       }, errorHandler);

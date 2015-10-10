@@ -257,7 +257,8 @@ function displayCoverImg(packfileEntry) {
 }
 
 function go_version_handler(index) {
-  viewStorage.versionIndex = index;
+  viewStorage.checkoutVersion(index);
+  //viewStorage.versionIndex = index;
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 

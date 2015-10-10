@@ -529,7 +529,7 @@ function saveNewVersionHandler(pack, isPublic) {
     pack.save();
 
     //set view this version
-    viewStorage.versionIndex = new_index;
+    viewStorage.checkoutVersion(new_index);
     editingFile = [];
 
     //change page

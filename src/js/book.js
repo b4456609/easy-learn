@@ -14,8 +14,8 @@ $(document).on('pageshow', "#view_pack", function() {
   var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
   var real_width = $(document).width();
   height1 = $(document).height();
-  if (MarkArray == "") {} else {
-    for (i in MarkArray) {
+  if (MarkArray === "") {} else {
+    for (var i in MarkArray) {
       $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:" + (MarkArray[i].position * height1) + "px;left:" + (real_width - 70) + "px;opacity:0.5;'/>");
 
     }
@@ -53,7 +53,7 @@ $(document).on('pageshow', "#view_pack", function() {
         var offset = $(this).offset();
         var yPos = offset.top;
         console.log(yPos);
-        bookmark_top = yPos
+        bookmark_top = yPos;
 
       }
     });
@@ -105,13 +105,13 @@ $(document).on('pageinit', "#bookmark", function() {
   var i;
   var commentTemplate = '<ul data-role="listview" class="ui-listview">';
   for (i in MarkArray) {
-    if (MarkArray[i].name == "")
+    if (MarkArray[i].name === "")
       continue;
     else {
       commentTemplate += '<li Markindex="' + i + '" data-iconshadow="true" data-icon="arrow-r" data-iconpos="right" class="ui-btn ui-btn-icon-right ui-li-has-arrow ui-li ui-first-child ui-btn-up-c"               data-theme="c" ><a href="#" class="ui-btn">' + MarkArray[i].name + '</a></li>';
     }
   }
-  commentTemplate += '</ul>'
+  commentTemplate += '</ul>';
     // display comment
 
   $('#book_mark_content').append(commentTemplate);
@@ -136,7 +136,7 @@ function back2read() {
 
 }
 
-function save_book_mark_handler(relative_position) {
+function save_book_mark_handler() {
   var real_height = $(document).height();
   var hight = bookmark_top;
   var relative_position = hight / real_height;

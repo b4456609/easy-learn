@@ -8,6 +8,39 @@ var note_selection = {
 
 var viewNoteArrayIndex;
 
+function noteInit() {
+  //note initail
+  $("#note-display").toolbar("option", "position", "fixed");
+  $("#note-display").toolbar("option", "tapToggle", false);
+
+  //note hold handler
+  $('#veiw_pack_content').on("taphold", function() {
+    console.log('[viewPack]hold content');
+    var sel = window.getSelection();
+    console.log('[viewPack]isCollapsed' + sel.isCollapsed);
+
+    if (!sel.isCollapsed) {
+      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all" onclick="note_next_handler(\'#veiw_pack_content\')">新增便利貼</a>';
+      $('.ui-btn-right').html(next);
+      $('#note_choose_next').button();
+    }
+  });
+
+  //note hold handler
+  $('#veiw_pack_content').on("tap", function() {
+    console.log('[viewPack]tap content');
+
+    var menu = '<a href="#popupMenu" id="app-bar-menu-btn" class="ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bullets" data-rel="popup">選單</a>';
+    $('.ui-btn-right').html(menu);
+    $('#app-bar-menu-btn').button();
+
+  });
+
+  //click and show note hanlder
+  $(".note").click(showNoteHandler);
+
+}
+
 $(document).on('pageinit', "#comment", function() {
   //get pack for comment content
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
@@ -198,7 +231,9 @@ function displayComment(commentArray) {
   //create comment html code
   var i;
   var commentTemplate = '';
-  commentArray.sort(function (a, b) {return a.create_time - b.create_time})
+  commentArray.sort(function(a, b) {
+    return a.create_time - b.create_time;
+  });
   for (i in commentArray) {
     var time = new Date(commentArray[i].create_time);
 

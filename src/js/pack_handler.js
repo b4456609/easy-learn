@@ -48,25 +48,6 @@ $(document).on('pageinit', "#new_pack", function() {
 
 });
 
-function new_pack_next() {
-  NEW_PACK.name = $('#new_pack_title').val().trim();
-  if (NEW_PACK.name === "") {
-    navigator.notification.alert('標題不可為空', null, '錯誤', '確定');
-    return;
-  }
-
-  NEW_PACK.is_public = document.getElementById("is_public").checked;
-  NEW_PACK.description = $('#new_pack_description').val();
-  NEW_PACK.tags = $('#tags').val();
-  $(":mobile-pagecontainer").pagecontainer("change", "new_pack_edit.html");
-}
-
-$(document).on('pageshow', "#new_pack", function() {
-  // choose cover image file hanlder
-  $('#choose_photo').click(function() {
-    getPhotoWithModifySize(displayCoverImg);
-  });
-});
 
 $(document).on('pageinit', "#view_pack", function() {
   //stop spinner notification
@@ -86,10 +67,16 @@ $(document).on('pageinit', "#view_pack", function() {
 });
 
 $(document).on('pageshow', "#view_pack", function() {
-  var pos = viewStorage.getViewPos();
-  window.scrollTo(0, pos);
-  if(pos !== 0){
 
+  var position = viewStorage.getViewPos();
+  if(position.isBookmark){
+    scrollToBookmarkPos(position.pos);
+  }
+  else{
+    window.scrollTo(0, position.pos);
+    if(position !== 0){
+
+    }
   }
 
   var pack = new Pack();
@@ -97,36 +84,13 @@ $(document).on('pageshow', "#view_pack", function() {
 
   //show pack's title
   $('#pack_title').text(pack.name);
-  //note initail
-  $("#note-display").toolbar("option", "position", "fixed");
-  $("#note-display").toolbar("option", "tapToggle", false);
 
-  //note hold handler
-  $('#veiw_pack_content').on("taphold", function() {
-    console.log('[viewPack]hold content');
-    var sel = window.getSelection();
-    console.log('[viewPack]isCollapsed' + sel.isCollapsed);
+  //note handler
+  noteInit();
 
-    if (!sel.isCollapsed) {
-      var next = '<a href="new_note.html" id="note_choose_next" class="ui-btn ui-btn-inline ui-mini ui-corner-all" onclick="note_next_handler(\'#veiw_pack_content\')">新增便利貼</a>';
-      $('.ui-btn-right').html(next);
-      $('#note_choose_next').button();
-    }
-  });
-
-  //note hold handler
-  $('#veiw_pack_content').on("tap", function() {
-    console.log('[viewPack]tap content');
-
-    var menu = '<a href="#popupMenu" id="app-bar-menu-btn" class="ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bullets" data-rel="popup">選單</a>';
-    $('.ui-btn-right').html(menu);
-    $('#app-bar-menu-btn').button();
-
-  });
-
-  //click and show note hanlder
-  $(".note").click(showNoteHandler);
-
+  //bookmark display
+  showBookmark(pack);
+  bookmarkSubmitHandler();
 
   //stop spinner notification
   navigator.notification.activityStop();
@@ -176,6 +140,27 @@ $(document).on('pageshow', "#search_view_pack", function() {
   $(".note").click(showNoteHandler);
 
   $("#note-display").toolbar("hide");
+});
+
+
+function new_pack_next() {
+  NEW_PACK.name = $('#new_pack_title').val().trim();
+  if (NEW_PACK.name === "") {
+    navigator.notification.alert('標題不可為空', null, '錯誤', '確定');
+    return;
+  }
+
+  NEW_PACK.is_public = document.getElementById("is_public").checked;
+  NEW_PACK.description = $('#new_pack_description').val();
+  NEW_PACK.tags = $('#tags').val();
+  $(":mobile-pagecontainer").pagecontainer("change", "new_pack_edit.html");
+}
+
+$(document).on('pageshow', "#new_pack", function() {
+  // choose cover image file hanlder
+  $('#choose_photo').click(function() {
+    getPhotoWithModifySize(displayCoverImg);
+  });
 });
 
 function replaceSearchPackImgPath(content) {

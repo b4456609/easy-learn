@@ -1,19 +1,11 @@
-//use to new bookmark temp
-var book_temp = {
-  id: '',
-  name: '',
-  position: null
-};
-
-var real_position = 0;
-var height1;
+//var real_position = 0;
+//var height1;
 var bookmark_top = 0;
 
-$(document).on('pageshow', "#view_pack", function() {
-  var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
+function showBookmark(pack) {
   var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
   var real_width = $(document).width();
-  height1 = $(document).height();
+  var height1 = $(document).height();
   if (MarkArray === "") {} else {
     for (var i in MarkArray) {
       $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:" + (MarkArray[i].position * height1) + "px;left:" + (real_width - 70) + "px;opacity:0.5;'/>");
@@ -21,17 +13,15 @@ $(document).on('pageshow', "#view_pack", function() {
     }
   }
   $("#new_mark").click(Remind);
-});
+}
 
+function scrollToBookmarkPos(pos) {
+    //comment submit button
+    var height1 = $(document).height();
+    $.mobile.silentScroll((pos * height1));
+}
 
-
-
-$(document).on('pageshow', "#view_pack", function() {
-  //comment submit button
-  height1 = $(document).height();
-
-  //$.mobile.silentScroll((real_position * height1));
-
+function bookmarkSubmitHandler(){
 
   $('#submit').click(MarkThePosition);
 
@@ -59,22 +49,13 @@ $(document).on('pageshow', "#view_pack", function() {
     });
 
   });
-});
-
-
-
-
+}
 
 function Remind() {
   var real_width = $(document).width();
   var hight = ($(document).scrollTop()) + real_width / 2;
   $("#veiw_pack_content").append("<div  style='position: fixed;z-index:10000000;top:100px;'><img id='drag'; class ='remind_img' src='img/mark_remind.png' alt='Smiley face' width='" + real_width + "' height='70' style='position:absolute;top:" + hight + "px;opacity:0.5;'/></div>");
-
-
 }
-
-
-
 
 function MarkThePosition() {
   var real_height = $(document).height();
@@ -90,11 +71,6 @@ function MarkThePosition() {
   console.log(hight / real_height);
   save_book_mark_handler();
 }
-
-
-var viewMarkArrayIndex;
-
-
 
 $(document).on('pageinit', "#bookmark", function() {
   //get pack for comment content
@@ -118,22 +94,20 @@ $(document).on('pageinit', "#bookmark", function() {
   // $("#book_mark_content").listview("refresh");
 
 });
+
 $(document).on("pageshow", "#bookmark", function() {
   $("li[Markindex]").click(back2read);
 });
 
-
 function back2read() {
-
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
   var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
 
   var temp = parseInt($(this).attr('Markindex'));
   var position = MarkArray[temp].position;
-  real_position = position;
+  //real_position = position;
+  viewStorage.setBookmarkPos(position);
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
-
-
 }
 
 function save_book_mark_handler() {

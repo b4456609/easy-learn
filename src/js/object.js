@@ -9,61 +9,63 @@ function Pack() {
   this.cover_filename = '';
   this.creator_user_name = '';
   this.version = [];
-
-  this.getPack = function(packId) {
-    var pack = JSON.parse(localStorage.getItem(packId));
-
-    //set all value
-    this.id = packId;
-    this.name = pack.name;
-    this.description = pack.description;
-    this.create_time = pack.create_time;
-    this.tags = pack.tags;
-    this.is_public = pack.is_public;
-    this.creator_user_id = pack.creator_user_id;
-    this.cover_filename = pack.cover_filename;
-    this.version = pack.version;
-    this.creator_user_name = pack.creator_user_name;
-  };
-
-  this.save = function() {
-    var pack = {
-      name: this.name,
-      description: this.description,
-      create_time: this.create_time,
-      tags: this.tags,
-      is_public: this.is_public,
-      creator_user_id: this.creator_user_id,
-      cover_filename: this.cover_filename,
-      creator_user_name: this.creator_user_name,
-      version: this.version,
-    };
-
-    //save to local storage
-    localStorage.setItem(this.id, JSON.stringify(pack));
-  };
-
-  this.initial = function() {
-    //get current time
-    var time = new Date().getTime();
-
-    //set id
-    this.id = 'pack' + time;
-
-    //set user
-    var user = new User();
-    this.creator_user_id = user.id;
-    this.creator_user_name = user.name;
-
-    this.create_time = time;
-    this.name = '';
-    this.is_public = false;
-    this.description = '';
-    this.tags = '';
-    this.cover_filename = '';
-    this.version = [];
-  };
 }
+
+Pack.prototype.getPack = function(packId) {
+  var pack = JSON.parse(localStorage.getItem(packId));
+
+  //set all value
+  this.id = packId;
+  this.name = pack.name;
+  this.description = pack.description;
+  this.create_time = pack.create_time;
+  this.tags = pack.tags;
+  this.is_public = pack.is_public;
+  this.creator_user_id = pack.creator_user_id;
+  this.cover_filename = pack.cover_filename;
+  this.version = pack.version;
+  this.creator_user_name = pack.creator_user_name;
+};
+
+Pack.prototype.save = function() {
+  var pack = {
+    name: this.name,
+    description: this.description,
+    create_time: this.create_time,
+    tags: this.tags,
+    is_public: this.is_public,
+    creator_user_id: this.creator_user_id,
+    cover_filename: this.cover_filename,
+    creator_user_name: this.creator_user_name,
+    version: this.version,
+  };
+
+  //save to local storage
+  localStorage.setItem(this.id, JSON.stringify(pack));
+};
+
+Pack.prototype.initial = function() {
+  //get current time
+  var time = new Date().getTime();
+
+  //set id
+  this.id = 'pack' + time;
+
+  //set user
+  var user = new User();
+  this.creator_user_id = user.id;
+  this.creator_user_name = user.name;
+
+  this.create_time = time;
+  this.name = '';
+  this.is_public = false;
+  this.description = '';
+  this.tags = '';
+  this.cover_filename = '';
+  this.version = [];
+};
+
+
 
 function Version() {
   this.id = '';
@@ -540,11 +542,30 @@ function ViewStorage() {
   if (this.packMemo === null) this.packMemo = [];
   this.currentPack = null;
   this.versionIndex = 0;
+  this.bookmarkPos = {
+    ready: false,
+    pos: 0
+  };
   this.folder = '';
 }
 
+ViewStorage.prototype.setBookmarkPos = function(pos) {
+  this.bookmarkPos.ready = true;
+  this.bookmarkPos.pos = pos;
+};
+
 ViewStorage.prototype.getViewPos = function() {
-  return this.currentPack.pos;
+  var pos = this.currentPack.pos;
+  if(this.bookmarkPos.ready){
+    pos = this.bookmarkPos.pos;
+  }
+
+  var isBookmark = this.bookmarkPos.ready;
+  this.bookmarkPos.ready = false;
+  return {
+    isBookmark: isBookmark,
+    pos: pos
+  };
 };
 
 ViewStorage.prototype.getViewPackId = function() {
@@ -572,7 +593,7 @@ ViewStorage.prototype.findPackRecord = function(packId) {
   this.currentPack = null;
 };
 
-ViewStorage.prototype.checkoutVersion = function (index) {
+ViewStorage.prototype.checkoutVersion = function(index) {
   var pack = new Pack();
   pack.getPack(this.currentPack.packId);
   this.addOrUpdateRecord(this.currentPack.packId, pack.version[index].id, 0);
@@ -620,7 +641,7 @@ ViewStorage.prototype.setViewPackId = function(packId) {
 };
 
 ViewStorage.prototype.updatePos = function(pos) {
-  console.log('[updatePos]',this.currentPack.pos,pos);
+  console.log('[updatePos]', this.currentPack.pos, pos);
   this.currentPack.pos = pos;
-  console.log('[updatePos]',this.currentPack.pos);
+  console.log('[updatePos]', this.currentPack.pos);
 };

@@ -6,22 +6,6 @@
       <a href="#popupMenu" id="app-bar-menu-btn" class="ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bullets" data-rel="popup">選單</a>
     </div>
   </div>
-  <!-- new book popup -->
-  <div class="ui-corner-all" data-role="panel" id="popupLogin" data-display="overlay" data-position="right" data-position-fixed="true" data-theme="a">
-    <div style="padding:10px 20px;">
-
-      <h3>在目前瀏覽的位置新增書籤</h3>
-
-      <label for="un" class="ui-hidden-accessible">輸入書籤的名稱:</label>
-
-      <input type="text" name="user" id="mark_name" value="" placeholder="markname" data-theme="a">
-
-      <button data-rel="close" id="submit" class="ui-btn ui-corner-all ui-shadow ui-btn-b ui-btn-icon-left ui-icon-check">送出</button>
-
-    </div>
-
-  </div>
-
   <div data-role="main" class="ui-content" id="veiw_pack_content">
   </div>
 
@@ -33,7 +17,7 @@
     <ul data-role="listview" data-inset="true" style="min-width:150px;" data-icon="false">
       <li><a href="new_note_choose.html">新增便利貼</a>
       </li>
-      <li><a href="#popupLogin" id="new_mark">新增書籤</a>
+      <li><a href="#popupLogin" onclick="showNewBookmarkPrompt();">新增書籤</a>
       </li>
       <li><a href="bookmark.html">目錄與書籤</a>
       </li>

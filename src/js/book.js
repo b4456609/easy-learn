@@ -1,75 +1,44 @@
-//var real_position = 0;
-//var height1;
-var bookmark_top = 0;
-
 function showBookmark(pack) {
   var MarkArray = pack.version[viewStorage.versionIndex].bookmark;
-  var real_width = $(document).width();
-  var height1 = $(document).height();
+  var width = document.body.scrollWidth;
+  var height = document.body.scrollHeight;
   if (MarkArray === "") {} else {
     for (var i in MarkArray) {
-      $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:" + (MarkArray[i].position * height1) + "px;left:" + (real_width - 70) + "px;opacity:0.5;'/>");
-
+      $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:" + (MarkArray[i].position * height) + "px;left:" + (width - 70) + "px;opacity:0.5;'/>");
     }
   }
-  $("#new_mark").click(Remind);
 }
 
 function scrollToBookmarkPos(pos) {
-    //comment submit button
-    var height1 = $(document).height();
-    $.mobile.silentScroll((pos * height1));
+  //comment submit button
+  var height = document.body.scrollHeight - 50;
+  $.mobile.silentScroll((pos * height));
 }
 
-function bookmarkSubmitHandler(){
-
-  $('#submit').click(MarkThePosition);
-
-  console.log(bookmark_top);
-  $("#view_pack").on("panelbeforeclose", function() {
-    $(".remind_img").remove();
-  });
-
-  $(document).on("scrollstart", function() {
-    $("#drag").draggable({
-      start: function() {
-        //$("#drag p").html("<p>用滑鼠拖曳</p>拖曳已開始!");
-      },
-      drag: function() {
-        //$("#info").html("拖曳事件已觸發了 " + count + " 次");
-      },
-      stop: function() {
-        console.log($(document).scrollTop());
-        var offset = $(this).offset();
-        var yPos = offset.top;
-        console.log(yPos);
-        bookmark_top = yPos;
-
-      }
-    });
-
-  });
+function showNewBookmarkPrompt() {
+  navigator.notification.prompt(
+    '請輸入書籤名稱', // message
+    onNewBookmarkPrompt, // callback to invoke
+    '新增書籤', // title
+    ['Ok', 'Exit'], // buttonLabels
+    '' // defaultText
+  );
 }
 
-function Remind() {
-  var real_width = $(document).width();
-  var hight = ($(document).scrollTop()) + real_width / 2;
-  $("#veiw_pack_content").append("<div  style='position: fixed;z-index:10000000;top:100px;'><img id='drag'; class ='remind_img' src='img/mark_remind.png' alt='Smiley face' width='" + real_width + "' height='70' style='position:absolute;top:" + hight + "px;opacity:0.5;'/></div>");
-}
+function onNewBookmarkPrompt(result) {
+  console.log('[onNewBookmarkPrompt]', result);
 
-function MarkThePosition() {
-  var real_height = $(document).height();
-  var real_width = $(document).width();
-  console.log(real_height);
-  console.log(real_width);
-  var hight = ($(document).scrollTop()) + (real_width / 2) + 250; //取得目前卷軸畫面的Y座標
-  console.log(hight);
+  if (result.buttonIndex === 1) {
+    var bodyHeight = document.body.scrollHeight;
+    var bodyWidth = document.body.scrollWidth;
+    var scrollHeight = document.body.scrollTop + 50;
+    var relative_position = scrollHeight / bodyHeight;
 
-  $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:" + bookmark_top + "px;left:" + (real_width - 70) + "px;opacity:0.5;'/>");
+    $("#veiw_pack_content").append("<img src='img/mark.png' alt='Smiley face' width='100' height='70' style='position:absolute;top:" + relative_position * bodyHeight + "px;left:" + (bodyWidth - 70) + "px;opacity:0.5;'/>");
 
-  var relative_position = hight / real_height;
-  console.log(hight / real_height);
-  save_book_mark_handler();
+    console.log('[onNewBookmarkPrompt]', bodyHeight, scrollHeight);
+    save_book_mark_handler(relative_position, result.input1);
+  }
 }
 
 $(document).on('pageinit', "#bookmark", function() {
@@ -88,7 +57,7 @@ $(document).on('pageinit', "#bookmark", function() {
     }
   }
   commentTemplate += '</ul>';
-    // display comment
+  // display comment
 
   $('#book_mark_content').append(commentTemplate);
   // $("#book_mark_content").listview("refresh");
@@ -105,33 +74,27 @@ function back2read() {
 
   var temp = parseInt($(this).attr('Markindex'));
   var position = MarkArray[temp].position;
-  //real_position = position;
+
   viewStorage.setBookmarkPos(position);
   $(":mobile-pagecontainer").pagecontainer("change", "view_pack.html");
 }
 
-function save_book_mark_handler() {
-  var real_height = $(document).height();
-  var hight = bookmark_top;
-  var relative_position = hight / real_height;
-  //save in localStorage
+function save_book_mark_handler(pos, title) {
   var pack = JSON.parse(localStorage.getItem(viewStorage.getViewPackId()));
+
+  //get current time
+  var time = new Date().getTime();
 
   //prepare new note
   var mark = {
-    id: note_selection.id,
-    name: $('#mark_name').val(),
-    position: relative_position
+    id: 'bookmark' + time,
+    name: title,
+    position: pos
   };
-
-  console.log($('#mark_name').val());
-  console.log(relative_position);
-
 
   //append note in pack's version
   pack.version[viewStorage.versionIndex].bookmark[pack.version[viewStorage.versionIndex].bookmark.length] = mark;
 
   //write in localStorage
   localStorage.setItem(viewStorage.getViewPackId(), JSON.stringify(pack));
-  changeModifyStroageTime();
 }

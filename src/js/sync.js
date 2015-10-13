@@ -65,7 +65,7 @@ function uploadImgUseBase64(data, callback) {
     },
     success: function(result) {
       console.log('[uploadImgUseBase64]success', result);
-      if (result.success == true) {
+      if (result.success === true) {
         var item = {
           id: result.data.id,
           link: result.data.link,
@@ -124,7 +124,7 @@ function uploadImgUseUrl(imgUrl, callback) {
     },
     success: function(result) {
       console.log('[uploadImgUseUrl]success', result);
-      if (result.success == true) {
+      if (result.success === true) {
         var item = {
           id: result.data.id,
           link: result.data.link,
@@ -245,21 +245,14 @@ function downloadImg(filename, packId, downloadDeffer) {
 
   var success = function() {
     downloadDeffer.resolve();
-  }
+  };
 
   var fail = function() {
     downloadDeffer.resolve();
-    console.log('[downloadImg]:fail')
-  }
+    console.log('[downloadImg]:fail');
+  };
 
   downloadImgByUrl(url, packId, filename, success, fail);
-}
-
-//change last sync time to indicate newer data
-function changeModifyStroageTime() {
-  var user = JSON.parse(localStorage.user);
-  user.setting.last_sync_time = (new Date().getTime()) + 30000;
-  localStorage.setItem('user', JSON.stringify(user));
 }
 
 //comment instant sync handler
@@ -372,7 +365,7 @@ function sync() {
       console.log('[sync]all done');
       navigator.notification.activityStop();
     });
-  }
+  };
 
   if (!canSync()) {
     $('#sync').text(navigator.connection.type + '狀態下不同步');

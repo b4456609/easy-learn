@@ -90,7 +90,6 @@ $(document).on('pageshow', "#view_pack", function() {
 
   //bookmark display
   showBookmark(pack);
-  bookmarkSubmitHandler();
 
   //stop spinner notification
   navigator.notification.activityStop();

@@ -17,19 +17,6 @@ function login_check() {
       modified: true
     }
   };
-
-  if ((account === 'loko') && (password === '123456789')) {
-    user.id = 'loko';
-    user.name = '洛林';
-    successLogin(user);
-  } else if ((account === 'b') && (password === 'b')) {
-    user.id = 'b4456609';
-    user.name = 'Bernie';
-    successLogin(user);
-  } else {
-    $('#msg').text('帳號或密碼有錯誤!!');
-  }
-
 }
 
 function successLogin(user) {
@@ -53,6 +40,7 @@ function successLogin(user) {
     changeHash: false
   });
 
+  sync();
 }
 
 function logout() {

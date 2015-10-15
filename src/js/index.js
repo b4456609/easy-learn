@@ -71,10 +71,12 @@ function myAppLogic() {
     display_pack();
     display_folder();
     $('#user_name').text((JSON.parse(localStorage.user)).name);
-    navigator.splashscreen.hide();
+    sync();
   }
+  navigator.splashscreen.hide();
 
   $('#logout').click(logout);
+
 
   pushNotification();
 }

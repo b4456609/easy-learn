@@ -1,6 +1,6 @@
 var promiseArray = [];
-var SERVER_URL = 'http://140.121.197.135:11116/';
-// var SERVER_URL = 'http://192.168.3.147:8080/';
+//var SERVER_URL = 'http://140.121.197.135:11116/';
+ var SERVER_URL = 'http://192.168.5.100:8080/';
 var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
 function fileDataUpload(id, deletehash) {
@@ -361,6 +361,8 @@ function sync() {
   var defferedFinish = function() {
     //promise array downloadImg and upload img and sync operation
     $.when.apply($, promiseArray).done(function() {
+      //force to reload img
+      $("img").ForceReload();
       promiseArray = [];
       console.log('[sync]all done');
       navigator.notification.activityStop();
@@ -498,3 +500,24 @@ function checkConnection() {
 
   alert('Connection type: ' + states[networkState]);
 }
+
+(function($){
+$.fn.ForceReload = function(UserSettings){
+
+    // Settings
+    var Settings = $.extend({
+        Hash: new Date().getTime()
+    }, UserSettings);
+
+    // Image iteration
+    this.each(function(){
+        var _this = $(this);
+        var img = _this.clone();
+        var src = img.attr("src");
+        img.attr("src", src + (src.indexOf("?") > -1 ? "&" : "?") + "hash=" + Settings.Hash).one("load", function(){
+            _this.after(img);
+            _this.remove();
+        });
+    });
+}
+}(jQuery));

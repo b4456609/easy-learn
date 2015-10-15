@@ -74,8 +74,8 @@ $(document).on('pageshow', "#view_pack", function() {
   }
   else{
     window.scrollTo(0, position.pos);
-    if(position !== 0){
-
+    if(position.pos !== 0){
+      window.plugins.toast.showShortBottom('回到上次觀看位置', null, null);
     }
   }
 

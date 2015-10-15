@@ -1,6 +1,6 @@
 var promiseArray = [];
-//var SERVER_URL = 'http://140.121.197.135:11116/';
- var SERVER_URL = 'http://192.168.5.100:8080/';
+var SERVER_URL = 'http://140.121.197.135:11116/';
+//var SERVER_URL = 'http://192.168.5.100:8080/';
 var ImgurAuth = 'Client-ID 3cda8943e794d34';
 
 function fileDataUpload(id, deletehash) {

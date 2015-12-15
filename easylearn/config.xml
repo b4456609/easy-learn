@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<widget id="ntou.cs.easylearn" version="0.3.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="ntou.cs.easylearn" android-versionCode="1" version="0.8.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>EasyLearn</name>
-  <description>A sample Apache Cordova application that responds to the deviceready event.</description>
+  <description>Using EasyLearn, users can
+easily create, share, read, discuss and update condensed
+articles.</description>
   <author email="b4456609@gmail.com" href="http://github.com/b4456609/easy-learn">Jailbreak Team</author>
   <content src="index.html" />
   <access origin="*" />

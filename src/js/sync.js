@@ -393,7 +393,6 @@ function sync() {
           sendData[allPack[j]] = (JSON.parse(localStorage.getItem(allPack[j])));
         }
       }
-      break;
     }
   }
 

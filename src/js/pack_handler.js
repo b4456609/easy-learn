@@ -58,6 +58,7 @@ $(document).on('pageinit', "#view_pack", function() {
 
   console.log('view pack ID:' + viewStorage.getViewPackId());
   console.log('view pack name:' + pack.name);
+	console.log('view pack index' + viewStorage.versionIndex);
 
   //prepare content
   var content = pack.version[viewStorage.versionIndex].content;

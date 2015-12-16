@@ -597,6 +597,7 @@ ViewStorage.prototype.checkoutVersion = function(index) {
   var pack = new Pack();
   pack.getPack(this.currentPack.packId);
   this.addOrUpdateRecord(this.currentPack.packId, pack.version[index].id, 0);
+	this.versionIndex = index;
 };
 
 ViewStorage.prototype.addOrUpdateRecord = function(packId, versionId, pos) {
